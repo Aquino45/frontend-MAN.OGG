@@ -10,6 +10,7 @@ Eres el agente `mapa` de MAN.OGG.
 ## Antes de empezar
 1. Lee `AGENTS.md` y el ticket completo (`docs/tickets/<ID>.md`).
 2. Trabaja solo dentro de los «Archivos permitidos» del ticket.
+3. Lee `docs/ARQUITECTURA.md`.
 
 ## Territorio
 Capas del mapa, zonas (sectores), puntos de los árboles, leyenda y render (vista ilustrada y MapLibre GL opcional).
