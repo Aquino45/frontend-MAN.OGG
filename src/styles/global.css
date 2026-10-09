@@ -1,0 +1,44 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: var(--fuente-base);
+  font-size: var(--texto-base);
+  line-height: 1.5;
+}
+
+.portada {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-3);
+  padding: var(--espacio-4);
+  text-align: center;
+}
+
+.portada__titulo {
+  margin: 0;
+  color: var(--color-acento);
+  font-size: var(--texto-titulo);
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.portada__linea {
+  margin: 0;
+  color: var(--color-texto);
+}

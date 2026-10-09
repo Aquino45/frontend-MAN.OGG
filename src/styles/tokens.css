@@ -1,0 +1,44 @@
+:root {
+  /* Paleta del GIF (docs/requerimientos.md) */
+  --copa-carmin: #e02040;
+  --copa-magenta-oscuro: #a00080;
+  --copa-magenta: #c00080;
+  --tronco-noche: #202040;
+  --sombra-violeta: #413e59;
+
+  /* Neutro de lectura (decisión Cristhian, 08/10). 13.7:1 sobre --tronco-noche. */
+  --texto-lectura: #f6eef2;
+
+  /* Alias semánticos: los únicos que usan los componentes.
+     OJO (RNF-03): el carmín sobre noche da solo 3.32:1. Va SOLO en títulos
+     grandes y acentos, nunca en párrafos. */
+  --color-fondo: var(--tronco-noche);
+  --color-superficie: var(--sombra-violeta);
+  --color-texto: var(--texto-lectura);
+  --color-acento: var(--copa-carmin);
+  --color-secundario: var(--copa-magenta);
+  --color-borde: var(--copa-magenta-oscuro);
+
+  /* Espacios */
+  --espacio-1: 0.25rem;
+  --espacio-2: 0.5rem;
+  --espacio-3: 1rem;
+  --espacio-4: 1.5rem;
+  --espacio-5: 2.5rem;
+  --espacio-6: 4rem;
+
+  /* Radios */
+  --radio-sm: 0.25rem;
+  --radio-md: 0.5rem;
+  --radio-lg: 1rem;
+
+  /* Tipografía (pila del sistema) */
+  --fuente-base: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --fuente-mono: ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace;
+  --texto-titulo: clamp(2.5rem, 10vw + 0.5rem, 5rem);
+  --texto-base: 1.125rem;
+
+  /* Duraciones */
+  --duracion-rapida: 150ms;
+  --duracion-media: 300ms;
+}
