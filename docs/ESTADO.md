@@ -15,7 +15,7 @@ Actualizado: 09/10/2026 (ticket DOC-002).
 - FE-002 — mapa. Sigue `docs/ARQUITECTURA.md`: módulos `mapa` y `tema`, `api/`, `mocks/`, `compartido/` y la regla de ESLint de fronteras (ver su § 7).
 
 ## Pendiente fuera de este repo
-- Protección de `main` (PR obligatorio con aprobación de Code Owner, solo squash) y, tras el merge de FE-001, agregar `lint`, `tests` y `build` como checks obligatorios.
+- Protección de `main` (PR obligatorio con aprobación de Code Owner, solo squash) y agregar `lint`, `tests` y `build` como checks obligatorios (FE-001 ya está mergeado).
 - Requerimientos del stakeholder aprobados y contrato v0 (BE-002); de ahí salen los tipos del front.
 
 ## Al arrancar una sesión
