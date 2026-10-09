@@ -49,4 +49,16 @@ Stack completo: back Django 5 + DRF + GeoDjango + PostgreSQL/PostGIS en Docker; 
 Cada afirmación del informe lleva un test, un comando corrido o un `archivo:línea`. Si no, va marcada «(sin verificar)».
 
 ## 8. Comandos
-Se completan en BE-001/FE-001.
+Requiere Node 22 o más y npm. Antes del primer `npm run dev`: `cp .env.example .env`.
+
+| Comando | Qué hace |
+|---|---|
+| `npm install` | Instala las dependencias (versiones exactas). |
+| `npm run dev` | Servidor de desarrollo en el puerto de `PUERTO_DEV`. |
+| `npm run build` | Compila para producción. |
+| `npm run preview` | Sirve el build local. |
+| `npm test` | Tests con Vitest (`vitest run`). |
+| `npm run lint` | ESLint. |
+| `npm run formato` / `npm run formato:verificar` | Prettier: aplica / solo verifica. |
+| `npm run tipos` | Chequeo de tipos con TypeScript. |
+| `npm run verificar:colores` | Falla si hay colores literales fuera de `src/styles/tokens.css`. |
