@@ -9,6 +9,10 @@
   /* Neutro de lectura (decisión Cristhian, 08/10). 13.7:1 sobre --tronco-noche. */
   --texto-lectura: #f6eef2;
 
+  /* Superficie del tema claro: magenta al 12 % sobre el neutro de lectura (≈ #f0d1e4).
+     Texto noche encima: 11.1:1. */
+  --superficie-clara: color-mix(in srgb, var(--copa-magenta) 12%, var(--texto-lectura));
+
   /* Alias semánticos: los únicos que usan los componentes.
      OJO (RNF-03): el carmín sobre noche da solo 3.32:1. Va SOLO en títulos
      grandes y acentos, nunca en párrafos. */
@@ -18,6 +22,45 @@
   --color-acento: var(--copa-carmin);
   --color-secundario: var(--copa-magenta);
   --color-borde: var(--copa-magenta-oscuro);
+  /* Texto sobre el carmín: 4.1:1, así que solo texto grande o en negrita */
+  --color-texto-sobre-acento: var(--texto-lectura);
+  --color-sombra: color-mix(in srgb, var(--tronco-noche) 55%, transparent);
+  color-scheme: dark;
+
+  /* Mapa de sectores (se apoya en los alias, así cambia solo con el tema) */
+  --mapa-relleno-reposo: var(--color-superficie);
+  --mapa-relleno-resaltado: var(--color-acento);
+  --mapa-borde: var(--color-secundario);
+  --mapa-borde-foco: var(--color-texto);
+  --mapa-etiqueta: var(--color-texto);
+  --mapa-etiqueta-resaltada: var(--color-texto-sobre-acento);
+  --mapa-glifo: var(--color-secundario);
+  --mapa-glifo-resaltado: var(--color-texto-sobre-acento);
+  --mapa-opacidad-glifo: 0.75;
+  /* Grosores en píxeles de pantalla (el trazo no escala con el mapa) */
+  --mapa-grosor-borde: 2;
+  --mapa-grosor-foco: 5;
+  --mapa-grosor-glifo: 1.5;
+  --mapa-trazo-provisional: 8 6;
+  --mapa-opacidad-atenuada: 0.35;
+  --mapa-elevacion: -4px;
+  --mapa-sombra: drop-shadow(0 6px 10px var(--color-sombra));
+  /* Unidades del viewBox (1000 de ancho): el texto escala con el mapa */
+  --mapa-texto-etiqueta: 38px;
+  --mapa-ancho-maximo: 72rem;
+  --mapa-alto-reserva: 40vh;
+  --mapa-alto-maximo: 72vh;
+  --leyenda-ancho-muestra: 2rem;
+
+  /* Controles */
+  --tamano-control: 2.75rem;
+  --tamano-icono: 1.25rem;
+  --grosor-icono: 1.75;
+  --grosor-borde-ui: 1px;
+  --grosor-foco-ui: 2px;
+  --separacion-foco: 3px;
+  --grosor-acento: 4px;
+  --desplazamiento-entrada: 6px;
 
   /* Espacios */
   --espacio-1: 0.25rem;
@@ -36,9 +79,25 @@
   --fuente-base: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --fuente-mono: ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace;
   --texto-titulo: clamp(2.5rem, 10vw + 0.5rem, 5rem);
+  --texto-cabecera: clamp(1.75rem, 4vw + 1rem, 3rem);
+  --texto-subtitulo: 1.5rem;
   --texto-base: 1.125rem;
+  --texto-pequeno: 0.9375rem;
 
-  /* Duraciones */
+  /* Duraciones y curvas */
   --duracion-rapida: 150ms;
   --duracion-media: 300ms;
+  --curva-salida: cubic-bezier(0.23, 1, 0.32, 1);
+  --escala-presion: 0.96;
+}
+
+/* Tema claro: redefine solo los alias semánticos.
+   Sobre --texto-lectura: noche 13.7:1, magenta oscuro 6.6:1, magenta 5.2:1 y
+   carmín 4.1:1 (este último solo en títulos grandes y acentos). */
+:root[data-tema='claro'] {
+  --color-fondo: var(--texto-lectura);
+  --color-superficie: var(--superficie-clara);
+  --color-texto: var(--tronco-noche);
+  --color-secundario: var(--copa-magenta-oscuro);
+  color-scheme: light;
 }
