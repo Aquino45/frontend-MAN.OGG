@@ -16,3 +16,4 @@ rocas metamórficas. Libres: mármol, pizarra, cuarcita, gneis, esquisto, serpen
 |---|---|---|---|---|
 | 08/10/2026 | DOC-001 | pirita | ORQ-CA | granito |
 | 08/10/2026 | FE-001 | mármol | ORQ-RISC | basalto |
+| 09/10/2026 | DOC-002 | calcita | ORQ-CA | obsidiana |
