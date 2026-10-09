@@ -1,3 +1,4 @@
+import { NOMBRE_PRODUCTO } from '@/config/constantes'
 import { VistaMapa } from '@/modulos/mapa'
 import { InterruptorTema } from '@/modulos/tema'
 
@@ -5,10 +6,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="cabecera">
-        <div>
-          <h1 className="cabecera__titulo">MAN.OGG</h1>
-          <p className="cabecera__linea">Censo arbóreo · UPeU Ñaña</p>
-        </div>
+        <h1 className="cabecera__titulo">{NOMBRE_PRODUCTO}</h1>
         <InterruptorTema />
       </header>
       <main>

@@ -152,19 +152,27 @@ export interface components {
       type: 'FeatureCollection'
       features: components['schemas']['ArbolResumenFeature'][]
     }
-    /** @description La cartilla del árbol. Los 19 campos de la visión del stakeholder, más su trazabilidad. Los textos de estado son los del catálogo de la planilla de la brigada. */
+    /** @description La cartilla del árbol. Los 19 campos de la visión del stakeholder, más su contexto de campo y su trazabilidad. Los textos de estado son los del catálogo de la planilla de la brigada. */
     Arbol: {
       codigo: components['schemas']['CodigoArbol']
       sector: number
       nombre_comun: string | null
       /** @description En cursiva en la UI. */
       nombre_cientifico: string | null
+      /** @description Estado de la identificación según la planilla de la brigada (por ejemplo Identificada o Especie por verificar). */
+      identificacion: string | null
+      /** @description Valor del catálogo de la planilla de la brigada (por ejemplo Nativa o Introducida / exótica). */
+      origen: string | null
       /** @description Según DS 043-2006-AG; la llena el stakeholder. */
       condicion_conservacion: string | null
       /** @description Grados WGS84 con 6 decimales. */
       lat: number | null
       /** @description Grados WGS84 con 6 decimales. */
       lon: number | null
+      /** @description Metros este en UTM 18S (EPSG:32718), leídos de la ubicación tal como está guardada, sin transformar; con 2 decimales. Es null si el árbol no tiene ubicación. */
+      utm_este_m: number | null
+      /** @description Metros norte en UTM 18S (EPSG:32718), leídos de la ubicación tal como está guardada, sin transformar; con 2 decimales. Es null si el árbol no tiene ubicación. */
+      utm_norte_m: number | null
       altura_total_m: number | null
       /** @description Diámetro a la altura del pecho (1.30 m). */
       dap_cm: number | null
@@ -177,6 +185,8 @@ export interface components {
       tronco_danos: string | null
       raices_base: string | null
       interferencia_entorno: string | null
+      /** @description Texto de campo de la planilla de la brigada, junto con las notas de la importación (por ejemplo un DAP no numérico). */
+      observaciones: string | null
       /** Format: uri */
       foto_url: string | null
       /** Format: uri */
@@ -315,7 +325,7 @@ export interface operations {
     }
     requestBody?: never
     responses: {
-      /** @description La cartilla con los 19 campos de la visión, más su trazabilidad. */
+      /** @description La cartilla con los 19 campos de la visión, más su contexto de campo y su trazabilidad. */
       200: {
         headers: {
           [name: string]: unknown
