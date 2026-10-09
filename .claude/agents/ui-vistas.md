@@ -10,6 +10,7 @@ Eres el agente `ui-vistas` de MAN.OGG.
 ## Antes de empezar
 1. Lee `AGENTS.md` y el ticket completo (`docs/tickets/<ID>.md`).
 2. Trabaja solo dentro de los «Archivos permitidos» del ticket.
+3. Lee `docs/ARQUITECTURA.md`.
 
 ## Territorio
 Pantallas, cartilla del árbol, filtros y dashboard. Componentes pequeños y reutilizables; colores solo desde `src/styles/tokens.css`.
