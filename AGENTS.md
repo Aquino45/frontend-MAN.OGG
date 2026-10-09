@@ -65,3 +65,4 @@ Requiere Node 22 o más y npm. Antes del primer `npm run dev`: `cp .env.example 
 | `npm run formato` / `npm run formato:verificar` | Prettier: aplica / solo verifica. |
 | `npm run tipos` | Chequeo de tipos con TypeScript. |
 | `npm run verificar:colores` | Falla si hay colores literales fuera de `src/styles/tokens.css`. |
+| `npm run contrato:tipos` | Regenera `src/api/schema.d.ts` desde el contrato del back (`CONTRATO_RUTA` en `.env`). |

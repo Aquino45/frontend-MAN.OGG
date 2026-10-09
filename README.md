@@ -11,6 +11,15 @@ npm install
 npm run dev            # abre el puerto de PUERTO_DEV (5173 por defecto)
 ```
 
+### Tipos del contrato
+`src/api/schema.d.ts` se genera desde el contrato del back y se commitea; no se edita a mano. Con el repo del back clonado al lado (la ruta va en `CONTRATO_RUTA` del `.env`):
+
+```bash
+npm run contrato:tipos
+```
+
+Con `VITE_USAR_MOCKS=true` el front usa los ejemplos del contrato (`src/mocks/`); con `false`, la API de `VITE_API_URL`.
+
 Antes de abrir un PR: `npm test`, `npm run lint`, `npm run formato:verificar`, `npm run tipos`, `npm run verificar:colores` y `npm run build`.
 
 ## Documentación
