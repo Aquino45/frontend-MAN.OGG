@@ -7,3 +7,5 @@ package-lock.json
 .vscode
 docs
 *.md
+# Copias literales de los ejemplos del contrato (se comparan por sha256 con el back)
+src/mocks/*.json
