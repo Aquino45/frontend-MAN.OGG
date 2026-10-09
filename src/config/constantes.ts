@@ -101,7 +101,7 @@ export const CORTE_PANEL_LATERAL_REM = 56
 
 // TEXTOS FIJOS DEL PANEL DEL SECTOR
 export const TEXTOS_PANEL = {
-  volverASectores: 'Volver a los sectores',
+  volverASectores: '← Volver a los sectores',
   tituloLista: 'Árboles del sector',
   sinDatoNombre: 'Sin dato',
   sinUbicacion: 'Sin ubicación',
@@ -157,6 +157,7 @@ export const TEXTOS_CARTILLA = {
   noEncontrado: 'No encontramos el árbol',
   selloDemo: 'Dato de ejemplo',
   fotoPendiente: 'Foto pendiente',
+  fotoDelArbol: 'Foto del árbol',
   estado: 'Estado',
   conservacion: 'Conservación',
   altura: 'Altura total',

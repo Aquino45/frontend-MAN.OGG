@@ -75,7 +75,7 @@ export function PanelSector({
   return (
     <section className="panel-sector" aria-label={sector.nombre}>
       <button type="button" className="boton boton--texto" onClick={onVolver}>
-        {`← ${TEXTOS_PANEL.volverASectores}`}
+        {TEXTOS_PANEL.volverASectores}
       </button>
       <header className="panel-sector__cabecera">
         <h2 className="panel-sector__nombre">{sector.nombre}</h2>

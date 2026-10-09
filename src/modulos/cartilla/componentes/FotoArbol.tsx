@@ -13,7 +13,7 @@ interface PropsFotoArbol {
 
 export function FotoArbol({ arbol }: PropsFotoArbol) {
   const [fotoCompletaLista, setFotoCompletaLista] = useState(false)
-  const textoAlternativo = `Foto del árbol ${arbol.codigo}${
+  const textoAlternativo = `${TEXTOS_CARTILLA.fotoDelArbol} ${arbol.codigo}${
     arbol.nombre_comun ? ` (${arbol.nombre_comun})` : ''
   }`
   const fotoPrincipal = arbol.foto_url ?? arbol.foto_miniatura_url
