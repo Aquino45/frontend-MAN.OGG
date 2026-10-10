@@ -12,11 +12,11 @@ Actualizado: 09/10/2026 (ticket FE-005, fase A).
 - Hito M0 (disciplina) en curso.
 
 ## Último ticket
-- FE-005 — front v1 completo, por fases. **Fases A y B hechas** (PR #8 en borrador, Issue #7): recorrido mapa → sector → árbol con mocks, panel con la lista, cartilla de 19 campos, tokens y fuentes, estado en la URL y nombre público «Censo arbóreo UPeU Lima». La fase B verificó el recorrido con la API real, el celular y la accesibilidad. Faltan la fase C (entrada con variantes) y la D (cierre). Resumen en `docs/tickets/FE-005.md`.
+- FE-005 — front v1 completo, por fases. **Fases A, B y C hechas** (PR #8 en borrador, Issue #7): recorrido mapa → sector → árbol con mocks, panel con la lista, cartilla de 19 campos, tokens y fuentes, estado en la URL y nombre público «Censo arbóreo UPeU Lima». La fase B verificó el recorrido con la API real, el celular y la accesibilidad. La fase C suma la entrada al mapa con 2 variantes que se sortean en cada carga. Falta la fase D (cierre). Resumen en `docs/tickets/FE-005.md`.
 - Antes: FE-002 — mapa de sectores, tema y variantes (mergeado, #6); DOC-002 — arquitectura escrita (mergeado, #4); FE-001 — base del front (mergeado, #2).
 
 ## Siguiente ticket
-- FE-005, fase C: entrada con variantes (FE-003 y FE-004 quedan como anexos).
+- FE-005, fase D: cierre, con `build` + `preview` y la revisión final (FE-003 y FE-004 quedan como anexos).
 
 ## Pendiente fuera de este repo
 - Protección de `main` (PR obligatorio con aprobación de Code Owner, solo squash) y agregar `lint`, `tests` y `build` como checks obligatorios.

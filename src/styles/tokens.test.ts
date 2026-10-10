@@ -89,6 +89,12 @@ describe('tokens.css', () => {
     }
   })
 
+  it('define los tokens de la entrada al mapa', () => {
+    for (const token of ['--entrada-escala-inicial', '--entrada-ilustracion-lado']) {
+      expect(tokensCss).toContain(`${token}:`)
+    }
+  })
+
   it('el relleno resaltado del mapa es magenta oscuro, no el carmín', () => {
     expect(tokensCss).toMatch(/--mapa-relleno-resaltado:\s*var\(--copa-magenta-oscuro\)/)
   })

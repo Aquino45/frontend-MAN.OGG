@@ -101,6 +101,10 @@
   --estado-otro-fondo: var(--color-superficie);
   --estado-otro-texto: var(--color-texto);
 
+  /* Entrada al mapa */
+  --entrada-escala-inicial: 0.98;
+  --entrada-ilustracion-lado: 24rem;
+
   /* Controles */
   --tamano-control: 2.75rem;
   --tamano-icono: 1.25rem;

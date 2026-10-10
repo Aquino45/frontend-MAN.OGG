@@ -1,8 +1,15 @@
-// PROBABILIDAD DE QUE APAREZCA EL EASTER EGG (1 ENTRE 999)
-export const PROBABILIDAD_EASTER_EGG = 1 / 999
+// ---------- ENTRADA AL MAPA ----------
 
-// DURACIÓN DEL EASTER EGG EN MS (~1 VUELTA DEL GIF: 21 CUADROS x 120 MS, REDONDEADA)
-export const DURACION_EASTER_EGG_MS = 3000
+// PESO DE CADA VARIANTE DE ENTRADA (se sortea en cada carga; «alterna» sale 1 vez de cada 999)
+export const PESOS_ENTRADA = { estandar: 998, alterna: 1 } as const
+
+export type VarianteEntrada = keyof typeof PESOS_ENTRADA
+
+// CUÁNTO SE VE LA ILUSTRACIÓN DE LA ENTRADA ALTERNA, EN ms (aprox. una vuelta: 21 cuadros de 120 ms)
+export const DURACION_ENTRADA_ALTERNA_MS = 3000
+
+// CUÁNTO TARDA EN DESVANECERSE LA ILUSTRACIÓN DE LA ENTRADA ALTERNA, EN ms
+export const DURACION_SALIDA_ENTRADA_MS = 300
 
 // ---------- TEMA CLARO Y OSCURO ----------
 

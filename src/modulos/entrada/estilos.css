@@ -1,0 +1,53 @@
+/* Estilos de la entrada al mapa. */
+
+/* Entrada estándar: la vista aparece con opacidad y una escala mínima. */
+@keyframes aparecer-vista {
+  from {
+    opacity: 0;
+    transform: scale(var(--entrada-escala-inicial));
+  }
+}
+
+.entrada--estandar {
+  animation: aparecer-vista var(--duracion-media) var(--curva-salida);
+}
+
+/* Mientras se ve la ilustración, la vista pedida ya está dibujada pero no se ve. */
+.entrada--tapada {
+  visibility: hidden;
+}
+
+/* Entrada alterna: ilustración animada a pantalla completa. */
+.entrada-alterna {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  background: var(--color-fondo);
+}
+
+.entrada-alterna__imagen {
+  inline-size: var(--entrada-ilustracion-lado);
+  max-inline-size: 80vw;
+  max-block-size: 80vh;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+@keyframes desvanecer-entrada {
+  to {
+    opacity: 0;
+  }
+}
+
+.entrada-alterna--saliendo {
+  animation: desvanecer-entrada var(--duracion-media) var(--curva-salida) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entrada--estandar,
+  .entrada-alterna--saliendo {
+    animation: none;
+  }
+}
