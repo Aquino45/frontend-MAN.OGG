@@ -1,6 +1,6 @@
 // ---------- ENTRADA AL MAPA ----------
 
-// PESO DE CADA VARIANTE DE ENTRADA (se sortea en cada carga; «alterna» sale 1 vez de cada 999)
+// PESO DE CADA VARIANTE DE ENTRADA (se sortea en cada carga)
 export const PESOS_ENTRADA = { estandar: 998, alterna: 1 } as const
 
 export type VarianteEntrada = keyof typeof PESOS_ENTRADA

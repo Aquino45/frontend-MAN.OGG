@@ -1,5 +1,5 @@
 // Si la variante alterna no se puede cargar (por ejemplo, sin red), se sigue con la estándar.
-import { act, render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { VistaEntrada } from './VistaEntrada'
 
@@ -14,9 +14,7 @@ describe('VistaEntrada cuando falla la carga de la variante alterna', () => {
         <p>Vista pedida</p>
       </VistaEntrada>,
     )
-    await act(async () => {
-      await new Promise((resolver) => setTimeout(resolver, 50))
-    })
+    await waitFor(() => expect(container.querySelector('.entrada--estandar')).not.toBeNull())
     expect(screen.getByText('Vista pedida')).toBeVisible()
     expect(container.querySelector('.entrada--estandar')).not.toBeNull()
     expect(container.querySelector('.entrada--tapada')).toBeNull()
