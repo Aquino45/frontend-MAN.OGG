@@ -51,6 +51,7 @@
 }
 
 .vista-mapa__panel {
+  container-type: inline-size;
   min-inline-size: 0;
   animation: entrada-panel var(--duracion-media) var(--curva-salida);
 }

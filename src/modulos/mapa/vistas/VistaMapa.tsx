@@ -9,6 +9,7 @@ import {
   PESOS_FRASES_CARGA,
   PESOS_GLIFOS_ARBOL,
   TEXTOS_MAPA,
+  TEXTOS_PANEL,
 } from '@/config/constantes'
 import { elegirVariante } from '@/lib/elegirVariante'
 import type { FormaGlifo } from '../componentes/GlifoArbol'
@@ -16,6 +17,7 @@ import { MapaSectores } from '../componentes/MapaSectores'
 import { PanelSector } from '../componentes/PanelSector'
 import { useArbolesDeSector } from '../hooks/useArbolesDeSector'
 import { useSectores } from '../hooks/useSectores'
+import { useRetornoDeFoco } from '../hooks/useRetornoDeFoco'
 import { useSeleccionEnUrl } from '../hooks/useSeleccionEnUrl'
 
 const TECLA_ESCAPE = 'Escape'
@@ -28,6 +30,7 @@ interface PropsVistaMapa {
 export function VistaMapa({ aleatorio = Math.random }: PropsVistaMapa) {
   const sectores = useSectores()
   const seleccion = useSeleccionEnUrl()
+  const recordarOrigen = useRetornoDeFoco(seleccion.arbolCodigo)
   const [sectorResaltado, setSectorResaltado] = useState<number | null>(null)
   const [arbolResaltado, setArbolResaltado] = useState<string | null>(null)
   const [fraseCarga] = useState(() => FRASES_CARGA[elegirVariante(PESOS_FRASES_CARGA, aleatorio())])
@@ -81,6 +84,11 @@ export function VistaMapa({ aleatorio = Math.random }: PropsVistaMapa) {
     )
   }
 
+  const abrirArbol = (codigo: string) => {
+    recordarOrigen(codigo)
+    seleccion.seleccionarArbol(codigo)
+  }
+
   const alSeleccionarSector = (sectorId: number) => {
     if (sectorId !== sectorAbierto?.id) seleccion.seleccionarSector(sectorId)
   }
@@ -97,10 +105,16 @@ export function VistaMapa({ aleatorio = Math.random }: PropsVistaMapa) {
         arboles={arboles.estado === 'listo' ? arboles.arboles : undefined}
         arbolResaltado={arbolResaltado}
         onResaltarArbol={setArbolResaltado}
-        onAbrirArbol={seleccion.seleccionarArbol}
+        onAbrirArbol={abrirArbol}
       />
       {sectorAbierto && (
-        <aside className="vista-mapa__panel" key={arbolCodigo ?? sectorAbierto.id}>
+        <aside
+          className="vista-mapa__panel"
+          key={arbolCodigo ?? sectorAbierto.id}
+          aria-label={
+            arbolCodigo ?? `${TEXTOS_PANEL.hojaInferior}: ${sectorAbierto.properties.nombre}`
+          }
+        >
           {arbolCodigo === null ? (
             <PanelSector
               sector={sectorAbierto.properties}
@@ -108,7 +122,7 @@ export function VistaMapa({ aleatorio = Math.random }: PropsVistaMapa) {
               fraseCarga={fraseCarga}
               codigoResaltado={arbolResaltado}
               onResaltar={setArbolResaltado}
-              onAbrir={seleccion.seleccionarArbol}
+              onAbrir={abrirArbol}
               onVolver={cerrarSector}
               onReintentar={arboles.reintentar}
             />

@@ -60,6 +60,44 @@ describe('VistaMapa: recorrido sector → árbol', () => {
     await waitFor(() => expect(window.location.search).toBe(''))
   })
 
+  it('al cerrar la cartilla el foco vuelve a la fila desde donde se abrió', async () => {
+    render(<VistaMapa aleatorio={SIEMPRE_CERO} />)
+    fireEvent.click(await screen.findByRole('button', { name: /^Sector 1,/ }))
+    const lista = await screen.findByRole('list')
+    const fila = within(lista).getByRole('button', { name: /S01-A012/ })
+    fila.focus()
+    fireEvent.click(fila)
+    await screen.findByRole('heading', { name: 'Huarango' })
+
+    fireEvent.keyDown(window, { key: 'Escape' })
+    await waitFor(() => {
+      const filaNueva = within(screen.getByRole('list')).getByRole('button', { name: /S01-A012/ })
+      expect(filaNueva).toHaveFocus()
+    })
+  })
+
+  it('al cerrar la cartilla el foco vuelve al punto desde donde se abrió', async () => {
+    render(<VistaMapa aleatorio={SIEMPRE_CERO} />)
+    fireEvent.click(await screen.findByRole('button', { name: /^Sector 1,/ }))
+    const punto = await screen.findByRole('button', { name: 'S01-A001, Molle' })
+    punto.focus()
+    fireEvent.click(punto)
+    await screen.findByRole('heading', { name: 'Molle' })
+
+    fireEvent.keyDown(window, { key: 'Escape' })
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'S01-A001, Molle' })).toHaveFocus(),
+    )
+  })
+
+  it('el panel tiene nombre accesible: el sector con la lista y el código con la cartilla', async () => {
+    render(<VistaMapa aleatorio={SIEMPRE_CERO} />)
+    fireEvent.click(await screen.findByRole('button', { name: /^Sector 1,/ }))
+    expect(await screen.findByRole('complementary', { name: /Sector 1/ })).toBeInTheDocument()
+    fireEvent.click(await screen.findByRole('button', { name: 'S01-A012, Huarango' }))
+    expect(await screen.findByRole('complementary', { name: 'S01-A012' })).toBeInTheDocument()
+  })
+
   it('una URL con sector y árbol lleva directo a la cartilla', async () => {
     irA('/?sector=1&arbol=S01-A001')
     render(<VistaMapa aleatorio={SIEMPRE_CERO} />)
