@@ -38,6 +38,8 @@
 
 .foto-arbol {
   position: relative;
+  /* La foto va pegada a la franja del código, como en el diseño. */
+  margin-block-start: calc(-1 * var(--espacio-3));
   aspect-ratio: var(--foto-proporcion);
   display: grid;
   place-items: center;
