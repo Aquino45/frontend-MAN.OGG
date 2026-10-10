@@ -13,6 +13,15 @@
      Texto noche encima: 11.1:1. */
   --superficie-clara: color-mix(in srgb, var(--copa-magenta) 12%, var(--texto-lectura));
 
+  /* Colores de la cartilla, tomados del diseño de referencia (por aprobar en el PR).
+     Sobre --tronco-noche: la tarjeta es una superficie un paso más clara; el texto tenue y
+     el suave se leen a más de 4.5:1 sobre la tarjeta. */
+  --superficie-tarjeta: #2b2a52;
+  --texto-tenue: #d9cfe3;
+  --texto-suave: #e7dcee;
+  /* Texto sobre los chips de estado de fondo oscuro o carmín (4.7:1 sobre el carmín) */
+  --blanco: #ffffff;
+
   /* Alias semánticos: los únicos que usan los componentes.
      OJO (RNF-03): el carmín sobre noche da solo 3.32:1. Va SOLO en títulos
      grandes y acentos, nunca en párrafos. */
@@ -25,17 +34,34 @@
   /* Texto sobre el carmín: 4.1:1, así que solo texto grande o en negrita */
   --color-texto-sobre-acento: var(--texto-lectura);
   --color-sombra: color-mix(in srgb, var(--tronco-noche) 55%, transparent);
+  /* Cartilla: tarjetas, textos secundarios, pista de los indicadores y bloque de CO₂ */
+  --color-tarjeta: var(--superficie-tarjeta);
+  --color-texto-tenue: var(--texto-tenue);
+  --color-texto-suave: var(--texto-suave);
+  --color-pista: var(--sombra-violeta);
+  --color-co2-fondo: var(--texto-lectura);
+  --color-co2-texto: var(--tronco-noche);
+  --color-co2-acento: var(--copa-magenta-oscuro);
   color-scheme: dark;
 
-  /* Mapa de sectores (se apoya en los alias, así cambia solo con el tema) */
+  /* Mapa de sectores (se apoya en los alias, así cambia solo con el tema).
+     El relleno resaltado es magenta oscuro: la etiqueta sobre él da 6.6:1 en los 2 temas. */
   --mapa-relleno-reposo: var(--color-superficie);
-  --mapa-relleno-resaltado: var(--color-acento);
+  --mapa-relleno-resaltado: var(--copa-magenta-oscuro);
   --mapa-borde: var(--color-secundario);
   --mapa-borde-foco: var(--color-texto);
   --mapa-etiqueta: var(--color-texto);
-  --mapa-etiqueta-resaltada: var(--color-texto-sobre-acento);
+  --mapa-etiqueta-resaltada: var(--texto-lectura);
   --mapa-glifo: var(--color-secundario);
-  --mapa-glifo-resaltado: var(--color-texto-sobre-acento);
+  --mapa-glifo-resaltado: var(--texto-lectura);
+  /* Puntos de los árboles: claros con borde noche sobre el relleno resaltado del sector */
+  --punto-relleno: var(--texto-lectura);
+  --punto-borde: var(--tronco-noche);
+  --punto-resaltado: var(--copa-carmin);
+  --punto-grosor-borde: 1.5;
+  --punto-grosor-demo: 2;
+  --punto-trazo-demo: 3 2;
+  --punto-escala-resaltado: 1.45;
   --mapa-opacidad-glifo: 0.75;
   /* Grosores en píxeles de pantalla (el trazo no escala con el mapa) */
   --mapa-grosor-borde: 2;
@@ -51,6 +77,29 @@
   --mapa-alto-reserva: 40vh;
   --mapa-alto-maximo: 72vh;
   --leyenda-ancho-muestra: 2rem;
+
+  /* Panel del sector y cartilla */
+  --panel-ancho: 28rem;
+  --hoja-alto-lista: 48vh;
+  --hoja-alto-cartilla: 90vh;
+  --hoja-asa-ancho: 2.5rem;
+  --hoja-asa-alto: 0.3125rem;
+  --foto-proporcion: 11 / 5;
+  --foto-glifo: 5.25rem;
+  --miniatura-lado: 3rem;
+  --indicador-barra-alto: 0.5rem;
+  --indicador-copa-lado: 4rem;
+  --retraso-escalonado: 40ms;
+
+  /* Chips de estado general (el texto cumple 4.5:1 sobre su fondo) */
+  --estado-bueno-fondo: var(--texto-lectura);
+  --estado-bueno-texto: var(--tronco-noche);
+  --estado-regular-fondo: var(--copa-magenta-oscuro);
+  --estado-regular-texto: var(--blanco);
+  --estado-malo-fondo: var(--copa-carmin);
+  --estado-malo-texto: var(--blanco);
+  --estado-otro-fondo: var(--color-superficie);
+  --estado-otro-texto: var(--color-texto);
 
   /* Controles */
   --tamano-control: 2.75rem;
@@ -78,11 +127,19 @@
   /* Tipografía (pila del sistema) */
   --fuente-base: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --fuente-mono: ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace;
+  --fuente-display: 'Bricolage Grotesque', var(--fuente-base);
+  --fuente-pixel: 'Silkscreen', var(--fuente-mono);
   --texto-titulo: clamp(2.5rem, 10vw + 0.5rem, 5rem);
   --texto-cabecera: clamp(1.75rem, 4vw + 1rem, 3rem);
   --texto-subtitulo: 1.5rem;
   --texto-base: 1.125rem;
   --texto-pequeno: 0.9375rem;
+  /* Cartilla */
+  --texto-cartilla-titulo: clamp(2rem, 8vw, 2.75rem);
+  --texto-cartilla-valor: 1.625rem;
+  --texto-cartilla-dato: 0.9375rem;
+  --texto-cartilla-menor: 0.8125rem;
+  --texto-cartilla-etiqueta: 0.625rem;
 
   /* Duraciones y curvas */
   --duracion-rapida: 150ms;
@@ -99,5 +156,13 @@
   --color-superficie: var(--superficie-clara);
   --color-texto: var(--tronco-noche);
   --color-secundario: var(--copa-magenta-oscuro);
+  /* Cartilla en claro: la tarjeta es la superficie clara; el bloque de CO₂ se invierte */
+  --color-tarjeta: var(--superficie-clara);
+  --color-texto-tenue: var(--sombra-violeta);
+  --color-texto-suave: var(--tronco-noche);
+  --color-pista: color-mix(in srgb, var(--tronco-noche) 18%, var(--superficie-clara));
+  --color-co2-fondo: var(--tronco-noche);
+  --color-co2-texto: var(--texto-lectura);
+  --color-co2-acento: var(--texto-lectura);
   color-scheme: light;
 }

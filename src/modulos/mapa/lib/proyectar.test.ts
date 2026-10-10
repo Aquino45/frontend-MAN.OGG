@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { sectoresMock } from '@/mocks'
+import { arbolesSector1Mock } from '@/mocks'
 import {
   proyectarSectores,
+  recuadroDe,
   puntoEnPoligono,
   puntoEtiqueta,
   type SectorGeografico,
@@ -94,7 +96,7 @@ describe('proyectarSectores', () => {
   })
 
   it('sin sectores devuelve un mapa vacío', () => {
-    expect(proyectarSectores([], OPCIONES)).toEqual({ ancho: 1000, alto: 40, sectores: [] })
+    expect(proyectarSectores([], OPCIONES)).toMatchObject({ ancho: 1000, alto: 40, sectores: [] })
   })
 })
 
@@ -111,5 +113,52 @@ describe('puntoEtiqueta', () => {
       { x: 0, y: 110 },
     ]
     expect(puntoEnPoligono(puntoEtiqueta(forma), forma)).toBe(true)
+  })
+})
+
+describe('puntos y recuadro de cada sector', () => {
+  const proyeccion = proyectarSectores(sectoresMock.features, OPCIONES)
+
+  it('un árbol del sector 1 cae dentro del trazado de su sector', () => {
+    const sector1 = proyeccion.sectores.find((sector) => sector.id === 1)
+    expect(sector1).toBeDefined()
+    const anillo = vertices(sector1?.trazado ?? '')
+    const conUbicacion = arbolesSector1Mock.features.filter((arbol) => arbol.geometry)
+    expect(conUbicacion.length).toBeGreaterThan(0)
+    for (const arbol of conUbicacion) {
+      const [lon, lat] = arbol.geometry?.coordinates ?? [0, 0]
+      expect(puntoEnPoligono(proyeccion.proyectarPosicion([lon, lat]), anillo)).toBe(true)
+    }
+  })
+
+  it('el recuadro de cada sector lo contiene y tiene la proporción del mapa completo', () => {
+    const proporcion = proyeccion.ancho / proyeccion.alto
+    for (const sector of proyeccion.sectores) {
+      const { x, y, ancho, alto } = sector.recuadro
+      expect(ancho / alto).toBeCloseTo(proporcion, 6)
+      for (const vertice of vertices(sector.trazado)) {
+        expect(vertice.x).toBeGreaterThanOrEqual(x)
+        expect(vertice.x).toBeLessThanOrEqual(x + ancho)
+        expect(vertice.y).toBeGreaterThanOrEqual(y)
+        expect(vertice.y).toBeLessThanOrEqual(y + alto)
+      }
+    }
+  })
+})
+
+describe('recuadroDe', () => {
+  const puntos = [
+    { x: 10, y: 10 },
+    { x: 30, y: 20 },
+  ]
+
+  it('agrega el margen y amplía el lado corto hasta la proporción pedida', () => {
+    const ancho = recuadroDe(puntos, 5, 4)
+    expect(ancho.ancho / ancho.alto).toBeCloseTo(4)
+    expect(ancho.x + ancho.ancho / 2).toBeCloseTo(20)
+    expect(ancho.y + ancho.alto / 2).toBeCloseTo(15)
+    const alto = recuadroDe(puntos, 5, 0.5)
+    expect(alto.ancho / alto.alto).toBeCloseTo(0.5)
+    expect(alto.ancho).toBeGreaterThanOrEqual(30)
   })
 })

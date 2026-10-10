@@ -1,0 +1,411 @@
+/* Estilos del módulo de la cartilla del árbol. */
+
+.vista-cartilla__volver {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+}
+
+.cartilla {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-3);
+  overflow: hidden;
+  border-radius: var(--radio-md);
+  background: var(--color-fondo);
+  font-family: var(--fuente-display);
+}
+
+.cartilla__franja {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-2);
+  padding: var(--espacio-2) var(--espacio-3);
+  background: var(--copa-magenta-oscuro);
+  color: var(--texto-lectura);
+  font-family: var(--fuente-pixel);
+}
+
+.cartilla__codigo {
+  font-size: var(--texto-pequeno);
+  letter-spacing: 1px;
+}
+
+.cartilla__sector {
+  font-size: var(--texto-cartilla-etiqueta);
+}
+
+.foto-arbol {
+  position: relative;
+  /* La foto va pegada a la franja del código, como en el diseño. */
+  margin-block-start: calc(-1 * var(--espacio-3));
+  aspect-ratio: var(--foto-proporcion);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--color-superficie);
+}
+
+.foto-arbol__imagen {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  transition: opacity var(--duracion-media) var(--curva-salida);
+}
+
+.foto-arbol__imagen--pendiente {
+  opacity: 0;
+}
+
+.foto-arbol__pendiente {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
+.foto-arbol__pendiente-texto {
+  font-weight: 600;
+  font-size: var(--texto-cartilla-dato);
+}
+
+.foto-arbol__sello {
+  position: absolute;
+  inset-block-start: var(--espacio-2);
+  inset-inline-start: var(--espacio-2);
+}
+
+.foto-arbol__estado {
+  position: absolute;
+  inset-block-start: var(--espacio-2);
+  inset-inline-end: var(--espacio-2);
+}
+
+.chip-estado {
+  display: inline-block;
+  padding: var(--espacio-1) var(--espacio-3);
+  border: var(--grosor-borde-ui) solid currentColor;
+  font-size: var(--texto-cartilla-dato);
+  font-weight: 800;
+}
+
+.chip-estado--bueno {
+  background: var(--estado-bueno-fondo);
+  color: var(--estado-bueno-texto);
+}
+
+.chip-estado--regular {
+  background: var(--estado-regular-fondo);
+  color: var(--estado-regular-texto);
+}
+
+.chip-estado--malo {
+  background: var(--estado-malo-fondo);
+  color: var(--estado-malo-texto);
+}
+
+.chip-estado--otro {
+  background: var(--estado-otro-fondo);
+  color: var(--estado-otro-texto);
+}
+
+.encabezado-arbol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-1);
+  padding-inline: var(--espacio-3);
+}
+
+.encabezado-arbol__nombre {
+  margin: 0;
+  font-size: var(--texto-cartilla-titulo);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.encabezado-arbol__nombre:focus {
+  outline: none;
+}
+
+.encabezado-arbol__nombre:focus-visible {
+  outline: var(--grosor-foco-ui) solid var(--color-texto);
+  outline-offset: var(--separacion-foco);
+}
+
+.encabezado-arbol__cientifico {
+  margin: 0;
+  font-size: var(--texto-subtitulo);
+  font-style: italic;
+  color: var(--color-texto-suave);
+}
+
+.encabezado-arbol__chips {
+  margin: var(--espacio-1) 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2);
+}
+
+.chip {
+  padding: var(--espacio-1) var(--espacio-2);
+  background: var(--color-superficie);
+  font-size: var(--texto-cartilla-menor);
+}
+
+.indicadores-arbol {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espacio-3);
+  padding-inline: var(--espacio-3);
+}
+
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+  padding: var(--espacio-3);
+  background: var(--color-tarjeta);
+}
+
+.tarjeta__etiqueta {
+  font-family: var(--fuente-pixel);
+  font-size: var(--texto-cartilla-etiqueta);
+  color: var(--color-texto-tenue);
+}
+
+.tarjeta__valor {
+  font-size: var(--texto-cartilla-valor);
+  font-weight: 800;
+}
+
+.indicador-altura__pista {
+  block-size: var(--indicador-barra-alto);
+  background: var(--color-pista);
+}
+
+.indicador-altura__relleno {
+  block-size: 100%;
+  background: var(--copa-carmin);
+}
+
+.indicador-copa {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.indicador-copa__dibujo {
+  flex: none;
+  inline-size: var(--indicador-copa-lado);
+  block-size: var(--indicador-copa-lado);
+}
+
+.indicador-copa__anillo {
+  fill: none;
+  stroke: var(--color-pista);
+  stroke-width: 2;
+  stroke-dasharray: 4 4;
+}
+
+.indicador-copa__elipse {
+  fill: var(--copa-magenta);
+}
+
+.indicador-copa__cero {
+  fill: none;
+  stroke: var(--copa-carmin);
+  stroke-width: 3;
+  stroke-dasharray: 3 3;
+}
+
+.indicador-copa__centro {
+  fill: var(--color-texto);
+}
+
+.indicador-copa__valores {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.indicador-copa__valor {
+  white-space: nowrap;
+  font-size: var(--texto-cartilla-dato);
+  font-weight: 600;
+}
+
+.indicador-dap {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.indicador-dap__dato {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.indicador-dap__nota {
+  max-inline-size: 12rem;
+  font-size: var(--texto-cartilla-menor);
+  line-height: 1.35;
+  text-align: end;
+  color: var(--color-texto-tenue);
+}
+
+.bloque-co2 {
+  margin-inline: var(--espacio-3);
+  padding: var(--espacio-3);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--espacio-3);
+  background: var(--color-co2-fondo);
+  color: var(--color-co2-texto);
+}
+
+.bloque-co2__columna {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bloque-co2__columna--derecha {
+  text-align: end;
+}
+
+.bloque-co2__etiqueta {
+  font-family: var(--fuente-pixel);
+  font-size: var(--texto-cartilla-etiqueta);
+}
+
+.bloque-co2__principal {
+  font-size: calc(var(--texto-cartilla-valor) * 1.15);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.bloque-co2__unidad {
+  font-size: var(--texto-cartilla-menor);
+  font-weight: 600;
+}
+
+.bloque-co2__captura {
+  font-size: var(--texto-base);
+  font-weight: 800;
+  color: var(--color-co2-acento);
+}
+
+.estados-arbol {
+  margin: 0;
+  padding-inline: var(--espacio-3);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espacio-2) var(--espacio-3);
+  font-size: var(--texto-cartilla-menor);
+}
+
+.estados-arbol__campo {
+  display: flex;
+  flex-direction: column;
+}
+
+.estados-arbol__etiqueta {
+  font-family: var(--fuente-pixel);
+  font-size: var(--texto-cartilla-etiqueta);
+  color: var(--color-texto-tenue);
+}
+
+.estados-arbol__valor {
+  margin: 0;
+}
+
+.observaciones-arbol {
+  margin: 0;
+  padding-inline: var(--espacio-3);
+  font-size: var(--texto-cartilla-menor);
+  line-height: 1.4;
+  color: var(--color-texto-suave);
+}
+
+.pie-arbol {
+  margin-block-start: auto;
+  padding: var(--espacio-3);
+  border-block-start: var(--grosor-borde-ui) solid var(--color-superficie);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-1);
+  font-size: var(--texto-cartilla-etiqueta);
+  color: var(--color-texto-tenue);
+  overflow-wrap: anywhere;
+}
+
+.pie-arbol__ubicacion {
+  font-family: var(--fuente-pixel);
+}
+
+/* Los bloques de la cartilla entran uno tras otro con un escalonado mínimo. */
+@keyframes entrada-bloque {
+  from {
+    opacity: 0;
+    transform: translateY(var(--desplazamiento-entrada));
+  }
+}
+
+.cartilla > * {
+  animation: entrada-bloque var(--duracion-media) var(--curva-salida) backwards;
+}
+
+.cartilla > :nth-child(2) {
+  animation-delay: calc(1 * var(--retraso-escalonado));
+}
+
+.cartilla > :nth-child(3) {
+  animation-delay: calc(2 * var(--retraso-escalonado));
+}
+
+.cartilla > :nth-child(4) {
+  animation-delay: calc(3 * var(--retraso-escalonado));
+}
+
+.cartilla > :nth-child(5) {
+  animation-delay: calc(4 * var(--retraso-escalonado));
+}
+
+.cartilla > :nth-child(n + 6) {
+  animation-delay: calc(5 * var(--retraso-escalonado));
+}
+
+/* En un panel angosto (celular) los indicadores van uno debajo del otro. */
+@container (max-width: 26rem) {
+  .indicadores-arbol {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .bloque-co2,
+  .indicador-dap {
+    flex-wrap: wrap;
+  }
+
+  .indicador-dap__nota {
+    text-align: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .foto-arbol__imagen {
+    transition: none;
+  }
+
+  .cartilla > * {
+    animation: none;
+  }
+}
