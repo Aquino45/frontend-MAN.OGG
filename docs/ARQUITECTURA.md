@@ -47,7 +47,9 @@ frontend-MAN.OGG/
 │       │   └── index.ts       ← API pública del módulo
 │       ├── tema/              ← modo claro/oscuro: useTema + InterruptorTema (FE-002)
 │       ├── cartilla/          ← cartilla del árbol: componentes/, hooks/ (useArbol), vistas/, index.ts (FE-003)
-│       └── entrada/           ← animación de entrada al mapa, con variantes (FE-004)
+│       ├── entrada/           ← animación de entrada al mapa, con variantes (FE-004)
+│       ├── armazon/           ← cabecera, navegación, pie y página «no encontrada»: lo común a todas las rutas (FE-007)
+│       └── inicio/            ← página de Inicio: portada, mapa compacto de sectores y cifras del censo (FE-007)
 ├── public/                    ← estáticos sin import (favicon). Las ilustraciones NO van aquí: se importan desde su módulo
 ├── scripts/                   ← verificar-colores.mjs, generar-tipos
 └── docs/                      ← ARQUITECTURA (este), ESTADO, CANARIOS, tickets
