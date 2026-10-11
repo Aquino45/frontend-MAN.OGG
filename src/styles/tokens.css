@@ -70,6 +70,7 @@
   --punto-destacado-borde: var(--tronco-noche);
   --punto-destacado-escala: 1.25;
   --destacado-brillo-duracion: 600ms;
+  --destacado-brillo-intensidad: 1.6;
   --mapa-opacidad-glifo: 0.75;
   /* Grosores en píxeles de pantalla (el trazo no escala con el mapa) */
   --mapa-grosor-borde: 2;
@@ -85,6 +86,7 @@
   --mapa-alto-reserva: 40vh;
   --mapa-alto-maximo: 72vh;
   --leyenda-ancho-muestra: 2rem;
+  --leyenda-ancho-estrella: 1rem;
 
   /* Panel del sector y cartilla */
   --panel-ancho: 28rem;

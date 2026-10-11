@@ -9,6 +9,7 @@ import {
   TEXTOS_MAPA,
 } from '@/config/constantes'
 import { useRecuadroAnimado } from '../hooks/useRecuadroAnimado'
+import { hayDestacados } from '../lib/ordenArboles'
 import { proyectarSectores } from '../lib/proyectar'
 import { nombreAccesibleSector } from '../lib/textosSector'
 import { GlifoArbol, type FormaGlifo } from './GlifoArbol'
@@ -174,7 +175,10 @@ export function MapaSectores({
           />
         )}
       </svg>
-      <LeyendaMapa hayProvisionales={hayProvisionales} />
+      <LeyendaMapa
+        hayProvisionales={hayProvisionales}
+        hayDestacados={sectorSeleccionado !== null && hayDestacados(arboles)}
+      />
     </figure>
   )
 }

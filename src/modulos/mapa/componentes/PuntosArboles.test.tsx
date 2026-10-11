@@ -1,11 +1,14 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { ArbolFeature } from '@/api/cliente'
+import { ESTRELLA_CONTORNO, ESTRELLA_LADO_GRILLA, MAPA_ESCALA_ESTRELLA } from '@/config/constantes'
 import { arbolesSector1Mock } from '@/mocks'
 import { PuntosArboles } from './PuntosArboles'
 
 const ARBOLES = arbolesSector1Mock.features
 const RADIO = 6
+const NOMBRE_DESTACADO =
+  'S01-A012, Huarango. Destacado: Dato de ejemplo: ejemplar de mayor copa del sector'
 
 function dibujar(
   arboles: readonly ArbolFeature[] = ARBOLES,
@@ -46,9 +49,7 @@ describe('PuntosArboles', () => {
 
   it('los puntos de ejemplo se distinguen por una clase de trazo propia', () => {
     dibujar()
-    expect(screen.getByRole('button', { name: 'S01-A012, Huarango' })).toHaveClass(
-      'punto-arbol--demo',
-    )
+    expect(screen.getByRole('button', { name: NOMBRE_DESTACADO })).toHaveClass('punto-arbol--demo')
     expect(screen.getByRole('button', { name: 'S01-A001, Molle' })).not.toHaveClass(
       'punto-arbol--demo',
     )
@@ -81,5 +82,56 @@ describe('PuntosArboles', () => {
   it('marca el punto del árbol resaltado', () => {
     const { container } = dibujar(ARBOLES, {}, 'S01-A012')
     expect(container.querySelectorAll('.punto-arbol--resaltado')).toHaveLength(1)
+  })
+
+  it('un destacado se dibuja como estrella y los normales como círculo', () => {
+    const { container } = dibujar()
+    const estrella = screen.getByRole('button', { name: NOMBRE_DESTACADO })
+    expect(estrella).toHaveClass('punto-arbol--destacado')
+    expect(estrella.tagName.toLowerCase()).toBe('g')
+    expect(estrella.querySelector('path')).toHaveAttribute('d', ESTRELLA_CONTORNO)
+    expect(container.querySelectorAll('.punto-arbol--destacado')).toHaveLength(1)
+    const molle = screen.getByRole('button', { name: 'S01-A001, Molle' })
+    expect(molle.tagName.toLowerCase()).toBe('circle')
+    expect(molle).not.toHaveClass('punto-arbol--destacado')
+  })
+
+  it('la estrella es más grande que el punto normal', () => {
+    dibujar()
+    const lado = RADIO * 2 * MAPA_ESCALA_ESTRELLA
+    const escala = lado / ESTRELLA_LADO_GRILLA
+    expect(
+      screen.getByRole('button', { name: NOMBRE_DESTACADO }).querySelector('path'),
+    ).toHaveAttribute('transform', expect.stringContaining(`scale(${escala})`))
+  })
+
+  it('la estrella se dibuja por encima de los demás puntos y conserva código y teclado', () => {
+    const { container } = dibujar()
+    const puntos = [...container.querySelectorAll('.punto-arbol')]
+    expect(puntos.at(-1)).toHaveClass('punto-arbol--destacado')
+    expect(puntos.at(-1)).toHaveAttribute('data-codigo', 'S01-A012')
+    expect(puntos.at(-1)).toHaveAttribute('tabindex', '0')
+  })
+
+  it('la estrella se abre y se resalta igual que un punto normal', () => {
+    const alAbrir = vi.fn()
+    const alResaltar = vi.fn()
+    dibujar(ARBOLES, { onAbrir: alAbrir, onResaltar: alResaltar })
+    const estrella = screen.getByRole('button', { name: NOMBRE_DESTACADO })
+    fireEvent.click(estrella)
+    fireEvent.keyDown(estrella, { key: 'Enter' })
+    expect(alAbrir).toHaveBeenCalledTimes(2)
+    fireEvent.focus(estrella)
+    expect(alResaltar).toHaveBeenLastCalledWith('S01-A012')
+    fireEvent.blur(estrella)
+    expect(alResaltar).toHaveBeenLastCalledWith(null)
+  })
+
+  it('la estrella de ejemplo y la resaltada llevan sus clases', () => {
+    dibujar(ARBOLES, {}, 'S01-A012')
+    expect(screen.getByRole('button', { name: NOMBRE_DESTACADO })).toHaveClass(
+      'punto-arbol--demo',
+      'punto-arbol--resaltado',
+    )
   })
 })

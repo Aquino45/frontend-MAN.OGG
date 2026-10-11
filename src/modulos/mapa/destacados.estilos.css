@@ -1,0 +1,77 @@
+/* Árboles destacados del sector: estrella en el mapa, en la lista y en la leyenda. */
+/* Árbol destacado: estrella ámbar con borde oscuro, por encima de los demás puntos. */
+@keyframes brillo-destacado {
+  from {
+    filter: brightness(var(--destacado-brillo-intensidad));
+  }
+}
+
+.punto-arbol--destacado {
+  fill: var(--punto-destacado);
+  fill-opacity: 1;
+  stroke: var(--punto-destacado-borde);
+  animation: brillo-destacado var(--destacado-brillo-duracion) var(--curva-salida);
+}
+
+.punto-arbol--destacado path {
+  vector-effect: non-scaling-stroke;
+}
+
+/* Una estrella de ejemplo conserva su relleno y se distingue por el trazo punteado. */
+.punto-arbol--destacado.punto-arbol--demo {
+  fill-opacity: 1;
+  stroke: var(--punto-destacado-borde);
+}
+
+/* Resaltada o con foco, la estrella crece y su borde se refuerza; el relleno no cambia. */
+.punto-arbol--destacado.punto-arbol--resaltado,
+.punto-arbol--destacado:focus-visible {
+  fill: var(--punto-destacado);
+  stroke: var(--punto-destacado-borde);
+  stroke-width: var(--punto-grosor-demo);
+  transform: scale(var(--punto-destacado-escala));
+}
+
+/* Estrella en la fila del panel y en la leyenda */
+.fila-arbol__destacado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-1) var(--espacio-2);
+  font-size: var(--texto-cartilla-menor);
+  color: var(--color-texto-suave);
+}
+
+.fila-arbol__estrella,
+.leyenda-mapa__estrella {
+  flex: none;
+  inline-size: var(--leyenda-ancho-estrella);
+  block-size: var(--leyenda-ancho-estrella);
+  fill: var(--punto-destacado);
+  stroke: var(--punto-destacado-borde);
+  stroke-width: var(--punto-grosor-borde);
+  stroke-linejoin: round;
+}
+
+.fila-arbol__etiqueta-destacado {
+  font-weight: 600;
+}
+
+.leyenda-mapa-grupo {
+  align-self: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--espacio-1) var(--espacio-4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .punto-arbol--destacado {
+    animation: none;
+  }
+
+  .punto-arbol--destacado.punto-arbol--resaltado,
+  .punto-arbol--destacado:focus-visible {
+    transform: none;
+  }
+}

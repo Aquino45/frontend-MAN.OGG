@@ -4,9 +4,11 @@ import type { ArbolFeature, SectorPropiedades } from '@/api/cliente'
 import { GlifoPixelArbol } from '@/compartido/GlifoPixelArbol'
 import { SelloDemo } from '@/compartido/SelloDemo'
 import { SinDato } from '@/compartido/SinDato'
-import { TEXTOS_MAPA, TEXTOS_PANEL } from '@/config/constantes'
+import { TEXTOS_DESTACADO, TEXTOS_MAPA, TEXTOS_PANEL } from '@/config/constantes'
 import type { EstadoArbolesDeSector } from '../hooks/useArbolesDeSector'
+import { ordenarDestacadosPrimero } from '../lib/ordenArboles'
 import { textoTotalArboles } from '../lib/textosSector'
+import { IconoEstrella } from './IconoEstrella'
 
 interface PropsPanelSector {
   sector: SectorPropiedades
@@ -30,8 +32,16 @@ function FilaArbol({
   onResaltar: (codigo: string | null) => void
   onAbrir: (codigo: string) => void
 }) {
-  const { codigo, nombre_comun, nombre_cientifico, estado_general, foto_miniatura_url, demo } =
-    arbol.properties
+  const {
+    codigo,
+    nombre_comun,
+    nombre_cientifico,
+    estado_general,
+    foto_miniatura_url,
+    demo,
+    destacado,
+    motivo_destacado,
+  } = arbol.properties
   return (
     <li>
       <button
@@ -56,6 +66,13 @@ function FilaArbol({
             {arbol.geometry === null && <span>{TEXTOS_PANEL.sinUbicacion}</span>}
             {demo && <SelloDemo />}
           </span>
+          {destacado && (
+            <span className="fila-arbol__destacado">
+              <IconoEstrella className="fila-arbol__estrella" />
+              <span className="fila-arbol__etiqueta-destacado">{TEXTOS_DESTACADO.etiqueta}</span>
+              {motivo_destacado && <span className="fila-arbol__motivo">{motivo_destacado}</span>}
+            </span>
+          )}
         </span>
       </button>
     </li>
@@ -102,7 +119,7 @@ export function PanelSector({
       )}
       {arboles.estado === 'listo' && arboles.arboles.length > 0 && (
         <ul className="panel-sector__lista" aria-label={TEXTOS_PANEL.tituloLista}>
-          {arboles.arboles.map((arbol) => (
+          {ordenarDestacadosPrimero(arboles.arboles).map((arbol) => (
             <FilaArbol
               key={arbol.properties.codigo}
               arbol={arbol}
