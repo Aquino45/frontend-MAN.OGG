@@ -10,11 +10,12 @@
 }
 
 .cartilla {
+  /* Las burbujas de las cápsulas «?» se anclan a la cartilla y pueden sobresalir de cada bloque */
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--espacio-3);
   min-inline-size: 0;
-  overflow: hidden;
   border-radius: var(--radio-tarjeta);
   background: var(--color-fondo);
   font-family: var(--fuente-display);
@@ -27,6 +28,8 @@
   justify-content: space-between;
   gap: var(--espacio-1) var(--espacio-2);
   padding: var(--espacio-2) var(--espacio-3);
+  border-start-start-radius: var(--radio-tarjeta);
+  border-start-end-radius: var(--radio-tarjeta);
   background: var(--copa-magenta-oscuro);
   color: var(--texto-lectura);
   font-family: var(--fuente-etiqueta);
@@ -107,6 +110,10 @@
 
 /* El chip de estado va en su propia fila bajo la foto: nunca tapa el texto ni el árbol. */
 .foto-arbol__estado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-2);
   min-inline-size: 0;
   padding-inline: var(--espacio-3);
 }

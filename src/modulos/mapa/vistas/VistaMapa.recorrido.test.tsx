@@ -1,7 +1,7 @@
 // Recorrido completo con los mocks: mapa → sector → árbol, con el estado en la URL.
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { TEXTOS_CARTILLA, TEXTOS_PANEL } from '@/config/constantes'
+import { TEXTOS_CARTILLA, TEXTOS_PANEL, TEXTOS_SOBRE_ARBOL } from '@/config/constantes'
 import { VistaMapa } from './VistaMapa'
 
 const SIEMPRE_CERO = () => 0
@@ -37,7 +37,10 @@ describe('VistaMapa: recorrido sector → árbol', () => {
     expect(window.location.search).toBe('?sector=1&arbol=S01-A012')
     const titulo = await screen.findByRole('heading', { name: 'Huarango' })
     await waitFor(() => expect(titulo).toHaveFocus())
-    expect(screen.getByText(TEXTOS_CARTILLA.selloDemo)).toBeInTheDocument()
+    // El sello de la foto y la nota al inicio de «Sobre este árbol»
+    expect(screen.getAllByText(TEXTOS_CARTILLA.selloDemo)).toHaveLength(2)
+    const sobreArbol = screen.getByRole('region', { name: TEXTOS_SOBRE_ARBOL.titulo })
+    expect(within(sobreArbol).getByText(TEXTOS_CARTILLA.selloDemo)).toBeInTheDocument()
 
     fireEvent.keyDown(window, { key: 'Escape' })
     await waitFor(() => expect(window.location.search).toBe('?sector=1'))
@@ -124,7 +127,10 @@ describe('VistaMapa: recorrido sector → árbol', () => {
     expect(lista).not.toHaveTextContent('ejemplar de mayor copa del sector')
     fireEvent.click(within(lista).getByRole('button', { name: /S01-A012/ }))
     await screen.findByRole('heading', { name: 'Huarango' })
-    expect(screen.getByText(/ejemplar de mayor copa del sector/)).toBeInTheDocument()
+    // El motivo va en la insignia del destacado y en «Sobre este árbol»
+    expect(screen.getAllByText(/ejemplar de mayor copa del sector/)).toHaveLength(2)
+    const sobreArbol = screen.getByRole('region', { name: TEXTOS_SOBRE_ARBOL.titulo })
+    expect(within(sobreArbol).getByText(/ejemplar de mayor copa del sector/)).toBeInTheDocument()
   })
 
   it('una URL con sector y árbol lleva directo a la cartilla', async () => {

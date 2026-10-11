@@ -24,7 +24,9 @@ describe('VistaCartilla', () => {
   it('la cartilla de un destacado muestra su motivo al cargar', async () => {
     render(<VistaCartilla codigo="S01-A012" nombreSector="Sector 1" onVolver={() => {}} />)
     await screen.findByRole('heading', { name: 'Huarango' })
-    expect(screen.getByText(arbolDemoMock.motivo_destacado ?? '')).toBeInTheDocument()
+    expect(screen.getAllByText(arbolDemoMock.motivo_destacado ?? '').length).toBeGreaterThanOrEqual(
+      1,
+    )
     expect(screen.getByText(TEXTOS_DESTACADO.etiqueta)).toBeInTheDocument()
   })
 

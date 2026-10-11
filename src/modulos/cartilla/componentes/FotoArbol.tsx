@@ -5,6 +5,7 @@ import type { Arbol } from '@/api/cliente'
 import { GlifoPixelArbol } from '@/compartido/GlifoPixelArbol'
 import { SelloDemo } from '@/compartido/SelloDemo'
 import { TEXTOS_CARTILLA } from '@/config/constantes'
+import { CapsulaAyuda } from './CapsulaAyuda'
 import { ChipEstado } from './ChipEstado'
 
 interface PropsFotoArbol {
@@ -56,6 +57,7 @@ export function FotoArbol({ arbol }: PropsFotoArbol) {
       </div>
       <div className="foto-arbol__estado">
         <ChipEstado estadoGeneral={arbol.estado_general} />
+        <CapsulaAyuda campo="estado_general" />
       </div>
     </div>
   )

@@ -1,0 +1,79 @@
+/* «Sobre este árbol»: texto corrido de la API en la cartilla. Medida de lectura y textos que se parten. */
+
+.sobre-arbol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-12);
+  min-inline-size: 0;
+  margin-inline: var(--espacio-3);
+  padding: var(--espacio-3);
+  border-radius: var(--radio-tarjeta);
+  background: var(--color-tarjeta);
+  font-family: var(--fuente-base);
+  overflow-wrap: anywhere;
+}
+
+.sobre-arbol__demo {
+  margin: 0;
+}
+
+.sobre-arbol__titulo {
+  margin: 0;
+  font-family: var(--fuente-display);
+  font-weight: 800;
+  font-size: var(--texto-lg);
+  line-height: var(--interlinea-titulo);
+}
+
+.sobre-arbol__subtitulo {
+  margin: 0;
+  font-family: var(--fuente-etiqueta);
+  font-weight: var(--etiqueta-peso);
+  font-size: var(--texto-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--etiqueta-espaciado);
+  color: var(--color-texto-tenue);
+}
+
+.sobre-arbol__bloque {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-1);
+  min-inline-size: 0;
+}
+
+.sobre-arbol__lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+}
+
+.sobre-arbol__lista--puntos {
+  padding-inline-start: var(--espacio-3);
+  list-style: disc;
+}
+
+.sobre-arbol__item,
+.sobre-arbol__texto {
+  margin: 0;
+  max-inline-size: var(--medida-cuerpo);
+  font-size: var(--texto-sm);
+  line-height: var(--interlinea-cuerpo);
+  color: var(--color-texto-suave);
+}
+
+.sobre-arbol__dato {
+  font-weight: 600;
+  color: var(--color-texto);
+}
+
+/* Letra chica: nunca menos de 0.75rem */
+.sobre-arbol__fuente {
+  margin: 0;
+  font-size: var(--texto-xs);
+  line-height: var(--interlinea-cuerpo);
+  color: var(--color-texto-tenue);
+}

@@ -208,6 +208,33 @@ export const TEXTOS_CARTILLA = {
   registrado: 'Registrado',
 } as const
 
+// ---------- CÁPSULAS «?» Y «SOBRE ESTE ÁRBOL» ----------
+
+// MARCADORES DE LAS PLANTILLAS DE TEXTO (se reemplazan por lo que manda la API)
+export const MARCADOR_TITULO = '{titulo}'
+export const MARCADOR_TEXTO = '{texto}'
+export const MARCADOR_FUENTE = '{fuente}'
+
+// CONSULTA DE MEDIOS: SOLO ASÍ UNA CÁPSULA SE ABRE AL PASAR EL CURSOR (en pantallas táctiles, con toque)
+export const CONSULTA_HOVER_FINO = '(hover: hover) and (pointer: fine)'
+
+// TEXTOS DE LAS CÁPSULAS «?» (la explicación de cada dato sale solo de la API)
+export const TEXTOS_CAPSULA = {
+  etiquetaBoton: 'Qué significa {titulo}',
+  enEsteArbol: 'En este árbol: {texto}',
+  unirTitulos: ' y ',
+} as const
+
+// TEXTOS DE LA SECCIÓN «SOBRE ESTE ÁRBOL»
+export const TEXTOS_SOBRE_ARBOL = {
+  titulo: 'Sobre este árbol',
+  motivo: 'Por qué se destaca',
+  beneficios: 'Qué aporta su especie',
+  datoCurioso: 'Dato curioso',
+  cuidados: 'Cuidados',
+  fuente: 'Fuente: {fuente}',
+} as const
+
 // CONSULTA DE MEDIOS DE QUIEN PIDE MENOS MOVIMIENTO
 export const CONSULTA_MOVIMIENTO_REDUCIDO = '(prefers-reduced-motion: reduce)'
 

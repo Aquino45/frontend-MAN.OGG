@@ -8,6 +8,7 @@ import {
   TEXTOS_CARTILLA,
   TEXTOS_DESTACADO,
 } from '@/config/constantes'
+import { CapsulaAyuda } from './CapsulaAyuda'
 
 interface PropsEncabezadoArbol {
   arbol: Arbol
@@ -34,9 +35,10 @@ function InsigniaDestacado({ motivo }: { motivo: string | null }) {
 }
 
 export function EncabezadoArbol({ arbol, refTitulo }: PropsEncabezadoArbol) {
-  const fichas = [arbol.origen, arbol.identificacion].filter(
-    (valor): valor is string => valor !== null,
-  )
+  const fichas = [
+    { campo: 'origen', valor: arbol.origen },
+    { campo: 'identificacion', valor: arbol.identificacion },
+  ].filter((ficha): ficha is { campo: string; valor: string } => ficha.valor !== null)
   return (
     <div className="encabezado-arbol">
       {arbol.destacado && <InsigniaDestacado motivo={arbol.motivo_destacado} />}
@@ -46,12 +48,14 @@ export function EncabezadoArbol({ arbol, refTitulo }: PropsEncabezadoArbol) {
       <p className="encabezado-arbol__cientifico">{arbol.nombre_cientifico ?? <SinDato />}</p>
       <ul className="encabezado-arbol__chips">
         {fichas.map((ficha) => (
-          <li key={ficha} className="chip">
-            {ficha}
+          <li key={ficha.campo} className="chip">
+            {ficha.valor}
+            <CapsulaAyuda campo={ficha.campo} />
           </li>
         ))}
         <li className="chip">
           {TEXTOS_CARTILLA.conservacion}: {arbol.condicion_conservacion ?? TEXTOS_CARTILLA.sinDato}
+          <CapsulaAyuda campo="condicion_conservacion" />
         </li>
       </ul>
     </div>

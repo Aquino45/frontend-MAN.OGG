@@ -1,0 +1,133 @@
+/* Cápsulas «?» de la cartilla: botón junto al dato y burbuja con su explicación.
+   La burbuja se ancla a la cartilla (position: relative en .cartilla) con el mismo margen lateral
+   que el resto del contenido, así en 360 px nunca se sale por la derecha. Sin posición vertical
+   propia: queda justo debajo de la línea donde está el botón. */
+
+.capsula {
+  display: inline;
+}
+
+/* El área táctil mide 44 px; los márgenes negativos la dejan sobresalir sin agrandar la línea */
+.capsula__boton {
+  display: inline-grid;
+  place-items: center;
+  vertical-align: middle;
+  inline-size: var(--tamano-control);
+  block-size: var(--tamano-control);
+  flex: none;
+  margin-block: calc((var(--tamano-icono) - var(--tamano-control)) / 2);
+  margin-inline: calc((var(--tamano-icono) - var(--tamano-control)) / 2);
+  /* 8 px entre el texto de la etiqueta y el ícono; el área táctil acompaña al ícono */
+  margin-inline-start: calc((var(--tamano-icono) - var(--tamano-control)) / 2 + var(--espacio-2));
+  padding: 0;
+  border: 0;
+  border-radius: var(--radio-control);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    transform var(--duracion-presion) var(--curva-salida),
+    color var(--duracion-hover) var(--curva-hover);
+}
+
+.capsula__boton:active {
+  transform: scale(var(--escala-activo));
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .capsula__boton:hover {
+    color: var(--color-acento);
+  }
+}
+
+/* La fila del chip de estado ya trae su propia separación (gap) */
+.foto-arbol__estado .capsula__boton {
+  margin-inline-start: calc((var(--tamano-icono) - var(--tamano-control)) / 2);
+}
+
+.capsula__icono {
+  inline-size: var(--tamano-icono);
+  block-size: var(--tamano-icono);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--grosor-icono);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.capsula__burbuja {
+  position: absolute;
+  inset-inline: var(--espacio-3);
+  z-index: 1;
+  box-sizing: border-box;
+  max-inline-size: var(--medida-cuerpo);
+  margin-inline: auto;
+  margin-block-start: var(--espacio-1);
+  padding: var(--espacio-12) var(--espacio-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+  border-radius: var(--radio-control);
+  background: var(--color-superficie);
+  box-shadow: var(--sombra-flotante);
+  color: var(--color-texto);
+  font-family: var(--fuente-base);
+  font-size: var(--texto-sm);
+  font-style: normal;
+  font-weight: 400;
+  line-height: var(--interlinea-cuerpo);
+  letter-spacing: normal;
+  text-align: start;
+  text-transform: none;
+  overflow-wrap: anywhere;
+}
+
+.capsula__texto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-1);
+}
+
+.capsula__titulo {
+  font-weight: 600;
+}
+
+.capsula__linea--arbol {
+  font-weight: 600;
+}
+
+/* Cerrada: invisible y fuera del árbol de accesibilidad; sale en 150 ms */
+.capsula__burbuja[data-abierta='false'] {
+  opacity: 0;
+  transform: scale(var(--entrada-escala-inicial));
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--duracion-salida) var(--curva-salida),
+    transform var(--duracion-salida) var(--curva-salida),
+    visibility 0s linear var(--duracion-salida);
+}
+
+/* Abierta: entra en 200 ms desde el botón */
+.capsula__burbuja[data-abierta='true'] {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  transition:
+    opacity var(--duracion-entrada) var(--curva-salida),
+    transform var(--duracion-entrada) var(--curva-salida);
+}
+
+/* Lo que dispara el teclado (Esc) no se anima */
+.capsula__burbuja[data-sin-animacion='true'] {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .capsula__burbuja,
+  .capsula__boton {
+    transition: none;
+    transform: none;
+  }
+}

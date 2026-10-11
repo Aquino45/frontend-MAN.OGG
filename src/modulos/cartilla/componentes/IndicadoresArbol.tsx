@@ -10,11 +10,14 @@ import {
   COPA_RADIO_CERO,
   formaDeCopa,
 } from '../lib/copa'
+import { CapsulaAyuda } from './CapsulaAyuda'
 
 interface PropsIndicadores {
   arbol: Arbol
 }
 
+// Copa norte-sur y este-oeste comparten un botón «?» en la etiqueta «Copa»
+const CAMPOS_COPA = ['copa_ns_m', 'copa_eo_m'] as const
 const PORCENTAJE_COMPLETO = 100
 const CENTRO_COPA = COPA_LADO / 2
 
@@ -26,7 +29,10 @@ function IndicadorAltura({ alturaM }: { alturaM: number | null }) {
   const texto = formatearMedida(alturaM, 'alturaM')
   return (
     <div className="tarjeta indicador-altura">
-      <span className="tarjeta__etiqueta">{TEXTOS_CARTILLA.altura}</span>
+      <span className="tarjeta__etiqueta">
+        {TEXTOS_CARTILLA.altura}
+        <CapsulaAyuda campo="altura_total_m" />
+      </span>
       <span className="tarjeta__valor">{texto ?? <SinDato />}</span>
       <div className="indicador-altura__pista" aria-hidden="true">
         <div className="indicador-altura__relleno" style={{ inlineSize: `${llenado}%` }} />
@@ -81,7 +87,10 @@ function IndicadorCopa({ nsM, eoM }: { nsM: number | null; eoM: number | null })
         </svg>
       )}
       <div className="indicador-copa__valores">
-        <span className="tarjeta__etiqueta">{TEXTOS_CARTILLA.copa}</span>
+        <span className="tarjeta__etiqueta">
+          {TEXTOS_CARTILLA.copa}
+          <CapsulaAyuda campo={CAMPOS_COPA} />
+        </span>
         {forma.tipo === 'sinDato' ? (
           <SinDato />
         ) : cero ? (
@@ -108,7 +117,10 @@ function IndicadorDap({ dapCm }: { dapCm: number | null }) {
   return (
     <div className="tarjeta indicador-dap">
       <div className="indicador-dap__dato">
-        <span className="tarjeta__etiqueta">{TEXTOS_CARTILLA.dap}</span>
+        <span className="tarjeta__etiqueta">
+          {TEXTOS_CARTILLA.dap}
+          <CapsulaAyuda campo="dap_cm" />
+        </span>
         <span className="tarjeta__valor">{texto ?? <SinDato />}</span>
       </div>
       <span className="indicador-dap__nota">{TEXTOS_CARTILLA.notaDap}</span>
