@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { TEXTOS_CARTILLA } from '@/config/constantes'
+import { TEXTOS_CARTILLA, TEXTOS_DESTACADO } from '@/config/constantes'
 import { arbolDemoMock } from '@/mocks'
 import { VistaCartilla } from './VistaCartilla'
 
@@ -19,6 +19,13 @@ describe('VistaCartilla', () => {
     expect(screen.getByRole('status')).toHaveTextContent(TEXTOS_CARTILLA.cargando)
     const titulo = await screen.findByRole('heading', { name: 'Huarango' })
     await waitFor(() => expect(titulo).toHaveFocus())
+  })
+
+  it('la cartilla de un destacado muestra su motivo al cargar', async () => {
+    render(<VistaCartilla codigo="S01-A012" nombreSector="Sector 1" onVolver={() => {}} />)
+    await screen.findByRole('heading', { name: 'Huarango' })
+    expect(screen.getByText(arbolDemoMock.motivo_destacado ?? '')).toBeInTheDocument()
+    expect(screen.getByText(TEXTOS_DESTACADO.etiqueta)).toBeInTheDocument()
   })
 
   it('un árbol que no existe dice «No encontramos el árbol» y deja volver', async () => {
