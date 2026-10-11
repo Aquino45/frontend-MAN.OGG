@@ -1,7 +1,6 @@
 @import '@fontsource/bricolage-grotesque/400.css';
 @import '@fontsource/bricolage-grotesque/600.css';
 @import '@fontsource/bricolage-grotesque/800.css';
-@import '@fontsource/silkscreen/400.css';
 
 *,
 *::before,
@@ -36,27 +35,25 @@ body {
 
 .app {
   min-height: 100vh;
-  max-width: var(--mapa-ancho-maximo);
-  margin: 0 auto;
-  padding: var(--espacio-4) var(--espacio-3);
   display: flex;
   flex-direction: column;
-  gap: var(--espacio-4);
 }
 
-.cabecera {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--espacio-3);
+.app > main {
+  flex: 1;
 }
 
-.cabecera__titulo {
-  margin: 0;
-  color: var(--color-acento);
-  font-size: var(--texto-cabecera);
-  line-height: 1.1;
-  overflow-wrap: anywhere;
+/* Texto visible solo para lectores de pantalla */
+.solo-lectores {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* ---------- Controles ---------- */
@@ -117,6 +114,9 @@ body {
 /* ---------- Mapa de sectores ---------- */
 
 .vista-mapa {
+  max-width: var(--mapa-ancho-maximo);
+  margin: 0 auto;
+  padding: var(--espacio-4) var(--espacio-3);
   display: flex;
   flex-direction: column;
   gap: var(--espacio-3);
@@ -272,7 +272,10 @@ body {
   display: inline-block;
   padding: var(--espacio-1) var(--espacio-2);
   border: var(--grosor-borde-ui) dashed currentColor;
-  font-family: var(--fuente-pixel);
+  font-family: var(--fuente-etiqueta);
+  font-weight: var(--etiqueta-peso);
+  text-transform: uppercase;
+  letter-spacing: var(--etiqueta-espaciado);
   font-size: var(--texto-cartilla-etiqueta);
   color: var(--color-texto);
 }

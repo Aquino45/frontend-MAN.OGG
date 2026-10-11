@@ -30,3 +30,10 @@ export function escribirSeleccion(seleccion: SeleccionUrl): string {
   const texto = parametros.toString()
   return texto === '' ? '' : `?${texto}`
 }
+
+// Verdadero si la consulta trae «sector» o «arbol», aunque el valor sea vacío o inválido:
+// sirve para reconocer los enlaces viejos que apuntaban a la raíz del sitio.
+export function tieneSeleccion(busqueda: string): boolean {
+  const parametros = new URLSearchParams(busqueda)
+  return parametros.has(PARAMETROS_URL.sector) || parametros.has(PARAMETROS_URL.arbol)
+}

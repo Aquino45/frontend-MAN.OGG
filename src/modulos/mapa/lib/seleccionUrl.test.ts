@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { PARAMETROS_URL } from '@/config/constantes'
-import { escribirSeleccion, leerSeleccion, SIN_SELECCION } from './seleccionUrl'
+import { escribirSeleccion, leerSeleccion, SIN_SELECCION, tieneSeleccion } from './seleccionUrl'
 
 describe('seleccionUrl', () => {
   it('lee el sector y el árbol de la URL', () => {
@@ -26,5 +26,20 @@ describe('seleccionUrl', () => {
   it('no escribe nada si no hay selección', () => {
     expect(escribirSeleccion(SIN_SELECCION)).toBe('')
     expect(escribirSeleccion({ sectorId: 3, arbolCodigo: null })).toBe('?sector=3')
+  })
+
+  it('tieneSeleccion reconoce los parámetros aunque su valor sea vacío o inválido', () => {
+    expect(tieneSeleccion('?sector=1')).toBe(true)
+    expect(tieneSeleccion('?arbol=S01-A001')).toBe(true)
+    expect(tieneSeleccion('?sector=abc&arbol=')).toBe(true)
+    expect(tieneSeleccion('?arbol=')).toBe(true)
+    expect(tieneSeleccion('?otro=1&sector=2')).toBe(true)
+  })
+
+  it('tieneSeleccion es falso sin esos parámetros', () => {
+    expect(tieneSeleccion('')).toBe(false)
+    expect(tieneSeleccion('?')).toBe(false)
+    expect(tieneSeleccion('?otro=1')).toBe(false)
+    expect(tieneSeleccion('?sectores=1')).toBe(false)
   })
 })

@@ -1,0 +1,248 @@
+/* Estilos de la página de Inicio: portada y franja de sectores.
+   Las franjas van a sangre; su contenido se centra a --inicio-ancho-maximo.
+   El mapa compacto y las cifras tienen sus propios archivos. */
+@import './mapa.estilos.css';
+@import './cifras.estilos.css';
+.inicio {
+  min-inline-size: 0;
+}
+
+/* ---------- Aparición (corta, ease-out) ---------- */
+@keyframes inicio-aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(var(--desplazamiento-aparicion));
+  }
+}
+
+.inicio-aparece {
+  animation: inicio-aparecer var(--duracion-aparicion) var(--curva-salida) both;
+}
+
+.inicio-aparece--tarde {
+  animation-delay: calc(var(--retraso-escalonado) * 3);
+}
+
+/* ---------- Botones ---------- */
+.inicio-boton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  min-block-size: var(--alto-boton-grande);
+  padding-inline: var(--espacio-4);
+  font-size: var(--texto-base);
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform var(--duracion-rapida) var(--curva-salida);
+}
+
+.inicio-boton:active {
+  transform: scale(var(--escala-presion));
+}
+
+/* Principal: blanco semibold de 18 px sobre carmín (4.72:1) */
+.inicio-boton--portada {
+  border-radius: var(--radio-pildora);
+  background: var(--boton-principal-fondo);
+  color: var(--boton-principal-texto);
+}
+
+.inicio-boton--franja {
+  border-radius: var(--radio-md);
+  background: var(--franja-contraste-boton-fondo);
+  color: var(--franja-contraste-boton-texto);
+}
+
+.inicio-boton__flecha {
+  flex: none;
+  inline-size: var(--tamano-icono);
+  block-size: var(--tamano-icono);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--grosor-icono);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------- Portada ---------- */
+.inicio-portada__contenido {
+  max-inline-size: var(--inicio-ancho-maximo);
+  margin-inline: auto;
+  padding: var(--espacio-5) var(--espacio-3) var(--espacio-6);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-5);
+}
+
+.inicio-portada__texto {
+  flex: 999 1 32.5rem;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-4);
+}
+
+.inicio-portada__antetitulo {
+  margin: 0;
+  font-family: var(--fuente-etiqueta);
+  font-weight: var(--etiqueta-peso);
+  font-size: var(--texto-antetitulo);
+  text-transform: uppercase;
+  letter-spacing: var(--etiqueta-espaciado);
+  color: var(--color-texto-tenue);
+  overflow-wrap: anywhere;
+}
+
+.inicio-portada__titulo {
+  margin: 0;
+  font-family: var(--fuente-display);
+  font-weight: 800;
+  font-size: var(--texto-portada);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  overflow-wrap: break-word;
+}
+
+/* El carmín va solo en el título grande (3.32:1 sobre noche; 4.14:1 sobre el neutro de lectura) */
+.inicio-portada__acento {
+  color: var(--color-acento);
+}
+
+.inicio-portada__frase {
+  margin: 0;
+  max-inline-size: var(--inicio-ancho-frase);
+  font-size: var(--texto-frase);
+  line-height: 1.55;
+  color: var(--color-texto-suave);
+}
+
+.inicio-portada__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-3);
+}
+
+.inicio-portada__arbol {
+  flex: 1 1 22.5rem;
+  min-inline-size: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.inicio-portada__arbol .glifo-pixel {
+  inline-size: var(--glifo-portada);
+}
+
+/* El tronco se aclara para que se vea sobre el fondo del sitio. */
+.inicio-portada__arbol .glifo-pixel__tronco {
+  fill: var(--color-texto-tenue);
+}
+
+/* ---------- Franja de sectores (contraste) ---------- */
+.inicio-franja {
+  background: var(--franja-contraste-fondo);
+  color: var(--franja-contraste-texto);
+}
+
+.inicio-franja :focus-visible {
+  outline-color: var(--franja-contraste-texto);
+}
+
+.inicio-franja__contenido {
+  max-inline-size: var(--inicio-ancho-maximo);
+  margin-inline: auto;
+  padding: var(--espacio-6) var(--espacio-3);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-5);
+}
+
+.inicio-franja__texto {
+  flex: 1 1 26rem;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-4);
+}
+
+.inicio-franja__titulo {
+  margin: 0;
+  font-family: var(--fuente-display);
+  font-weight: 800;
+  font-size: var(--texto-franja-titulo);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  overflow-wrap: break-word;
+}
+
+.inicio-franja__frase {
+  margin: 0;
+  max-inline-size: var(--inicio-ancho-frase);
+  font-size: var(--texto-frase);
+  line-height: 1.55;
+  color: var(--franja-contraste-tenue);
+}
+
+.inicio-franja__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-3);
+}
+
+.inicio-franja__mapa {
+  flex: 1 1 30rem;
+  min-inline-size: 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* ---------- Leyenda ---------- */
+.inicio-leyenda {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2) var(--espacio-4);
+  font-size: var(--texto-pequeno);
+  color: var(--franja-contraste-tenue);
+}
+
+.inicio-leyenda__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  min-inline-size: 0;
+}
+
+.inicio-leyenda__muestra {
+  flex: none;
+  inline-size: var(--muestra-leyenda-ancho);
+  block-size: var(--muestra-leyenda-alto);
+  border-radius: var(--radio-sm);
+}
+
+.inicio-leyenda__muestra--campo {
+  background: var(--mapa-inicio-relleno-campo);
+}
+
+.inicio-leyenda__muestra--ejemplo {
+  border: var(--grosor-foco-ui) dashed var(--mapa-inicio-borde-ejemplo);
+  background: var(--mapa-inicio-relleno-ejemplo);
+}
+/* ---------- Movimiento reducido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .inicio-aparece {
+    animation: none;
+  }
+
+  .inicio-boton {
+    transition: none;
+  }
+
+  .inicio-boton:active {
+    transform: none;
+  }
+}
