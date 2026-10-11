@@ -1,0 +1,156 @@
+/* Bloque «Árboles destacados» de Inicio: tarjetas planas que son enlaces enteros.
+   Una columna a 360 px y una grilla en pantallas anchas. */
+
+.inicio-destacados__contenido {
+  max-inline-size: var(--inicio-ancho-maximo);
+  margin-inline: auto;
+  padding: var(--espacio-6) var(--espacio-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-4);
+}
+
+.inicio-destacados__titulo {
+  margin: 0;
+  font-family: var(--fuente-display);
+  font-weight: 800;
+  font-size: var(--texto-cabecera);
+  line-height: var(--interlinea-titulo);
+  letter-spacing: var(--tracking-display);
+  overflow-wrap: anywhere;
+}
+
+/* Recibe el foco por programa desde «Ver destacados»: no es interactivo, no dibuja anillo. */
+.inicio-destacados__titulo:focus {
+  outline: none;
+}
+
+.inicio-destacados__lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: var(--espacio-4);
+}
+
+.inicio-destacados__item {
+  min-inline-size: 0;
+}
+
+.destacado-tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+  min-inline-size: 0;
+  min-block-size: var(--tamano-control);
+  block-size: 100%;
+  padding: var(--espacio-4);
+  border: var(--grosor-borde-ui) solid transparent;
+  border-radius: var(--radio-tarjeta);
+  background: var(--color-tarjeta);
+  color: inherit;
+  text-decoration: none;
+  transition:
+    transform var(--duracion-presion) var(--curva-salida),
+    border-color var(--duracion-hover) var(--curva-hover);
+}
+
+.destacado-tarjeta:active {
+  transform: scale(var(--escala-activo));
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .destacado-tarjeta:hover {
+    border-color: var(--color-acento);
+  }
+}
+
+.destacado-tarjeta__cabecera {
+  min-block-size: var(--tamano-icono);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-2);
+}
+
+.destacado-tarjeta__estrella {
+  flex: none;
+  inline-size: var(--tamano-icono);
+  block-size: var(--tamano-icono);
+  fill: var(--punto-destacado);
+  stroke: var(--punto-destacado-borde);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.destacado-tarjeta__nombre {
+  margin: 0;
+  font-family: var(--fuente-display);
+  font-weight: 800;
+  font-size: var(--texto-xl);
+  line-height: var(--interlinea-titulo);
+  overflow-wrap: anywhere;
+}
+
+.destacado-tarjeta__cientifico {
+  font-size: var(--texto-md);
+  font-style: italic;
+  color: var(--color-texto-suave);
+  overflow-wrap: anywhere;
+}
+
+.destacado-tarjeta__ubicacion {
+  font-size: var(--texto-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-texto-tenue);
+  overflow-wrap: anywhere;
+}
+
+.destacado-tarjeta__medidas {
+  margin-block-start: auto;
+  padding-block-start: var(--espacio-12);
+  min-block-size: var(--esqueleto-cifra-alto);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+}
+
+.destacado-tarjeta__lista {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2) var(--espacio-4);
+}
+
+.destacado-tarjeta__medida {
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.destacado-tarjeta__etiqueta {
+  font-family: var(--fuente-etiqueta);
+  font-weight: var(--etiqueta-peso);
+  font-size: var(--texto-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--etiqueta-espaciado);
+  color: var(--color-texto-tenue);
+}
+
+.destacado-tarjeta__valor {
+  margin: 0;
+  font-weight: 600;
+  font-size: var(--texto-base);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.destacado-tarjeta__esqueleto {
+  display: block;
+  block-size: var(--esqueleto-texto-alto);
+  inline-size: 50%;
+  border-radius: var(--radio-chip);
+  background: color-mix(in srgb, currentColor var(--esqueleto-mezcla), transparent);
+}

@@ -235,12 +235,23 @@ export const TEXTOS_ARMAZON = {
   arboles: 'Árboles',
   cifras: 'Cifras',
   menu: 'Menú',
-  notaDatos: 'Sector 1 con datos de la brigada; sectores 2 a 5 con datos de ejemplo.',
   creditoContorno: 'Contorno del campus © colaboradores de OpenStreetMap',
   nombreLicencia: 'ODbL',
   tituloNoEncontrada: 'Página no encontrada',
   fraseNoEncontrada: 'La dirección que abriste no existe o cambió de lugar.',
   volverAlInicio: 'Volver al inicio',
+} as const
+
+// PLANTILLAS DE LA NOTA DEL PIE SOBRE EL ORIGEN DE LOS DATOS. Los nombres de sector salen de la API
+// y reemplazan el marcador; nada de aquí afirma qué sector es de campo.
+export const MARCADOR_SECTORES = '{sectores}'
+export const PLANTILLAS_NOTA_DATOS = {
+  campoUno: '{sectores} tiene datos de campo.',
+  campoVarios: '{sectores} tienen datos de campo.',
+  ejemploUno: '{sectores} solo tiene datos de ejemplo.',
+  ejemploVarios: '{sectores} solo tienen datos de ejemplo.',
+  todosCampo: 'Todos los sectores tienen datos de campo.',
+  todosEjemplo: 'Por ahora todos los sectores tienen solo datos de ejemplo.',
 } as const
 
 // ENLACES DE LA NAVEGACIÓN PRINCIPAL, EN ORDEN (agregar una página es agregar una fila).
@@ -277,6 +288,7 @@ export const TEXTOS_INICIO = {
   frasePortada:
     'Recorre el campus por sectores, entra a cualquier árbol y abre su cartilla: especie, altura, diámetro, estado y foto.',
   explorarMapa: 'Explorar el mapa',
+  verDestacados: 'Ver destacados',
   tituloFranja: 'El campus, árbol por árbol.',
   fraseFranja:
     'Elige un sector en el mapa para ver sus árboles. Cada punto abre una cartilla con su especie, sus medidas y su estado.',
@@ -287,6 +299,15 @@ export const TEXTOS_INICIO = {
   sinArbolesAun: 'Sin árboles aún',
   cargandoSectores: 'Cargando los sectores…',
   errorSectores: 'No pudimos cargar los sectores.',
+  tituloDestacados: 'Árboles destacados',
+  cargandoDestacados: 'Cargando los árboles destacados…',
+  errorDestacados: 'No pudimos cargar los árboles destacados.',
+  sinDestacados: 'Aún no hay árboles destacados.',
+  destacados: {
+    dap: 'DAP',
+    altura: 'Altura',
+    cargandoMedidas: 'Cargando medidas…',
+  },
   tituloCifras: 'El censo hoy',
   cargandoCifras: 'Cargando las cifras del censo…',
   errorCifras: 'No pudimos cargar las cifras del censo.',
@@ -300,6 +321,12 @@ export const TEXTOS_INICIO = {
     arbolesDeEjemplo: { etiqueta: 'Árboles de ejemplo', nota: 'hasta que llegue la data real' },
   },
 } as const
+
+// CUÁNTAS TARJETAS DE ÁRBOLES DESTACADOS MUESTRA INICIO (como máximo)
+export const CANTIDAD_DESTACADOS_INICIO = 6
+
+// ID DEL TÍTULO DEL BLOQUE DE DESTACADOS (a él apunta «Ver destacados» de la portada)
+export const ID_TITULO_DESTACADOS = 'destacados'
 
 // CUÁNTOS BLOQUES DE ESQUELETO SE MUESTRAN EN LAS CIFRAS MIENTRAS CARGAN (uno por cifra)
 export const CANTIDAD_CIFRAS_INICIO = Object.keys(TEXTOS_INICIO.cifras).length

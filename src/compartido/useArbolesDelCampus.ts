@@ -1,6 +1,7 @@
-// Pide a la API los árboles de todos los sectores y expone su estado de carga, con reintento.
+// Pide los árboles de todos los sectores (con la caché compartida) y expone su estado, con reintento.
 import { useCallback, useEffect, useState } from 'react'
-import { obtenerArbolesDeSector, type ArbolFeature } from '@/api/cliente'
+import type { ArbolFeature } from '@/api/cliente'
+import { cargarArbolesDelCampus, invalidarCacheCampus } from './cacheCampus'
 
 export type EstadoArbolesDelCampus =
   | { estado: 'inactivo' }
@@ -26,19 +27,13 @@ export function useArbolesDelCampus(
   useEffect(() => {
     if (clave === null) return
     const ids = clave === '' ? [] : clave.split(SEPARADOR_DE_IDS).map(Number)
-    const controlador = new AbortController()
-    Promise.all(ids.map((id) => obtenerArbolesDeSector(id, { signal: controlador.signal })))
-      .then((colecciones) => {
-        if (controlador.signal.aborted) return
-        setResultado({
-          clave,
-          intento,
-          estado: 'listo',
-          arboles: colecciones.flatMap((coleccion) => coleccion.features),
-        })
+    let vigente = true
+    cargarArbolesDelCampus(ids)
+      .then((arboles) => {
+        if (vigente) setResultado({ clave, intento, estado: 'listo', arboles })
       })
       .catch((error: unknown) => {
-        if (controlador.signal.aborted) return
+        if (!vigente) return
         setResultado({
           clave,
           intento,
@@ -46,10 +41,15 @@ export function useArbolesDelCampus(
           error: error instanceof Error ? error : new Error(String(error)),
         })
       })
-    return () => controlador.abort()
+    return () => {
+      vigente = false
+    }
   }, [clave, intento])
 
-  const reintentar = useCallback(() => setIntento((anterior) => anterior + 1), [])
+  const reintentar = useCallback(() => {
+    invalidarCacheCampus()
+    setIntento((anterior) => anterior + 1)
+  }, [])
 
   if (clave === null) return { estado: 'inactivo', reintentar }
   // Un resultado de otros sectores o de un intento anterior ya no vale: se está cargando.

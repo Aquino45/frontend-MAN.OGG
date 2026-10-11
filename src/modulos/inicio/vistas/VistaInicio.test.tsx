@@ -3,11 +3,14 @@ import { MemoryRouter } from 'react-router'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   ErrorApi,
+  obtenerArbol,
   obtenerArbolesDeSector,
   obtenerSectores,
   type ArbolColeccion,
 } from '@/api/cliente'
+import { invalidarCacheCampus } from '@/compartido/cacheCampus'
 import {
+  CANTIDAD_DESTACADOS_INICIO,
   NOMBRE_CAMPUS,
   PARAMETROS_URL,
   REGION_INTERFAZ,
@@ -15,7 +18,7 @@ import {
   TEXTOS_ESTADOS,
   TEXTOS_INICIO,
 } from '@/config/constantes'
-import { arbolesMockPorSector, sectoresMock } from '@/mocks'
+import { arbolDemoMock, arbolesMockPorSector, sectoresMock } from '@/mocks'
 import arbolesSector1Json from '@/mocks/sector-1-arboles.json'
 import { VistaInicio } from './VistaInicio'
 
@@ -23,10 +26,12 @@ vi.mock('@/api/cliente', async (importarOriginal) => ({
   ...(await importarOriginal<typeof import('@/api/cliente')>()),
   obtenerSectores: vi.fn(),
   obtenerArbolesDeSector: vi.fn(),
+  obtenerArbol: vi.fn(),
 }))
 
 const obtenerSectoresFalso = vi.mocked(obtenerSectores)
 const obtenerArbolesFalso = vi.mocked(obtenerArbolesDeSector)
+const obtenerArbolFalso = vi.mocked(obtenerArbol)
 const SIN_ARBOLES: ArbolColeccion = { type: 'FeatureCollection', features: [] }
 const formato = new Intl.NumberFormat(REGION_INTERFAZ)
 
@@ -35,6 +40,7 @@ function pedirTodoConMocks() {
   obtenerArbolesFalso.mockImplementation(
     async (sectorId) => arbolesMockPorSector[sectorId] ?? SIN_ARBOLES,
   )
+  obtenerArbolFalso.mockResolvedValue(arbolDemoMock)
 }
 
 function verInicio() {
@@ -47,6 +53,7 @@ function verInicio() {
 
 const regionFranja = () => screen.getByRole('region', { name: TEXTOS_INICIO.tituloFranja })
 const regionCifras = () => screen.getByRole('region', { name: TEXTOS_INICIO.tituloCifras })
+const regionDestacados = () => screen.getByRole('region', { name: TEXTOS_INICIO.tituloDestacados })
 
 // Lo esperado se calcula leyendo el JSON del mock del sector 1, nunca a mano.
 const arbolesDelMock = arbolesSector1Json.features
@@ -59,10 +66,19 @@ const especiesEsperadas = new Set(
     .filter(Boolean),
 ).size
 
+// Los destacados esperados salen del JSON del mock, ordenados por código, con el máximo de Inicio.
+const destacadosEsperados = arbolesDelMock
+  .filter((arbol) => arbol.properties.destacado)
+  .map((arbol) => arbol.properties.codigo)
+  .sort()
+  .slice(0, CANTIDAD_DESTACADOS_INICIO)
+
 describe('VistaInicio', () => {
   beforeEach(() => {
     obtenerSectoresFalso.mockReset()
     obtenerArbolesFalso.mockReset()
+    obtenerArbolFalso.mockReset()
+    invalidarCacheCampus()
   })
   afterEach(() => vi.clearAllMocks())
 
@@ -137,9 +153,97 @@ describe('VistaInicio', () => {
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
     expect(
       screen.getAllByRole('heading', { level: 2 }).map((titulo) => titulo.textContent),
-    ).toEqual([TEXTOS_INICIO.tituloFranja, TEXTOS_INICIO.tituloCifras])
-    expect(screen.queryByRole('heading', { level: 3 })).not.toBeInTheDocument()
-    expect(screen.queryByText(/destacados/i)).not.toBeInTheDocument()
+    ).toEqual([
+      TEXTOS_INICIO.tituloFranja,
+      TEXTOS_INICIO.tituloCifras,
+      TEXTOS_INICIO.tituloDestacados,
+    ])
+  })
+
+  it('los destacados salen de la API: una tarjeta enlace por árbol destacado, en orden estable', async () => {
+    pedirTodoConMocks()
+    verInicio()
+    const enlaces = await within(regionDestacados()).findAllByRole('link')
+    expect(destacadosEsperados.length).toBeGreaterThan(0)
+    expect(enlaces).toHaveLength(destacadosEsperados.length)
+    destacadosEsperados.forEach((codigo, indice) => {
+      const consulta = new URLSearchParams({
+        [PARAMETROS_URL.sector]: '1',
+        [PARAMETROS_URL.arbol]: codigo,
+      })
+      expect(enlaces[indice]).toHaveAttribute('href', `${RUTAS.mapa}?${consulta.toString()}`)
+    })
+    // Los encabezados siguen en orden: h1, h2 y luego h3 solo dentro de las tarjetas
+    expect(within(regionDestacados()).getAllByRole('heading', { level: 3 })).toHaveLength(
+      destacadosEsperados.length,
+    )
+  })
+
+  it('pide el detalle (DAP y altura) solo de las tarjetas mostradas', async () => {
+    pedirTodoConMocks()
+    verInicio()
+    await within(regionDestacados()).findAllByRole('link')
+    await waitFor(() => expect(obtenerArbolFalso).toHaveBeenCalledTimes(destacadosEsperados.length))
+    expect(obtenerArbolFalso.mock.calls.map(([codigo]) => codigo).sort()).toEqual(
+      destacadosEsperados,
+    )
+    expect(await within(regionDestacados()).findAllByText(/ cm$/)).toHaveLength(
+      destacadosEsperados.length,
+    )
+  })
+
+  it('si el detalle falla, la tarjeta sigue siendo enlace y dice «Sin dato»', async () => {
+    pedirTodoConMocks()
+    obtenerArbolFalso.mockRejectedValue(new ErrorApi('/arboles/x', 503))
+    verInicio()
+    const enlaces = await within(regionDestacados()).findAllByRole('link')
+    await waitFor(() =>
+      expect(
+        regionDestacados().querySelectorAll('.destacado-tarjeta__medidas .sin-dato'),
+      ).toHaveLength(destacadosEsperados.length * 2),
+    )
+    expect(enlaces).toHaveLength(destacadosEsperados.length)
+  })
+
+  it('sin árboles destacados el bloque dice que aún no hay, sin acciones', async () => {
+    obtenerSectoresFalso.mockResolvedValue(sectoresMock)
+    obtenerArbolesFalso.mockResolvedValue(SIN_ARBOLES)
+    verInicio()
+    expect(await within(regionDestacados()).findByText(TEXTOS_INICIO.sinDestacados)).toBeVisible()
+    expect(within(regionDestacados()).queryByRole('button')).not.toBeInTheDocument()
+  })
+
+  it('cargando: el bloque de destacados muestra su esqueleto sin números', () => {
+    obtenerSectoresFalso.mockReturnValue(new Promise(() => {}))
+    verInicio()
+    expect(within(regionDestacados()).getByRole('status')).toHaveAttribute('aria-busy', 'true')
+    expect(regionDestacados().textContent).not.toMatch(/\d/)
+  })
+
+  it('si falla la API, los destacados muestran su error y Reintentar lo vuelve a pedir', async () => {
+    obtenerSectoresFalso.mockRejectedValue(new ErrorApi('/sectores', 503))
+    verInicio()
+    expect(await within(regionDestacados()).findByRole('alert')).toHaveTextContent(
+      TEXTOS_INICIO.errorDestacados,
+    )
+    pedirTodoConMocks()
+    fireEvent.click(
+      within(regionDestacados()).getByRole('button', { name: TEXTOS_ESTADOS.reintentar }),
+    )
+    expect(await within(regionDestacados()).findAllByRole('link')).toHaveLength(
+      destacadosEsperados.length,
+    )
+  })
+
+  it('«Ver destacados» de la portada apunta al título del bloque, aunque esté en error', async () => {
+    obtenerSectoresFalso.mockRejectedValue(new ErrorApi('/sectores', 503))
+    verInicio()
+    await within(regionDestacados()).findByRole('alert')
+    const ancla = screen.getByRole('link', { name: TEXTOS_INICIO.verDestacados })
+    const titulo = within(regionDestacados()).getByRole('heading', { level: 2 })
+    expect(ancla).toHaveAttribute('href', `#${titulo.id}`)
+    fireEvent.click(ancla)
+    expect(titulo).toHaveFocus()
   })
 
   it('si fallan los sectores, la portada sigue y la franja y las cifras muestran su error', async () => {

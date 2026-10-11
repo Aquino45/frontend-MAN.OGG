@@ -1,4 +1,5 @@
-import { NOMBRE_CAMPUS, TEXTOS_INICIO } from '@/config/constantes'
+import type { MouseEvent } from 'react'
+import { ID_TITULO_DESTACADOS, NOMBRE_CAMPUS, TEXTOS_INICIO } from '@/config/constantes'
 import { GlifoPixelArbol } from '@/compartido/GlifoPixelArbol'
 import { EnlaceMapa } from './EnlaceMapa'
 
@@ -17,6 +18,14 @@ function antetitulo(cantidadSectores: number | null): string {
   return partes.join(' · ')
 }
 
+// Lleva el foco al título del bloque de destacados (sin anillo: no es interactivo) y baja hasta él.
+function irADestacados(evento: MouseEvent<HTMLAnchorElement>) {
+  const titulo = document.getElementById(ID_TITULO_DESTACADOS)
+  if (titulo === null) return
+  evento.preventDefault()
+  titulo.focus()
+}
+
 // Portada de Inicio: el h1 único de la página, la frase, el enlace al mapa y el árbol pixel.
 export function Portada({ cantidadSectores }: PropsPortada) {
   return (
@@ -31,6 +40,13 @@ export function Portada({ cantidadSectores }: PropsPortada) {
           <p className="inicio-portada__frase">{TEXTOS_INICIO.frasePortada}</p>
           <div className="inicio-portada__acciones">
             <EnlaceMapa variante="portada" />
+            <a
+              className="boton boton--secundario"
+              href={`#${ID_TITULO_DESTACADOS}`}
+              onClick={irADestacados}
+            >
+              {TEXTOS_INICIO.verDestacados}
+            </a>
           </div>
         </div>
         <div className="inicio-portada__arbol inicio-aparece inicio-aparece--tarde">

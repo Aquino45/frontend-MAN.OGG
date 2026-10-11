@@ -3,6 +3,7 @@
    El mapa compacto y las cifras tienen sus propios archivos. */
 @import './mapa.estilos.css';
 @import './cifras.estilos.css';
+@import './destacados.estilos.css';
 .inicio {
   min-inline-size: 0;
 }
@@ -27,7 +28,7 @@
 .inicio-portada__contenido {
   max-inline-size: var(--inicio-ancho-maximo);
   margin-inline: auto;
-  padding: var(--espacio-5) var(--espacio-3) var(--espacio-6);
+  padding: var(--espacio-6) var(--espacio-3);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
