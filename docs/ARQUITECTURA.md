@@ -30,13 +30,17 @@ frontend-MAN.OGG/
 │   │   ├── entorno.ts         ← ÚNICO lugar que lee import.meta.env
 │   │   └── constantes.ts      ← constantes de negocio (MAYÚSCULAS)
 │   ├── styles/
-│   │   ├── tokens.css         ← ÚNICO lugar con colores, tipografía, espacios y duraciones (tema oscuro y claro)
+│   │   ├── tokens.css         ← ÚNICO lugar con colores (tema oscuro y claro)
+│   │   ├── escala.tokens.css  ← escala tipográfica, espaciado base 4, radios y la sombra única
+│   │   ├── movimiento.tokens.css ← duraciones y curvas (con movimiento reducido todo queda en 0)
+│   │   ├── botones.estilos.css ← sistema único de botones
+│   │   ├── base.estilos.css   ← estilos base de los elementos
 │   │   └── global.css
 │   ├── api/
 │   │   ├── schema.d.ts        ← generado con openapi-typescript (no se edita)
 │   │   └── cliente.ts         ← obtenerSectores(), obtenerArbolesDeSector(id), obtenerArbol(codigo)
 │   ├── mocks/                 ← datos de los ejemplos del contrato; se eligen con VITE_USAR_MOCKS
-│   ├── compartido/            ← componentes base sin fetch que usan 2 módulos o más (SelloDemo, SinDato…)
+│   ├── compartido/            ← lo que usan 2 módulos o más: SelloDemo, SinDato, GlifoPixelArbol, los estados de carga, vacío y error, y los hooks del campus con su caché (`cacheCampus`, `useSectoresDelCampus`, `useArbolesDelCampus`)
 │   ├── lib/                   ← funciones puras que usan 2 módulos o más (formatear unidades, elegirVariante)
 │   ├── test/                  ← setup.ts de Vitest
 │   └── modulos/               ← una carpeta por funcionalidad
@@ -46,10 +50,12 @@ frontend-MAN.OGG/
 │       │   ├── vistas/        ← VistaMapa
 │       │   └── index.ts       ← API pública del módulo
 │       ├── tema/              ← modo claro/oscuro: useTema + InterruptorTema (FE-002)
-│       ├── cartilla/          ← cartilla del árbol: componentes/, hooks/ (useArbol), vistas/, index.ts (FE-003)
+│       ├── cartilla/          ← cartilla del árbol: componentes/ (incluye las cápsulas «?» y «Sobre este árbol»), hooks/ (useArbol), lib/, vistas/, index.ts (FE-003, FE-008)
 │       ├── entrada/           ← animación de entrada al mapa, con variantes (FE-004)
 │       ├── armazon/           ← cabecera, navegación, pie y página «no encontrada»: lo común a todas las rutas (FE-007)
-│       └── inicio/            ← página de Inicio: portada, mapa compacto de sectores y cifras del censo (FE-007)
+│       ├── inicio/            ← página de Inicio: portada, mapa compacto de sectores, destacados y cifras del censo (FE-007, FE-008)
+│       ├── explorar/          ← `/arboles`: lista de todos los árboles con buscador y filtros guardados en la URL; componentes/, hooks/, lib/ (filtros), vistas/ (FE-008)
+│       └── cifras/            ← `/cifras`: cifras del censo por sector, estado y especie, con campo y ejemplo separados; `lib/cifrasCenso.ts` es puro (FE-008)
 ├── public/                    ← estáticos sin import (favicon). Las ilustraciones NO van aquí: se importan desde su módulo
 ├── scripts/                   ← verificar-colores.mjs, generar-tipos
 └── docs/                      ← ARQUITECTURA (este), ESTADO, CANARIOS, tickets
@@ -65,6 +71,7 @@ Cada módulo usa solo las subcarpetas que necesita (`componentes/`, `hooks/`, `v
 | `api/cliente.ts` | `config/entorno.ts`, `schema.d.ts`, `mocks/` | guardar estado de UI, importar de `modulos/` |
 | `lib/` (raíz o de un módulo) | nada de React | efectos secundarios |
 
+- **Caché del campus:** `compartido/cacheCampus.ts` guarda en memoria la petición de sectores y la de árboles del campus (una sola llamada aunque la pidan Inicio, el pie, Explorar y Cifras). Un error no se guarda, lo guardado vence pasado `TIEMPO_VIDA_CACHE_CAMPUS_MS` y «Reintentar» invalida esa parte y avisa a los hooks montados para que vuelvan a pedir.
 - Ningún color, tamaño ni duración escrito a mano: siempre `var(--token)`. Lo vigila `npm run verificar:colores`.
 - Un campo sin dato se muestra «Sin dato»; un registro con `demo: true` lleva el sello «Dato de ejemplo».
 - Los tests van junto al archivo (`*.test.ts(x)`). Un archivo de más de ~300 líneas se parte.
@@ -93,5 +100,6 @@ Cada módulo usa solo las subcarpetas que necesita (`componentes/`, `hooks/`, `v
 | Tema claro en `tokens.css` + `modulos/tema/` | no existe | FE-002 |
 | `src/api/` (cliente y tipos generados), `src/mocks/`, `npm run contrato:tipos` | no existen | FE-002 |
 | `modulos/mapa/`, `compartido/`, regla de ESLint de fronteras | no existen | FE-002 |
-| `modulos/cartilla/` | no existe | FE-003 |
+| `modulos/cartilla/` | existe (con cápsulas y «Sobre este árbol») | FE-003, FE-008 |
+| `modulos/explorar/`, `modulos/cifras/` y los hooks del campus en `compartido/` | existen | FE-008 |
 | `modulos/entrada/`, `lib/elegirVariante` y las tablas de pesos | no existen | FE-002 (frases de carga e ilustraciones) y FE-004 (entrada) |
