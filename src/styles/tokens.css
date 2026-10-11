@@ -62,6 +62,16 @@
   --punto-grosor-demo: 2;
   --punto-trazo-demo: 3 2;
   --punto-escala-resaltado: 1.45;
+  /* Estrella de los árboles destacados: relleno ámbar con borde noche.
+     Relleno sobre el relleno resaltado del sector (magenta oscuro) 5.19:1 y sobre la superficie
+     oscura 7.08:1; borde noche sobre el neutro de lectura 13.73:1 y sobre la superficie clara 11.14:1.
+     Valen igual en los 2 temas. */
+  --punto-destacado: #ffd166;
+  --punto-destacado-borde: var(--tronco-noche);
+  --punto-destacado-escala: 1.25;
+  --destacado-brillo-duracion: 600ms;
+  --insignia-estrella-tamano: 1.125em;
+  --destacado-brillo-intensidad: 1.6;
   --mapa-opacidad-glifo: 0.75;
   /* Grosores en píxeles de pantalla (el trazo no escala con el mapa) */
   --mapa-grosor-borde: 2;
@@ -77,6 +87,7 @@
   --mapa-alto-reserva: 40vh;
   --mapa-alto-maximo: 72vh;
   --leyenda-ancho-muestra: 2rem;
+  --leyenda-ancho-estrella: 1rem;
 
   /* Panel del sector y cartilla */
   --panel-ancho: 28rem;

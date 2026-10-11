@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { Arbol } from '@/api/cliente'
-import { NOMBRE_CAMPUS, TEXTOS_CARTILLA } from '@/config/constantes'
+import { NOMBRE_CAMPUS, TEXTOS_CARTILLA, TEXTOS_DESTACADO } from '@/config/constantes'
 import { arbolDemoMock, arbolRealMock } from '@/mocks'
 import { CartillaArbol } from './CartillaArbol'
 
@@ -53,6 +53,28 @@ describe('CartillaArbol', () => {
     expect(screen.getByText(arbolDemoMock.observaciones ?? '')).toBeInTheDocument()
     expect(screen.getByText(/UTM 18S 299 501 E 8 673 505 N/)).toBeInTheDocument()
     expect(screen.getByText(`${TEXTOS_CARTILLA.registrado}: 2026-10-07`)).toBeInTheDocument()
+  })
+
+  it('un árbol destacado muestra la insignia con la estrella y el motivo, junto al sello demo', () => {
+    const { container } = mostrar(arbolDemoMock)
+    const insignia = container.querySelector('.insignia-destacado')
+    expect(insignia).not.toBeNull()
+    expect(insignia?.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
+    expect(insignia).toHaveTextContent(TEXTOS_DESTACADO.etiqueta)
+    expect(insignia).toHaveTextContent(arbolDemoMock.motivo_destacado ?? '')
+    expect(screen.getByText(TEXTOS_CARTILLA.selloDemo)).toBeVisible()
+  })
+
+  it('un destacado sin motivo muestra solo «Destacado»', () => {
+    const { container } = mostrar({ ...arbolRealMock, destacado: true, motivo_destacado: null })
+    const insignia = container.querySelector('.insignia-destacado')
+    expect(insignia?.textContent).toBe(TEXTOS_DESTACADO.etiqueta)
+  })
+
+  it('un árbol que no es destacado no lleva insignia', () => {
+    const { container } = mostrar(arbolRealMock)
+    expect(container.querySelector('.insignia-destacado')).toBeNull()
+    expect(screen.queryByText(TEXTOS_DESTACADO.etiqueta)).not.toBeInTheDocument()
   })
 
   it('la cartilla real no lleva sello y dice «Sin dato» donde falta el valor', () => {

@@ -29,9 +29,11 @@ describe('VistaMapa: recorrido sector → árbol', () => {
     expect(await screen.findByRole('heading', { name: 'Sector 1' })).toBeInTheDocument()
     expect(await screen.findAllByRole('listitem')).toHaveLength(4)
     // Los 4 árboles también son puntos del mapa
-    expect(screen.getByRole('button', { name: 'S01-A012, Huarango' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /^S01-A012, Huarango. Destacado/ }),
+    ).toBeInTheDocument()
 
-    fireEvent.click(screen.getByRole('button', { name: 'S01-A012, Huarango' }))
+    fireEvent.click(screen.getByRole('button', { name: /^S01-A012, Huarango. Destacado/ }))
     expect(window.location.search).toBe('?sector=1&arbol=S01-A012')
     const titulo = await screen.findByRole('heading', { name: 'Huarango' })
     await waitFor(() => expect(titulo).toHaveFocus())
@@ -94,7 +96,7 @@ describe('VistaMapa: recorrido sector → árbol', () => {
     render(<VistaMapa aleatorio={SIEMPRE_CERO} />)
     fireEvent.click(await screen.findByRole('button', { name: /^Sector 1,/ }))
     expect(await screen.findByRole('complementary', { name: /Sector 1/ })).toBeInTheDocument()
-    fireEvent.click(await screen.findByRole('button', { name: 'S01-A012, Huarango' }))
+    fireEvent.click(await screen.findByRole('button', { name: /^S01-A012, Huarango. Destacado/ }))
     expect(await screen.findByRole('complementary', { name: 'S01-A012' })).toBeInTheDocument()
   })
 

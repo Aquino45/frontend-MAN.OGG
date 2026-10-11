@@ -1,5 +1,6 @@
 // Pantalla de la cartilla: pide el árbol, muestra sus estados y devuelve el foco al abrir.
 import '../estilos.css'
+import '../destacado.estilos.css'
 import { useEffect, useRef } from 'react'
 import { TEXTOS_CARTILLA } from '@/config/constantes'
 import { CartillaArbol } from '../componentes/CartillaArbol'

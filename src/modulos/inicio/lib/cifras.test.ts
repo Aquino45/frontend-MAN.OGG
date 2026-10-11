@@ -14,12 +14,15 @@ function arbol(
     geometry: null,
     properties: {
       codigo,
+      uid: `uid-${codigo}`,
       sector: propiedades.sector ?? 1,
       nombre_comun: null,
       nombre_cientifico: propiedades.nombre_cientifico ?? null,
       estado_general: null,
       foto_miniatura_url: null,
       demo: propiedades.demo,
+      destacado: false,
+      motivo_destacado: null,
     },
   }
 }

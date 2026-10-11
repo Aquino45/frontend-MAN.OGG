@@ -103,6 +103,24 @@ export const MAPA_DURACION_ENTRADA_MS = 320
 // RADIO DE UN PUNTO DE ÁRBOL, EN UNIDADES SVG DEL MAPA COMPLETO (se reduce al acercar)
 export const MAPA_RADIO_PUNTO = 9
 
+// ---------- ÁRBOLES DESTACADOS ----------
+
+// LADO DE LA GRILLA EN QUE SE DIBUJA LA ESTRELLA (se escala al tamaño pedido)
+export const ESTRELLA_LADO_GRILLA = 24
+
+// CONTORNO DE LA ESTRELLA DE UN ÁRBOL DESTACADO, EN LA GRILLA DE ARRIBA
+export const ESTRELLA_CONTORNO =
+  'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z'
+
+// TAMAÑO DE LA ESTRELLA RESPECTO AL PUNTO NORMAL (multiplica el diámetro del punto)
+export const MAPA_ESCALA_ESTRELLA = 2.4
+
+// TEXTOS DE LOS ÁRBOLES DESTACADOS
+export const TEXTOS_DESTACADO = {
+  etiqueta: 'Destacado',
+  leyenda: 'Árbol destacado del sector',
+} as const
+
 // ANCHO DE PANTALLA, EN REM, DESDE EL CUAL EL PANEL VA A UN COSTADO (debajo, hoja inferior)
 export const CORTE_PANEL_LATERAL_REM = 56
 

@@ -131,6 +131,11 @@ export interface components {
     /** @description Lo mínimo para listar el árbol y dibujarlo como punto. La cartilla completa sale de `/arboles/{codigo}`. */
     ArbolResumen: {
       codigo: components['schemas']['CodigoArbol']
+      /**
+       * Format: uuid
+       * @description Identificador estable del árbol: no cambia aunque cambie su código
+       */
+      readonly uid: string
       sector: number
       nombre_comun: string | null
       nombre_cientifico: string | null
@@ -139,6 +144,10 @@ export interface components {
       /** Format: uri */
       foto_miniatura_url: string | null
       demo: boolean
+      /** @description Árbol destacado del sector, elegido por la administración del censo (con un tope por sector) */
+      destacado: boolean
+      /** @description Por qué se destaca; `null` si no es destacado */
+      motivo_destacado: string | null
     }
     ArbolResumenFeature: {
       /** @constant */
@@ -155,6 +164,11 @@ export interface components {
     /** @description La cartilla del árbol. Los 19 campos de la visión del stakeholder, más su contexto de campo y su trazabilidad. Los textos de estado son los del catálogo de la planilla de la brigada. */
     Arbol: {
       codigo: components['schemas']['CodigoArbol']
+      /**
+       * Format: uuid
+       * @description Identificador estable del árbol: no cambia aunque cambie su código
+       */
+      readonly uid: string
       sector: number
       nombre_comun: string | null
       /** @description En cursiva en la UI. */
@@ -200,6 +214,10 @@ export interface components {
       /** Format: date */
       fecha_registro: string | null
       demo: boolean
+      /** @description Árbol destacado del sector, elegido por la administración del censo (con un tope por sector) */
+      destacado: boolean
+      /** @description Por qué se destaca; `null` si no es destacado */
+      motivo_destacado: string | null
     }
   }
   responses: {

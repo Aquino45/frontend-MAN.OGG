@@ -1,9 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { ArbolFeature } from '@/api/cliente'
-import { TEXTOS_MAPA, TEXTOS_PANEL } from '@/config/constantes'
+import { ESTRELLA_CONTORNO, TEXTOS_DESTACADO, TEXTOS_MAPA, TEXTOS_PANEL } from '@/config/constantes'
 import { arbolesSector1Mock, sectoresMock } from '@/mocks'
 import type { EstadoArbolesDeSector } from '../hooks/useArbolesDeSector'
+import { ordenarDestacadosPrimero } from '../lib/ordenArboles'
 import { PanelSector } from './PanelSector'
 
 const SECTOR_1 = sectoresMock.features[0].properties
@@ -68,12 +69,13 @@ describe('PanelSector', () => {
     expect(screen.queryByRole('list')).not.toBeInTheDocument()
   })
 
-  it('estado listo: una fila por árbol, en el orden de la API, con sus datos', () => {
+  it('estado listo: una fila por árbol, con los destacados primero, y sus datos', () => {
     montar({ estado: 'listo', arboles: arbolesSector1Mock.features })
     const filas = screen.getAllByRole('listitem')
     expect(filas.map((fila) => fila.querySelector('.fila-arbol__codigo')?.textContent)).toEqual(
-      arbolesSector1Mock.features.map((arbol) => arbol.properties.codigo),
+      ordenarDestacadosPrimero(arbolesSector1Mock.features).map((arbol) => arbol.properties.codigo),
     )
+    expect(filas[0].querySelector('.fila-arbol__codigo')).toHaveTextContent('S01-A012')
     expect(screen.getByText('Molle')).toBeInTheDocument()
     expect(screen.getByText('Prosopis pallida')).toBeInTheDocument()
     expect(screen.getByText('Regular')).toBeInTheDocument()
@@ -107,6 +109,27 @@ describe('PanelSector', () => {
     expect(alAbrir).toHaveBeenCalledWith('S01-A001')
     fireEvent.click(screen.getByRole('button', { name: new RegExp(TEXTOS_PANEL.volverASectores) }))
     expect(alVolver).toHaveBeenCalledOnce()
+  })
+
+  it('la fila de un destacado lleva la estrella y su motivo; las demás no', () => {
+    const { container } = montar({ estado: 'listo', arboles: arbolesSector1Mock.features })
+    const estrellas = container.querySelectorAll('.fila-arbol__estrella')
+    expect(estrellas).toHaveLength(1)
+    const fila = estrellas[0].closest('li') as HTMLElement
+    expect(fila.querySelector('.fila-arbol__codigo')).toHaveTextContent('S01-A012')
+    expect(fila).toHaveTextContent(TEXTOS_DESTACADO.etiqueta)
+    expect(fila).toHaveTextContent('ejemplar de mayor copa del sector')
+    expect(estrellas[0].querySelector('path')).toHaveAttribute('d', ESTRELLA_CONTORNO)
+  })
+
+  it('un destacado sin motivo muestra solo la etiqueta', () => {
+    const sinMotivo: ArbolFeature = {
+      ...arbolesSector1Mock.features[2],
+      properties: { ...arbolesSector1Mock.features[2].properties, motivo_destacado: null },
+    }
+    const { container } = montar({ estado: 'listo', arboles: [sinMotivo] })
+    expect(container.querySelector('.fila-arbol__motivo')).toBeNull()
+    expect(screen.getByText(TEXTOS_DESTACADO.etiqueta)).toBeInTheDocument()
   })
 
   it('la fila del árbol resaltado se marca', () => {

@@ -1,6 +1,7 @@
 // Pantalla principal: el mapa de sectores y, al entrar en uno, su panel con la lista de árboles
 // o la cartilla del árbol abierto. El sector y el árbol abiertos viven en la URL.
 import '../estilos.css'
+import '../destacados.estilos.css'
 import { useEffect, useMemo, useState } from 'react'
 import { VistaCartilla } from '@/modulos/cartilla'
 import {

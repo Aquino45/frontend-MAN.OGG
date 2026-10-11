@@ -1,6 +1,6 @@
 # ESTADO — frontend-MAN.OGG
 
-Actualizado: 11/10/2026 (ticket FE-007).
+Actualizado: 11/10/2026 (ticket FE-006).
 
 ## Dónde estamos
 - **Rutas** con `react-router`: `/` Inicio, `/mapa` el mapa y la cartilla (con `?sector=&arbol=`) y una página «no encontrada» para lo demás. Los enlaces viejos `/?sector=…` o `/?arbol=…` redirigen a `/mapa` con la misma consulta. Una sola cabecera (marca, Inicio · Mapa y el tema) y un pie con la nota de los datos y el crédito de OpenStreetMap (ODbL).
@@ -15,12 +15,13 @@ Actualizado: 11/10/2026 (ticket FE-007).
 - Hito M0 (disciplina) en curso.
 
 ## Último ticket
-- FE-007 — rutas y página de Inicio (Issue #9). Los destacados quedan para FE-006, que necesita BE-008 (contrato 0.3.0). Resumen en `docs/tickets/FE-007.md`.
+- FE-006 — árboles destacados (Issue #11): estrella en el mapa (más grande y por encima), orden y leyenda en el panel del sector, texto accesible con el motivo e insignia en la cartilla. Resumen en `docs/tickets/FE-006.md`.
+- FE-007 — rutas y página de Inicio (Issue #9). Resumen en `docs/tickets/FE-007.md`.
 - FE-005 — front v1 completo, por fases. **Fases A, B y C hechas** (PR #8 en borrador, Issue #7): recorrido mapa → sector → árbol con mocks, panel con la lista, cartilla de 19 campos, tokens y fuentes, estado en la URL y nombre público «Censo arbóreo UPeU Lima». La fase B verificó el recorrido con la API real, el celular y la accesibilidad. La fase C suma la entrada al mapa con 2 variantes que se sortean en cada carga. Falta la fase D (cierre). Resumen en `docs/tickets/FE-005.md`.
 - Antes: FE-002 — mapa de sectores, tema y variantes (mergeado, #6); DOC-002 — arquitectura escrita (mergeado, #4); FE-001 — base del front (mergeado, #2).
 
 ## Siguiente ticket
-- FE-006: estrella de los destacados en el mapa y el bloque de destacados en Inicio (con BE-008 mergeado).
+- Bloque de destacados en Inicio: no lo cubrió FE-006; necesita su propio ticket.
 - FE-005, fase D: cierre, con `build` + `preview` y la revisión final (FE-003 y FE-004 quedan como anexos).
 
 ## Pendiente fuera de este repo
