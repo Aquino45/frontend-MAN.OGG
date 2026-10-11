@@ -2,7 +2,9 @@ import { useState, type ReactNode } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router'
 import { RUTAS, TEXTOS_MAPA } from '@/config/constantes'
 import { Cabecera, Pie, VistaNoEncontrada } from '@/modulos/armazon'
+import { VistaCifras } from '@/modulos/cifras'
 import { VistaEntrada } from '@/modulos/entrada'
+import { VistaExplorar } from '@/modulos/explorar'
 import { VistaInicio } from '@/modulos/inicio'
 import { tieneSeleccion, VistaMapa } from '@/modulos/mapa'
 
@@ -43,6 +45,8 @@ function Armazon({ aleatorioEntrada }: PropsApp) {
         <Routes>
           <Route path={RUTAS.inicio} element={<RutaInicio />} />
           <Route path={RUTAS.mapa} element={<RutaMapa />} />
+          <Route path={RUTAS.arboles} element={<VistaExplorar />} />
+          <Route path={RUTAS.cifras} element={<VistaCifras />} />
           <Route path="*" element={<VistaNoEncontrada />} />
         </Routes>
       </main>

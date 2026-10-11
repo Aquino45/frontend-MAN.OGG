@@ -28,7 +28,6 @@ describe('estilos de Inicio', () => {
   it('con movimiento reducido apaga la aparición y las transiciones', () => {
     const principal = bloqueMovimientoReducido(estilosBase)
     expect(principal).toMatch(/\.inicio-aparece\s*\{\s*animation:\s*none/)
-    expect(principal).toMatch(/transition:\s*none/)
     expect(bloqueMovimientoReducido(estilosMapa)).toMatch(/transition:\s*none/)
   })
 
@@ -39,10 +38,28 @@ describe('estilos de Inicio', () => {
     expect(estilosCifras.length).toBeGreaterThan(0)
   })
 
-  it('la aparición usa los tokens de duración, curva y desplazamiento', () => {
+  it('la aparición usa los tokens de duración y curva y entra desde scale 0.98', () => {
     expect(estilosCss).toContain('var(--duracion-aparicion)')
     expect(estilosCss).toContain('var(--curva-salida)')
-    expect(estilosCss).toContain('var(--desplazamiento-aparicion)')
+    expect(estilosCss).toContain('scale(var(--entrada-escala-inicial))')
+    expect(estilosCss).not.toContain('translateY')
+  })
+
+  it('la portada y la franja usan el display y el tracking de los tokens', () => {
+    expect(estilosCss).not.toMatch(/letter-spacing:\s*-?[\d.]+(px|em)/)
+    expect(estilosCss).toContain('var(--tracking-display)')
+    expect(estilosCss).not.toMatch(/line-height:\s*0\.9/)
+  })
+
+  it('los botones salen del sistema: ya no hay clases «inicio-boton» ni «inicio-error»', () => {
+    expect(estilosCss).not.toContain('inicio-boton')
+    expect(estilosCss).not.toContain('inicio-error')
+    expect(estilosCss).not.toContain('inicio-esqueleto')
+  })
+
+  it('la franja de contraste reconfigura los colores del sistema de botones', () => {
+    expect(estilosBase).toMatch(/\.inicio-franja\s*\{[^}]*--boton-principal-fondo/)
+    expect(estilosBase).toMatch(/\.inicio-franja\s*\{[^}]*--boton-secundario-texto/)
   })
 
   it('no usa colores literales ni la fuente pixel', () => {

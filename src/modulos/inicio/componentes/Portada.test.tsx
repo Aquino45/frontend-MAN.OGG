@@ -57,4 +57,10 @@ describe('Portada', () => {
     const arbol = container.querySelector('.inicio-portada__arbol svg.glifo-pixel')
     expect(arbol).toHaveAttribute('aria-hidden', 'true')
   })
+
+  it('el enlace principal es el botón del sistema con forma de píldora', () => {
+    verPortada(5)
+    const enlace = screen.getByRole('link', { name: TEXTOS_INICIO.explorarMapa })
+    expect(enlace).toHaveClass('boton', 'boton--pildora')
+  })
 })

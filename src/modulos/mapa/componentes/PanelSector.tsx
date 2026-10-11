@@ -1,6 +1,9 @@
 // Panel del sector abierto: cabecera y lista de sus árboles, con carga, error y vacío.
 // No pide datos: recibe el estado de la lista y los callbacks por props.
 import type { ArbolFeature, SectorPropiedades } from '@/api/cliente'
+import { EstadoCarga } from '@/compartido/EstadoCarga'
+import { EstadoError } from '@/compartido/EstadoError'
+import { EstadoVacio } from '@/compartido/EstadoVacio'
 import { GlifoPixelArbol } from '@/compartido/GlifoPixelArbol'
 import { SelloDemo } from '@/compartido/SelloDemo'
 import { SinDato } from '@/compartido/SinDato'
@@ -40,7 +43,6 @@ function FilaArbol({
     foto_miniatura_url,
     demo,
     destacado,
-    motivo_destacado,
   } = arbol.properties
   return (
     <li>
@@ -70,7 +72,6 @@ function FilaArbol({
             <span className="fila-arbol__destacado">
               <IconoEstrella className="fila-arbol__estrella" />
               <span className="fila-arbol__etiqueta-destacado">{TEXTOS_DESTACADO.etiqueta}</span>
-              {motivo_destacado && <span className="fila-arbol__motivo">{motivo_destacado}</span>}
             </span>
           )}
         </span>
@@ -91,7 +92,11 @@ export function PanelSector({
 }: PropsPanelSector) {
   return (
     <section className="panel-sector" aria-label={sector.nombre}>
-      <button type="button" className="boton boton--texto" onClick={onVolver}>
+      <button
+        type="button"
+        className="boton boton--secundario panel-sector__volver"
+        onClick={onVolver}
+      >
         {TEXTOS_PANEL.volverASectores}
       </button>
       <header className="panel-sector__cabecera">
@@ -101,21 +106,12 @@ export function PanelSector({
           <p className="panel-sector__nota">{TEXTOS_MAPA.limitesProvisionales}</p>
         )}
       </header>
-      {arboles.estado === 'cargando' && (
-        <p className="panel-sector__mensaje" role="status">
-          {fraseCarga}
-        </p>
-      )}
+      {arboles.estado === 'cargando' && <EstadoCarga etiqueta={fraseCarga} forma="lista" />}
       {arboles.estado === 'error' && (
-        <div className="panel-sector__mensaje" role="alert">
-          <p>{TEXTOS_PANEL.errorArboles}</p>
-          <button type="button" className="boton" onClick={onReintentar}>
-            {TEXTOS_PANEL.reintentar}
-          </button>
-        </div>
+        <EstadoError mensaje={TEXTOS_PANEL.errorArboles} onReintentar={onReintentar} />
       )}
       {arboles.estado === 'listo' && arboles.arboles.length === 0 && (
-        <p className="panel-sector__mensaje">{TEXTOS_PANEL.sinArboles}</p>
+        <EstadoVacio mensaje={TEXTOS_PANEL.sinArboles} />
       )}
       {arboles.estado === 'listo' && arboles.arboles.length > 0 && (
         <ul className="panel-sector__lista" aria-label={TEXTOS_PANEL.tituloLista}>

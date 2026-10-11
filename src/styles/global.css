@@ -1,6 +1,8 @@
 @import '@fontsource/bricolage-grotesque/400.css';
 @import '@fontsource/bricolage-grotesque/600.css';
 @import '@fontsource/bricolage-grotesque/800.css';
+@import './botones.estilos.css';
+@import './base.estilos.css';
 
 *,
 *::before,
@@ -20,21 +22,16 @@ body {
   color: var(--color-texto);
   font-family: var(--fuente-base);
   font-size: var(--texto-base);
-  line-height: 1.5;
+  line-height: var(--interlinea-cuerpo);
   transition:
-    background-color var(--duracion-media) var(--curva-salida),
-    color var(--duracion-media) var(--curva-salida);
-}
-
-:focus-visible {
-  outline: var(--grosor-foco-ui) solid var(--color-texto);
-  outline-offset: var(--separacion-foco);
+    background-color var(--duracion-hover) var(--curva-hover),
+    color var(--duracion-hover) var(--curva-hover);
 }
 
 /* ---------- Estructura de la página ---------- */
 
 .app {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
 }
@@ -56,61 +53,6 @@ body {
   border: 0;
 }
 
-/* ---------- Controles ---------- */
-
-.interruptor-tema,
-.boton {
-  font: inherit;
-  cursor: pointer;
-  border: var(--grosor-borde-ui) solid var(--color-borde);
-  transition:
-    transform var(--duracion-rapida) var(--curva-salida),
-    border-color var(--duracion-rapida) var(--curva-salida),
-    background-color var(--duracion-rapida) var(--curva-salida);
-}
-
-.interruptor-tema:active,
-.boton:active {
-  transform: scale(var(--escala-presion));
-}
-
-.interruptor-tema {
-  flex: none;
-  inline-size: var(--tamano-control);
-  block-size: var(--tamano-control);
-  display: grid;
-  place-items: center;
-  padding: 0;
-  border-radius: var(--radio-lg);
-  background: var(--color-superficie);
-  color: var(--color-texto);
-}
-
-.interruptor-tema__icono {
-  inline-size: var(--tamano-icono);
-  block-size: var(--tamano-icono);
-  fill: none;
-  stroke: currentColor;
-  stroke-width: var(--grosor-icono);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.boton {
-  padding: var(--espacio-2) var(--espacio-4);
-  border-radius: var(--radio-md);
-  background: var(--color-acento);
-  color: var(--color-texto-sobre-acento);
-  font-weight: 700;
-}
-
-@media (hover: hover) {
-  .interruptor-tema:hover,
-  .boton:hover {
-    border-color: var(--color-acento);
-  }
-}
-
 /* ---------- Mapa de sectores ---------- */
 
 .vista-mapa {
@@ -120,22 +62,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--espacio-3);
-}
-
-.vista-mapa__carga,
-.vista-mapa__error {
-  min-height: var(--mapa-alto-reserva);
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--espacio-3);
-  text-align: center;
-}
-
-.vista-mapa__error p {
-  margin: 0;
 }
 
 .mapa-sectores {
@@ -156,9 +82,8 @@ body {
 
 .sector {
   transition:
-    opacity var(--duracion-media) var(--curva-salida),
-    transform var(--duracion-media) var(--curva-salida),
-    filter var(--duracion-media) var(--curva-salida);
+    opacity var(--duracion-entrada) var(--curva-salida),
+    transform var(--duracion-entrada) var(--curva-salida);
 }
 
 .mapa-sectores__svg--con-activo .sector:not(.sector--activo) {
@@ -167,6 +92,7 @@ body {
 
 .sector--activo {
   transform: translateY(var(--mapa-elevacion));
+  /* Sombra fija con desplazamiento: no se anima */
   filter: var(--mapa-sombra);
 }
 
@@ -178,8 +104,8 @@ body {
   vector-effect: non-scaling-stroke;
   cursor: pointer;
   transition:
-    fill var(--duracion-rapida) var(--curva-salida),
-    stroke var(--duracion-rapida) var(--curva-salida);
+    fill var(--duracion-hover) var(--curva-hover),
+    stroke var(--duracion-hover) var(--curva-hover);
 }
 
 .sector--provisional .sector__forma {
@@ -207,7 +133,7 @@ body {
   text-anchor: middle;
   dominant-baseline: middle;
   pointer-events: none;
-  transition: fill var(--duracion-rapida) var(--curva-salida);
+  transition: fill var(--duracion-hover) var(--curva-hover);
 }
 
 .sector--activo .sector__etiqueta {
@@ -260,14 +186,6 @@ body {
 /* ---------- Piezas compartidas ---------- */
 
 /* ---------- Panel del sector y cartilla ---------- */
-.boton--texto {
-  align-self: flex-start;
-  padding: var(--espacio-1) var(--espacio-2);
-  border-color: transparent;
-  background: transparent;
-  color: var(--color-texto);
-}
-
 .sello-demo {
   display: inline-block;
   padding: var(--espacio-1) var(--espacio-2);
@@ -277,6 +195,7 @@ body {
   text-transform: uppercase;
   letter-spacing: var(--etiqueta-espaciado);
   font-size: var(--texto-cartilla-etiqueta);
+  border-radius: var(--radio-chip);
   color: var(--color-texto);
 }
 
@@ -306,23 +225,4 @@ body {
 
 .glifo-pixel__tronco {
   fill: var(--tronco-noche);
-}
-
-/* ---------- Movimiento reducido ---------- */
-
-@media (prefers-reduced-motion: reduce) {
-  body,
-  .interruptor-tema,
-  .boton,
-  .sector,
-  .sector__forma,
-  .sector__etiqueta {
-    transition: none;
-  }
-
-  .interruptor-tema:active,
-  .boton:active,
-  .sector--activo {
-    transform: none;
-  }
 }

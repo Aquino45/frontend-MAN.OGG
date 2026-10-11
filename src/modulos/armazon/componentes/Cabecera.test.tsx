@@ -1,7 +1,8 @@
-import { render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
 import { describe, expect, it } from 'vitest'
 import { NOMBRE_PRODUCTO, RUTAS, TEXTOS_ARMAZON } from '@/config/constantes'
+import estilosCss from '../estilos.css?raw'
 import { Cabecera } from './Cabecera'
 
 function verCabecera(ruta: string) {
@@ -58,5 +59,101 @@ describe('Cabecera', () => {
   it('trae el interruptor de tema', () => {
     verCabecera(RUTAS.inicio)
     expect(screen.getByRole('button', { name: /tema/i })).toBeInTheDocument()
+  })
+
+  it('la navegación trae los 4 enlaces: Inicio, Mapa, Árboles y Cifras, en ese orden', () => {
+    verCabecera(RUTAS.inicio)
+    const navegacion = screen.getByRole('navigation', { name: TEXTOS_ARMAZON.navegacionPrincipal })
+    const enlaces = within(navegacion).getAllByRole('link')
+    expect(enlaces.map((enlace) => enlace.textContent)).toEqual([
+      TEXTOS_ARMAZON.inicio,
+      TEXTOS_ARMAZON.mapa,
+      TEXTOS_ARMAZON.arboles,
+      TEXTOS_ARMAZON.cifras,
+    ])
+    expect(enlaces.map((enlace) => enlace.getAttribute('href'))).toEqual([
+      RUTAS.inicio,
+      RUTAS.mapa,
+      RUTAS.arboles,
+      RUTAS.cifras,
+    ])
+  })
+
+  it.each([
+    [RUTAS.arboles, TEXTOS_ARMAZON.arboles],
+    [RUTAS.cifras, TEXTOS_ARMAZON.cifras],
+  ])('en «%s» solo «%s» lleva aria-current', (ruta, nombre) => {
+    verCabecera(ruta)
+    const activos = screen
+      .getAllByRole('link')
+      .filter((enlace) => enlace.getAttribute('aria-current') === 'page')
+    expect(activos.map((enlace) => enlace.textContent)).toEqual([nombre])
+  })
+
+  it('el botón «Menú» arranca cerrado y controla la navegación', () => {
+    verCabecera(RUTAS.inicio)
+    const boton = screen.getByRole('button', { name: TEXTOS_ARMAZON.menu })
+    const navegacion = screen.getByRole('navigation', { name: TEXTOS_ARMAZON.navegacionPrincipal })
+    expect(boton).toHaveAttribute('aria-expanded', 'false')
+    expect(boton).toHaveAttribute('aria-controls', navegacion.id)
+    expect(navegacion.id).not.toBe('')
+    expect(boton).toHaveClass('boton')
+  })
+
+  it('«Menú» abre y cierra la lista con aria-expanded', () => {
+    verCabecera(RUTAS.inicio)
+    const boton = screen.getByRole('button', { name: TEXTOS_ARMAZON.menu })
+    const navegacion = screen.getByRole('navigation', { name: TEXTOS_ARMAZON.navegacionPrincipal })
+    fireEvent.click(boton)
+    expect(boton).toHaveAttribute('aria-expanded', 'true')
+    expect(navegacion).toHaveAttribute('data-abierto', 'true')
+    fireEvent.click(boton)
+    expect(boton).toHaveAttribute('aria-expanded', 'false')
+    expect(navegacion).toHaveAttribute('data-abierto', 'false')
+  })
+
+  it('Esc cierra el menú y devuelve el foco al botón', () => {
+    verCabecera(RUTAS.inicio)
+    const boton = screen.getByRole('button', { name: TEXTOS_ARMAZON.menu })
+    fireEvent.click(boton)
+    fireEvent.keyDown(screen.getByRole('link', { name: TEXTOS_ARMAZON.mapa }), { key: 'Escape' })
+    expect(boton).toHaveAttribute('aria-expanded', 'false')
+    expect(boton).toHaveFocus()
+  })
+
+  it('elegir un enlace cierra el menú', () => {
+    verCabecera(RUTAS.inicio)
+    const boton = screen.getByRole('button', { name: TEXTOS_ARMAZON.menu })
+    fireEvent.click(boton)
+    fireEvent.click(screen.getByRole('link', { name: TEXTOS_ARMAZON.cifras }))
+    expect(boton).toHaveAttribute('aria-expanded', 'false')
+  })
+})
+
+describe('Cabecera: estilos', () => {
+  it('el menú empuja el contenido: la navegación no se posiciona fuera del flujo', () => {
+    expect(estilosCss).not.toMatch(/position:\s*(absolute|fixed|sticky)/)
+    expect(estilosCss).toMatch(/\.armazon-cabecera__nav\s*\{[^}]*flex-basis:\s*100%/)
+    expect(estilosCss).toMatch(
+      /\.armazon-cabecera__nav\[data-abierto='false'\]\s*\{[^}]*display:\s*none/,
+    )
+  })
+
+  it('la navegación va en línea desde 48rem y el botón «Menú» se oculta', () => {
+    expect(estilosCss).toMatch(/@media \(width >= 48rem\)/)
+    expect(estilosCss).toMatch(/\.armazon-cabecera__menu\s*\{[^}]*display:\s*none/)
+  })
+
+  it('la píldora se queda en los enlaces de navegación', () => {
+    expect(estilosCss).toMatch(/\.armazon-cabecera__enlace\s*\{[^}]*var\(--radio-pildora\)/)
+    expect(estilosCss.match(/--radio-pildora/g)).toHaveLength(1)
+  })
+
+  it('el hover está protegido y la ruta activa pesa 600 sobre la tarjeta', () => {
+    expect(estilosCss).toContain('@media (hover: hover) and (pointer: fine)')
+    expect(estilosCss).toMatch(
+      /\[aria-current='page'\]\s*\{[^}]*background:\s*var\(--color-tarjeta\)/,
+    )
+    expect(estilosCss).toMatch(/\[aria-current='page'\]\s*\{[^}]*font-weight:\s*600/)
   })
 })

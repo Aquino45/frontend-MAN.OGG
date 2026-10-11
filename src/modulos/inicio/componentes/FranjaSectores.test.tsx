@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
 import { describe, expect, it, vi } from 'vitest'
-import { RUTAS, TEXTOS_INICIO } from '@/config/constantes'
+import { RUTAS, TEXTOS_ESTADOS, TEXTOS_INICIO } from '@/config/constantes'
 import { sectoresMock } from '@/mocks'
 import { FranjaSectores } from './FranjaSectores'
 
@@ -40,6 +40,13 @@ describe('FranjaSectores', () => {
     )
   })
 
+  it('el botón de la franja es del sistema, sin forma de píldora', () => {
+    verFranja()
+    const enlace = screen.getByRole('link', { name: TEXTOS_INICIO.explorarMapa })
+    expect(enlace).toHaveClass('boton')
+    expect(enlace).not.toHaveClass('boton--pildora')
+  })
+
   it('las muestras de la leyenda son decorativas', () => {
     const { container } = verFranja()
     const muestras = container.querySelectorAll('.inicio-leyenda__muestra')
@@ -59,7 +66,9 @@ describe('FranjaSectores', () => {
     const { container, onReintentar } = verFranja({ estado: 'error', sectores: [] })
     expect(screen.getByRole('alert')).toHaveTextContent(TEXTOS_INICIO.errorSectores)
     expect(container.querySelector('.inicio-mapa')).toBeNull()
-    fireEvent.click(screen.getByRole('button', { name: TEXTOS_INICIO.reintentar }))
+    const reintentar = screen.getByRole('button', { name: TEXTOS_ESTADOS.reintentar })
+    expect(reintentar).toHaveClass('boton', 'boton--secundario')
+    fireEvent.click(reintentar)
     expect(onReintentar).toHaveBeenCalledTimes(1)
   })
 })

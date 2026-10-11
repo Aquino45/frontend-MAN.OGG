@@ -12,6 +12,7 @@ import {
   PARAMETROS_URL,
   REGION_INTERFAZ,
   RUTAS,
+  TEXTOS_ESTADOS,
   TEXTOS_INICIO,
 } from '@/config/constantes'
 import { arbolesMockPorSector, sectoresMock } from '@/mocks'
@@ -71,7 +72,7 @@ describe('VistaInicio', () => {
 
     expect(regionFranja().querySelector('[aria-busy="true"]')).not.toBeNull()
     expect(regionCifras().querySelector('[aria-busy="true"]')).not.toBeNull()
-    expect(container.querySelectorAll('.inicio-cifras__esqueleto')).toHaveLength(
+    expect(container.querySelectorAll('.estado-carga__cifra')).toHaveLength(
       Object.keys(TEXTOS_INICIO.cifras).length,
     )
     expect(regionFranja().textContent).not.toMatch(/\d/)
@@ -155,7 +156,7 @@ describe('VistaInicio', () => {
 
     // Reintentar en la franja vuelve a pedir los sectores y todo se llena
     pedirTodoConMocks()
-    fireEvent.click(within(regionFranja()).getByRole('button', { name: TEXTOS_INICIO.reintentar }))
+    fireEvent.click(within(regionFranja()).getByRole('button', { name: TEXTOS_ESTADOS.reintentar }))
     await within(regionCifras()).findByRole('list')
     expect(within(regionFranja()).getAllByRole('link', { name: /^Sector \d/ })).toHaveLength(
       sectoresMock.features.length,
@@ -177,7 +178,7 @@ describe('VistaInicio', () => {
     const llamadasAntes = obtenerArbolesFalso.mock.calls.length
 
     pedirTodoConMocks()
-    fireEvent.click(within(regionCifras()).getByRole('button', { name: TEXTOS_INICIO.reintentar }))
+    fireEvent.click(within(regionCifras()).getByRole('button', { name: TEXTOS_ESTADOS.reintentar }))
     await within(regionCifras()).findByRole('list')
     expect(obtenerArbolesFalso.mock.calls.length).toBeGreaterThan(llamadasAntes)
     expect(obtenerSectoresFalso).toHaveBeenCalledTimes(1)

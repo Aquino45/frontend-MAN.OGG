@@ -25,7 +25,7 @@ function InsigniaDestacado({ motivo }: { motivo: string | null }) {
         aria-hidden="true"
         focusable="false"
       >
-        <path d={ESTRELLA_CONTORNO} fill="currentColor" />
+        <path d={ESTRELLA_CONTORNO} />
       </svg>
       <span className="insignia-destacado__etiqueta">{TEXTOS_DESTACADO.etiqueta}</span>
       {motivo && <span className="insignia-destacado__motivo">{motivo}</span>}

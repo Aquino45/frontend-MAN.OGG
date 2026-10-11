@@ -28,6 +28,13 @@ describe('tema claro y oscuro', () => {
     vi.restoreAllMocks()
   })
 
+  it('el interruptor usa el botón ícono del sistema', () => {
+    simularSistema(false)
+    render(<InterruptorTema />)
+    const boton = screen.getByRole('button', { name: TEXTOS_TEMA.cambiarAClaro })
+    expect(boton).toHaveClass('boton', 'boton--icono')
+  })
+
   it('arranca con el tema del sistema', () => {
     simularSistema(true)
     aplicarTemaInicial()

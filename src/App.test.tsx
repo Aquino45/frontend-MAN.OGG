@@ -4,6 +4,8 @@ import {
   NOMBRE_PRODUCTO,
   RUTAS,
   TEXTOS_ARMAZON,
+  TEXTOS_CIFRAS,
+  TEXTOS_EXPLORAR,
   TEXTOS_INICIO,
   TEXTOS_TEMA,
 } from '@/config/constantes'
@@ -103,6 +105,36 @@ describe('App: rutas', () => {
       'href',
       '/',
     )
+  })
+
+  it.each([
+    [RUTAS.arboles, TEXTOS_ARMAZON.arboles, TEXTOS_EXPLORAR.titulo],
+    [RUTAS.cifras, TEXTOS_ARMAZON.cifras, TEXTOS_CIFRAS.titulo],
+  ])('«%s» muestra su página, un solo h1 y «%s» activo, sin entrada', (url, enlace, titulo) => {
+    const { container } = abrir(url, SORTEO_ALTO)
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
+    expect(screen.getByRole('heading', { level: 1, name: titulo })).toBeInTheDocument()
+    const navegacion = screen.getByRole('navigation', { name: TEXTOS_ARMAZON.navegacionPrincipal })
+    expect(within(navegacion).getByRole('link', { name: enlace })).toHaveAttribute(
+      'aria-current',
+      'page',
+    )
+    expect(container.querySelector('.entrada')).toBeNull()
+  })
+
+  it('desde Inicio, «Árboles» y «Cifras» de la navegación llevan a sus rutas', async () => {
+    abrir('/')
+    const navegacion = screen.getByRole('navigation', { name: TEXTOS_ARMAZON.navegacionPrincipal })
+    fireEvent.click(within(navegacion).getByRole('link', { name: TEXTOS_ARMAZON.arboles }))
+    expect(window.location.pathname).toBe(RUTAS.arboles)
+    expect(
+      await screen.findByRole('heading', { level: 1, name: TEXTOS_EXPLORAR.titulo }),
+    ).toBeInTheDocument()
+    fireEvent.click(within(navegacion).getByRole('link', { name: TEXTOS_ARMAZON.cifras }))
+    expect(window.location.pathname).toBe(RUTAS.cifras)
+    expect(
+      await screen.findByRole('heading', { level: 1, name: TEXTOS_CIFRAS.titulo }),
+    ).toBeInTheDocument()
   })
 
   it.each(['/', '/mapa', '/no-existe'])('la página «%s» tiene exactamente un h1', async (url) => {

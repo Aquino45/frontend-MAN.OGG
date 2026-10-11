@@ -127,10 +127,13 @@
   --desplazamiento-entrada: 6px;
 
   /* Espacios */
+  /* Base 4: 4 · 8 · 12 · 16 · 24 · 32 · 40 · 64 px */
   --espacio-1: 0.25rem;
   --espacio-2: 0.5rem;
+  --espacio-12: 0.75rem;
   --espacio-3: 1rem;
   --espacio-4: 1.5rem;
+  --espacio-32: 2rem;
   --espacio-5: 2.5rem;
   --espacio-6: 4rem;
 
@@ -138,6 +141,12 @@
   --radio-sm: 0.25rem;
   --radio-md: 0.5rem;
   --radio-lg: 1rem;
+  /* Por uso: 4 chips, sellos y miniaturas · 8 filas, campos y botones · 16 tarjetas, cartilla y hoja */
+  --radio-chip: 0.25rem;
+  --radio-control: 0.5rem;
+  --radio-tarjeta: 1rem;
+  /* Única sombra de lo que flota (hoja inferior y menú) */
+  --sombra-flotante: 0 -8px 24px var(--color-sombra);
 
   /* Tipografía (pila del sistema) */
   --fuente-base: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -147,24 +156,58 @@
   /* Etiquetas y rótulos pequeños del sitio: la pila de títulos en peso 600, mayúsculas y espaciado */
   --fuente-etiqueta: var(--fuente-display);
   --etiqueta-peso: 600;
-  --etiqueta-espaciado: 0.14em;
-  --texto-titulo: clamp(2.5rem, 10vw + 0.5rem, 5rem);
+  --etiqueta-espaciado: var(--tracking-etiqueta);
+  /* Escala tipográfica (~1.25). 0.75rem es el mínimo absoluto y solo para etiquetas en mayúsculas. */
+  --texto-xs: 0.75rem;
+  --texto-sm: 0.875rem;
+  --texto-md: 1rem;
+  --texto-cuerpo: 1.125rem;
+  --texto-lg: 1.4rem;
+  --texto-xl: 1.75rem;
+  --texto-2xl: 2.25rem;
+  --texto-display: clamp(2.75rem, 1.25rem + 7vw, 6rem);
+  --interlinea-cuerpo: 1.5;
+  --interlinea-display: 1;
+  --interlinea-titulo: 1.05;
+  --tracking-display: -0.03em;
+  --tracking-etiqueta: 0.08em;
+  --medida-cuerpo: 65ch;
+  --medida-nota: 24ch;
+  --texto-titulo: var(--texto-display);
   --texto-cabecera: clamp(1.75rem, 4vw + 1rem, 3rem);
-  --texto-subtitulo: 1.5rem;
-  --texto-base: 1.125rem;
-  --texto-pequeno: 0.9375rem;
+  --texto-subtitulo: var(--texto-lg);
+  --texto-base: var(--texto-cuerpo);
+  --texto-pequeno: var(--texto-sm);
   /* Cartilla */
-  --texto-cartilla-titulo: clamp(2rem, 8vw, 2.75rem);
-  --texto-cartilla-valor: 1.625rem;
-  --texto-cartilla-dato: 0.9375rem;
-  --texto-cartilla-menor: 0.8125rem;
-  --texto-cartilla-etiqueta: 0.625rem;
+  --texto-cartilla-titulo: clamp(var(--texto-xl), 8vw, var(--texto-2xl));
+  --texto-cartilla-valor: var(--texto-xl);
+  --texto-cartilla-dato: var(--texto-sm);
+  --texto-cartilla-menor: var(--texto-sm);
+  --texto-cartilla-etiqueta: var(--texto-xs);
 
   /* Duraciones y curvas */
   --duracion-rapida: 150ms;
   --duracion-media: 300ms;
   --curva-salida: cubic-bezier(0.23, 1, 0.32, 1);
   --escala-presion: 0.96;
+  /* Movimiento del sitio: presionar 120 · hover 160 · entrada 200 · hoja 240 · zoom del mapa 320 ·
+     salidas 150. Nada pasa de 300 ms fuera del zoom. */
+  --duracion-presion: 120ms;
+  --duracion-hover: 160ms;
+  --duracion-entrada: 200ms;
+  --duracion-hoja: 240ms;
+  --duracion-zoom: 320ms;
+  --duracion-salida: 150ms;
+  --curva-movimiento: cubic-bezier(0.77, 0, 0.175, 1);
+  --curva-hoja: cubic-bezier(0.32, 0.72, 0, 1);
+  --curva-hover: ease;
+  --escala-activo: 0.97;
+  --alto-hoja: 85dvh;
+  /* Superficies del navegador: selección en magenta oscuro con texto claro (6.6:1) */
+  --seleccion-fondo: var(--copa-magenta-oscuro);
+  --seleccion-texto: var(--texto-lectura);
+  --scrollbar-pulgar: var(--color-secundario);
+  --scrollbar-pista: var(--color-fondo);
 }
 
 /* Tema claro: redefine solo los alias semánticos.
@@ -225,18 +268,18 @@
   --boton-secundario-borde: var(--color-texto-tenue);
 
   /* Tamaños de Inicio. En 360 px: portada ≈ 45 px, título de franja ≈ 36 px, cifra ≈ 44 px. */
-  --texto-portada: clamp(2.75rem, 1.25rem + 7vw, 6.5rem);
+  --texto-portada: var(--texto-display);
   --texto-franja-titulo: clamp(2.25rem, 0.75rem + 5.4vw, 5rem);
   --texto-cifra: clamp(2.75rem, 1.5rem + 3.5vw, 4rem);
-  --texto-antetitulo: 0.8125rem;
-  --texto-frase: clamp(1.0625rem, 0.95rem + 0.5vw, 1.25rem);
+  --texto-antetitulo: var(--texto-xs);
+  --texto-frase: var(--texto-cuerpo);
   --inicio-ancho-maximo: 77.5rem;
   --glifo-portada: min(26rem, 100%);
   --glifo-marca: 2rem;
   --alto-boton-grande: 3.25rem;
   --radio-pildora: 999px;
-  --duracion-aparicion: 400ms;
-  --desplazamiento-aparicion: 12px;
+  --duracion-aparicion: var(--duracion-entrada);
+  --desplazamiento-aparicion: 8px;
 }
 
 /* Tema claro: lo que cambia de los tokens de arriba.
@@ -287,4 +330,7 @@
   --esqueleto-cifras: color-mix(in srgb, var(--color-texto) 14%, var(--franja-cifras-fondo));
   --esqueleto-cifra-alto: 3.5rem;
   --esqueleto-texto-alto: 1rem;
+  /* Esqueleto de los estados compartidos: el color del texto de su bloque al 14 % */
+  --esqueleto-mezcla: 14%;
+  --estado-alto-minimo: 12rem;
 }

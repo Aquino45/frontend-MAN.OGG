@@ -1,0 +1,19 @@
+/* Página provisional de «Árboles»: título grande y el aviso de estado vacío. */
+.pagina-provisional {
+  max-inline-size: var(--inicio-ancho-maximo);
+  margin-inline: auto;
+  padding: var(--espacio-6) var(--espacio-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-4);
+}
+
+.pagina-provisional__titulo {
+  margin: 0;
+  font-family: var(--fuente-display);
+  font-weight: 800;
+  font-size: var(--texto-cabecera);
+  line-height: var(--interlinea-titulo);
+  letter-spacing: var(--tracking-display);
+  overflow-wrap: anywhere;
+}

@@ -79,6 +79,14 @@ export const PESOS_FRASES_CARGA: Record<keyof typeof FRASES_CARGA, number> = {
 // PESO DE CADA FORMA DE GLIFO DECORATIVO DE ÁRBOL DENTRO DE LOS SECTORES
 export const PESOS_GLIFOS_ARBOL = { copaRedonda: 3, copaAlta: 2, palma: 1 } as const
 
+// ---------- ESTADOS COMPARTIDOS (carga, vacío y error) ----------
+
+// TEXTOS DE LAS ACCIONES DE LOS ESTADOS COMPARTIDOS
+export const TEXTOS_ESTADOS = {
+  reintentar: 'Reintentar',
+  limpiarFiltros: 'Limpiar filtros',
+} as const
+
 // ---------- PRODUCTO ----------
 
 // NOMBRE PÚBLICO DEL PRODUCTO (título de la página y de la cabecera)
@@ -178,7 +186,6 @@ export const TEXTOS_CARTILLA = {
   cerrar: 'Cerrar cartilla',
   cargando: 'Abriendo la cartilla…',
   error: 'No pudimos cargar la cartilla.',
-  reintentar: 'Reintentar',
   noEncontrado: 'No encontramos el árbol',
   selloDemo: 'Dato de ejemplo',
   fotoPendiente: 'Foto pendiente',
@@ -210,7 +217,12 @@ export const MARCA_HISTORIAL = 'censoArboreoEntrada'
 // ---------- RUTAS Y ARMAZÓN DEL SITIO ----------
 
 // RUTAS DEL SITIO (la cartilla y el sector viajan en la consulta de /mapa: ?sector=…&arbol=…)
-export const RUTAS = { inicio: '/', mapa: '/mapa' } as const
+export const RUTAS = {
+  inicio: '/',
+  mapa: '/mapa',
+  arboles: '/arboles',
+  cifras: '/cifras',
+} as const
 
 // LICENCIA DE LOS DATOS DEL CONTORNO DEL CAMPUS (OpenStreetMap, ODbL)
 export const URL_LICENCIA_ODBL = 'https://opendatacommons.org/licenses/odbl/1-0/'
@@ -220,12 +232,37 @@ export const TEXTOS_ARMAZON = {
   navegacionPrincipal: 'Principal',
   inicio: 'Inicio',
   mapa: 'Mapa',
+  arboles: 'Árboles',
+  cifras: 'Cifras',
+  menu: 'Menú',
   notaDatos: 'Sector 1 con datos de la brigada; sectores 2 a 5 con datos de ejemplo.',
   creditoContorno: 'Contorno del campus © colaboradores de OpenStreetMap',
   nombreLicencia: 'ODbL',
   tituloNoEncontrada: 'Página no encontrada',
   fraseNoEncontrada: 'La dirección que abriste no existe o cambió de lugar.',
   volverAlInicio: 'Volver al inicio',
+} as const
+
+// ENLACES DE LA NAVEGACIÓN PRINCIPAL, EN ORDEN (agregar una página es agregar una fila).
+// «exacta» evita que Inicio quede activo en todas las rutas.
+export const ENLACES_NAVEGACION = [
+  { ruta: RUTAS.inicio, texto: TEXTOS_ARMAZON.inicio, exacta: true },
+  { ruta: RUTAS.mapa, texto: TEXTOS_ARMAZON.mapa, exacta: false },
+  { ruta: RUTAS.arboles, texto: TEXTOS_ARMAZON.arboles, exacta: false },
+  { ruta: RUTAS.cifras, texto: TEXTOS_ARMAZON.cifras, exacta: false },
+] as const
+
+// ---------- EXPLORAR ÁRBOLES Y CIFRAS DEL CENSO ----------
+
+// TEXTOS DE LAS PÁGINAS DE EXPLORAR Y DE CIFRAS (mientras llegan sus vistas completas)
+export const TEXTOS_EXPLORAR = {
+  titulo: 'Explorar árboles',
+  proximamente: 'Esta sección llega pronto',
+} as const
+
+export const TEXTOS_CIFRAS = {
+  titulo: 'Cifras del censo',
+  proximamente: 'Esta sección llega pronto',
 } as const
 
 // ---------- PÁGINA DE INICIO ----------
@@ -253,7 +290,6 @@ export const TEXTOS_INICIO = {
   tituloCifras: 'El censo hoy',
   cargandoCifras: 'Cargando las cifras del censo…',
   errorCifras: 'No pudimos cargar las cifras del censo.',
-  reintentar: 'Reintentar',
   cifras: {
     arbolesDeCampo: { etiqueta: 'Árboles de campo', nota: 'registrados por la brigada' },
     sectores: { etiqueta: 'Sectores del campus', nota: 'los que muestra el mapa' },

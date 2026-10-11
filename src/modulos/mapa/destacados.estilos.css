@@ -1,15 +1,8 @@
-/* Árboles destacados del sector: estrella en el mapa, en la lista y en la leyenda. */
-@keyframes brillo-destacado {
-  from {
-    filter: brightness(var(--destacado-brillo-intensidad));
-  }
-}
-
+/* Árboles destacados del sector: estrella ámbar fija (sin destello) en el mapa, la lista y la leyenda. */
 .punto-arbol--destacado {
   fill: var(--punto-destacado);
   fill-opacity: 1;
   stroke: var(--punto-destacado-borde);
-  animation: brillo-destacado var(--destacado-brillo-duracion) var(--curva-salida);
 }
 
 .punto-arbol--destacado path {
@@ -65,10 +58,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .punto-arbol--destacado {
-    animation: none;
-  }
-
   .punto-arbol--destacado.punto-arbol--resaltado,
   .punto-arbol--destacado:focus-visible {
     transform: none;

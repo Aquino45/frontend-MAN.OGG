@@ -8,7 +8,7 @@ export function VistaNoEncontrada() {
     <section className="armazon-no-encontrada">
       <h1 className="armazon-no-encontrada__titulo">{TEXTOS_ARMAZON.tituloNoEncontrada}</h1>
       <p className="armazon-no-encontrada__frase">{TEXTOS_ARMAZON.fraseNoEncontrada}</p>
-      <Link className="armazon-boton" to={RUTAS.inicio}>
+      <Link className="boton" to={RUTAS.inicio}>
         {TEXTOS_ARMAZON.volverAlInicio}
       </Link>
     </section>

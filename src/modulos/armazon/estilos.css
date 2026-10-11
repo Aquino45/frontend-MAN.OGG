@@ -1,6 +1,9 @@
 /* Estilos del armazón del sitio: cabecera, pie y página «no encontrada». */
 
-/* ---------- Cabecera ---------- */
+/* ---------- Cabecera ----------
+   Desde 48rem: marca, enlaces en línea y tema, en una sola fila.
+   Por debajo: marca y acciones en una fila y la lista de enlaces debajo, a todo el ancho.
+   Cerrada no ocupa lugar; abierta EMPUJA el contenido (no flota ni lo tapa). */
 .armazon-cabecera {
   inline-size: 100%;
   max-inline-size: var(--inicio-ancho-maximo);
@@ -16,8 +19,10 @@
 .armazon-cabecera__marca {
   display: flex;
   align-items: center;
-  gap: var(--espacio-3);
+  gap: var(--espacio-12);
+  min-inline-size: 0;
   min-block-size: var(--tamano-control);
+  margin-inline-end: auto;
   color: var(--color-texto);
   text-decoration: none;
 }
@@ -37,17 +42,23 @@
 }
 
 .armazon-cabecera__nombre {
+  min-inline-size: 0;
   font-weight: 600;
   font-size: var(--texto-base);
-  line-height: 1.2;
+  line-height: var(--interlinea-titulo);
   overflow-wrap: anywhere;
 }
 
 .armazon-cabecera__acciones {
+  order: 2;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   gap: var(--espacio-2);
+}
+
+.armazon-cabecera__nav {
+  order: 1;
+  min-inline-size: 0;
 }
 
 .armazon-cabecera__enlaces {
@@ -55,21 +66,27 @@
   padding: 0;
   list-style: none;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row;
   align-items: center;
   gap: var(--espacio-2);
 }
 
 .armazon-cabecera__enlace {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   min-block-size: var(--tamano-control);
   padding-inline: var(--espacio-3);
   border-radius: var(--radio-pildora);
   color: var(--color-texto);
-  font-size: var(--texto-pequeno);
+  font-size: var(--texto-sm);
   text-decoration: none;
-  transition: background-color var(--duracion-rapida) var(--curva-salida);
+  transition:
+    background-color var(--duracion-hover) var(--curva-hover),
+    transform var(--duracion-presion) var(--curva-salida);
+}
+
+.armazon-cabecera__enlace:active {
+  transform: scale(var(--escala-activo));
 }
 
 .armazon-cabecera__enlace[aria-current='page'] {
@@ -77,9 +94,36 @@
   font-weight: 600;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .armazon-cabecera__enlace:hover {
     background: var(--color-superficie);
+  }
+}
+
+@media (width >= 48rem) {
+  .armazon-cabecera__menu {
+    display: none;
+  }
+}
+
+@media (width < 48rem) {
+  .armazon-cabecera__acciones {
+    order: 1;
+  }
+
+  .armazon-cabecera__nav {
+    order: 2;
+    flex-basis: 100%;
+  }
+
+  .armazon-cabecera__nav[data-abierto='false'] {
+    display: none;
+  }
+
+  .armazon-cabecera__enlaces {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--espacio-1);
   }
 }
 
@@ -126,44 +170,14 @@
   font-family: var(--fuente-display);
   font-weight: 800;
   font-size: var(--texto-cabecera);
-  line-height: 1.05;
+  line-height: var(--interlinea-titulo);
+  letter-spacing: var(--tracking-display);
   overflow-wrap: anywhere;
 }
 
 .armazon-no-encontrada__frase {
   margin: 0;
-  max-inline-size: 40rem;
+  max-inline-size: var(--medida-cuerpo);
   font-size: var(--texto-frase);
   color: var(--color-texto-suave);
-}
-
-/* Botón de las páginas del armazón: blanco semibold de 18 px o más sobre carmín (4.72:1). */
-.armazon-boton {
-  display: inline-flex;
-  align-items: center;
-  min-block-size: var(--alto-boton-grande);
-  padding-inline: var(--espacio-4);
-  border-radius: var(--radio-pildora);
-  background: var(--boton-principal-fondo);
-  color: var(--boton-principal-texto);
-  font-weight: 600;
-  font-size: var(--texto-base);
-  text-decoration: none;
-  transition: transform var(--duracion-rapida) var(--curva-salida);
-}
-
-.armazon-boton:active {
-  transform: scale(var(--escala-presion));
-}
-
-/* ---------- Movimiento reducido ---------- */
-@media (prefers-reduced-motion: reduce) {
-  .armazon-cabecera__enlace,
-  .armazon-boton {
-    transition: none;
-  }
-
-  .armazon-boton:active {
-    transform: none;
-  }
 }

@@ -18,7 +18,7 @@
   stroke-width: var(--mapa-inicio-grosor-borde);
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
-  transition: stroke-width var(--duracion-rapida) var(--curva-salida);
+  transition: stroke-width var(--duracion-hover) var(--curva-hover);
 }
 
 .inicio-sector--campo .inicio-sector__forma {
@@ -41,7 +41,7 @@
   stroke-width: var(--mapa-grosor-foco);
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .inicio-sector:hover .inicio-sector__forma {
     stroke-width: var(--mapa-grosor-foco);
   }

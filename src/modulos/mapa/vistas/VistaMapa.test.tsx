@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { ErrorApi, obtenerSectores } from '@/api/cliente'
-import { FRASES_CARGA, TEXTOS_MAPA } from '@/config/constantes'
+import { FRASES_CARGA, TEXTOS_ESTADOS, TEXTOS_MAPA } from '@/config/constantes'
 import { sectoresMock } from '@/mocks'
 import { VistaMapa } from './VistaMapa'
 
@@ -19,7 +19,9 @@ describe('VistaMapa', () => {
   it('mientras carga muestra una frase de carga elegida por peso', () => {
     obtenerSectoresFalso.mockReturnValue(new Promise(() => {}))
     render(<VistaMapa aleatorio={SIEMPRE_CERO} />)
-    expect(screen.getByRole('status')).toHaveTextContent(FRASES_CARGA.contando)
+    const estado = screen.getByRole('status')
+    expect(estado).toHaveTextContent(FRASES_CARGA.contando)
+    expect(estado).toHaveAttribute('aria-busy', 'true')
   })
 
   it('al seleccionar un sector muestra la franja con su nombre y su total', async () => {
@@ -41,7 +43,9 @@ describe('VistaMapa', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent(TEXTOS_MAPA.errorSectores)
 
     obtenerSectoresFalso.mockResolvedValueOnce(sectoresMock)
-    fireEvent.click(screen.getByRole('button', { name: TEXTOS_MAPA.reintentar }))
+    const reintentar = screen.getByRole('button', { name: TEXTOS_ESTADOS.reintentar })
+    expect(reintentar).toHaveClass('boton--secundario')
+    fireEvent.click(reintentar)
     await waitFor(() => expect(screen.getAllByRole('button', { name: /^Sector/ })).toHaveLength(5))
   })
 })

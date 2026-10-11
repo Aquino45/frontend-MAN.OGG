@@ -1,0 +1,83 @@
+/* Sistema único de botones: primario, secundario e ícono.
+   Primario: blanco sobre carmín 4.72:1 (el texto del botón va semibold).
+   Secundario: borde tenue y texto del tema; el borde pasa al acento al pasar el cursor.
+   Ícono: 44 px por lado, con el dibujo centrado.
+   El modificador de píldora es solo para el botón principal de la portada. */
+
+.boton {
+  --boton-fondo: var(--boton-principal-fondo);
+  --boton-texto: var(--boton-principal-texto);
+  --boton-borde: transparent;
+  --boton-fondo-hover: color-mix(in srgb, var(--boton-fondo) 80%, var(--tronco-noche));
+  --boton-borde-hover: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-2);
+  min-block-size: var(--tamano-control);
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  padding: var(--espacio-2) var(--espacio-4);
+  border: var(--grosor-borde-ui) solid var(--boton-borde);
+  border-radius: var(--radio-control);
+  background-color: var(--boton-fondo);
+  color: var(--boton-texto);
+  font: inherit;
+  font-weight: 600;
+  line-height: var(--interlinea-titulo);
+  text-align: center;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  transition:
+    transform var(--duracion-presion) var(--curva-salida),
+    background-color var(--duracion-hover) var(--curva-hover),
+    border-color var(--duracion-hover) var(--curva-hover);
+}
+
+.boton:active {
+  transform: scale(var(--escala-activo));
+}
+
+.boton--secundario {
+  --boton-fondo: transparent;
+  --boton-texto: var(--boton-secundario-texto, var(--color-texto));
+  --boton-borde: var(--boton-secundario-borde);
+  --boton-fondo-hover: transparent;
+  --boton-borde-hover: var(--color-acento);
+}
+
+.boton--icono {
+  --boton-fondo: var(--color-tarjeta);
+  --boton-texto: var(--color-texto);
+  --boton-fondo-hover: var(--color-superficie);
+  --boton-borde-hover: var(--color-acento);
+  flex: none;
+  inline-size: var(--tamano-control);
+  padding: 0;
+}
+
+/* Botón principal de la portada: el único con forma de píldora */
+.boton--pildora {
+  min-block-size: var(--alto-boton-grande);
+  border-radius: var(--radio-pildora);
+  font-size: var(--texto-cuerpo);
+}
+
+.boton__icono {
+  flex: none;
+  inline-size: var(--tamano-icono);
+  block-size: var(--tamano-icono);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--grosor-icono);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .boton:hover {
+    background-color: var(--boton-fondo-hover);
+    border-color: var(--boton-borde-hover);
+  }
+}

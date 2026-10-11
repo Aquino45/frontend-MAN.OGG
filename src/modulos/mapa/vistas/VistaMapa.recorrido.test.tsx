@@ -100,6 +100,33 @@ describe('VistaMapa: recorrido sector → árbol', () => {
     expect(await screen.findByRole('complementary', { name: 'S01-A012' })).toBeInTheDocument()
   })
 
+  it('el panel es el mismo elemento al abrir la cartilla y al cerrarla con Esc (no repite su entrada)', async () => {
+    render(<VistaMapa aleatorio={SIEMPRE_CERO} />)
+    fireEvent.click(await screen.findByRole('button', { name: /^Sector 1,/ }))
+    const panel = await screen.findByRole('complementary', { name: /Sector 1/ })
+
+    fireEvent.click(await screen.findByRole('button', { name: /^S01-A012, Huarango. Destacado/ }))
+    await screen.findByRole('heading', { name: 'Huarango' })
+    expect(screen.getByRole('complementary', { name: 'S01-A012' })).toBe(panel)
+
+    fireEvent.keyDown(window, { key: 'Escape' })
+    await waitFor(() => expect(window.location.search).toBe('?sector=1'))
+    expect(await screen.findByRole('complementary', { name: /Sector 1/ })).toBe(panel)
+
+    fireEvent.click(screen.getAllByRole('button', { name: /^Sector 2,/ })[0])
+    expect(await screen.findByRole('complementary', { name: /Sector 2/ })).toBe(panel)
+  })
+
+  it('en el panel del sector la fila del destacado no repite el motivo; la cartilla sí lo trae', async () => {
+    render(<VistaMapa aleatorio={SIEMPRE_CERO} />)
+    fireEvent.click(await screen.findByRole('button', { name: /^Sector 1,/ }))
+    const lista = await screen.findByRole('list')
+    expect(lista).not.toHaveTextContent('ejemplar de mayor copa del sector')
+    fireEvent.click(within(lista).getByRole('button', { name: /S01-A012/ }))
+    await screen.findByRole('heading', { name: 'Huarango' })
+    expect(screen.getByText(/ejemplar de mayor copa del sector/)).toBeInTheDocument()
+  })
+
   it('una URL con sector y árbol lleva directo a la cartilla', async () => {
     irA('/?sector=1&arbol=S01-A001')
     render(<VistaMapa aleatorio={SIEMPRE_CERO} />)

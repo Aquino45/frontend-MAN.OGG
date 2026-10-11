@@ -10,17 +10,12 @@ export function InterruptorTema() {
   return (
     <button
       type="button"
-      className="interruptor-tema"
+      className="boton boton--icono"
       onClick={alternar}
       aria-label={nombre}
       title={nombre}
     >
-      <svg
-        className="interruptor-tema__icono"
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-        focusable="false"
-      >
+      <svg className="boton__icono" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
         {vaAClaro ? (
           <g>
             <circle cx="12" cy="12" r="4.5" />
