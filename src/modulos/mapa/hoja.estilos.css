@@ -1,0 +1,102 @@
+/* Hoja inferior y panel lateral del sector, y la barra del botón de volver. */
+
+/* Dentro de la hoja, el botón de volver es una barra propia con el fondo opaco de la hoja:
+   el contenido que se desplaza no se ve por encima ni por debajo de ella. */
+.vista-mapa__panel :is(.vista-cartilla__volver, .panel-sector__volver) {
+  --boton-fondo: var(--color-fondo);
+  --boton-fondo-hover: var(--color-fondo);
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+  align-self: stretch;
+  margin-block-end: 0;
+}
+
+.vista-mapa__panel :is(.vista-cartilla__volver, .panel-sector__volver)::before,
+.vista-mapa__panel :is(.vista-cartilla__volver, .panel-sector__volver)::after {
+  content: '';
+  position: absolute;
+  inset-inline: calc(-1 * var(--espacio-3));
+  z-index: -1;
+  background: var(--color-fondo);
+  pointer-events: none;
+}
+
+/* Hueco que queda por encima (el relleno de la hoja) */
+.vista-mapa__panel :is(.vista-cartilla__volver, .panel-sector__volver)::before {
+  inset-block-end: 100%;
+  block-size: var(--espacio-4);
+}
+
+/* Hueco hasta el contenido de abajo */
+.vista-mapa__panel :is(.vista-cartilla__volver, .panel-sector__volver)::after {
+  inset-block-start: 100%;
+  block-size: var(--espacio-3);
+}
+
+/* ---------- Disposición: panel al costado en pantallas anchas, hoja inferior en celular ---------- */
+/* La hoja entra una sola vez, al abrir el sector: pasar de la lista a la cartilla o cerrar con Esc
+   no la vuelve a animar (el panel es el mismo elemento). */
+@keyframes entrada-hoja {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@media (min-width: 56rem) {
+  .vista-mapa--con-sector {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--panel-ancho);
+    align-items: start;
+    gap: var(--espacio-4);
+  }
+
+  .vista-mapa__panel {
+    position: sticky;
+    inset-block-start: var(--espacio-3);
+    max-block-size: calc(100dvh - 2 * var(--espacio-3));
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 55.99rem) {
+  .vista-mapa--con-sector .mapa-sectores__svg {
+    max-block-size: var(--mapa-alto-reserva);
+  }
+
+  .vista-mapa__panel {
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: 2;
+    max-block-size: min(var(--alto-hoja), calc(100dvh - var(--alto-cabecera)));
+    overscroll-behavior: contain;
+    overflow-y: auto;
+    padding: var(--espacio-4) var(--espacio-3)
+      calc(var(--espacio-3) + env(safe-area-inset-bottom, 0px));
+    border-start-start-radius: var(--radio-tarjeta);
+    border-start-end-radius: var(--radio-tarjeta);
+    background: var(--color-fondo);
+    box-shadow: var(--sombra-flotante);
+    animation: entrada-hoja var(--duracion-hoja) var(--curva-hoja);
+  }
+
+  /* Asa de la hoja inferior */
+  .vista-mapa__panel::before {
+    content: '';
+    position: absolute;
+    inset-block-start: var(--espacio-2);
+    inset-inline-start: 50%;
+    inline-size: var(--hoja-asa-ancho);
+    block-size: var(--hoja-asa-alto);
+    border-radius: var(--radio-sm);
+    background: var(--color-pista);
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vista-mapa__panel {
+    animation: none;
+  }
+}

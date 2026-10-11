@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest'
 
 // La fuente pixel vive solo en el módulo de la entrada: el resto del sitio usa la etiqueta.
 const CARPETA_ENTRADA = '/src/modulos/entrada/'
-const ARCHIVO_DE_TOKENS = '/src/styles/tokens.css'
+// La pila de fuentes está en el archivo de la escala; tokens.css solo guarda colores
+const ARCHIVO_DE_TOKENS = '/src/styles/escala.tokens.css'
 const PAQUETE_FUENTE = '@fontsource/silkscreen'
 
 const estilos = import.meta.glob('/src/**/*.css', {
@@ -36,7 +37,7 @@ describe('tipografía: la fuente pixel solo en la entrada', () => {
     expect(usos).toEqual([])
   })
 
-  it('tokens.css puede definir --fuente-pixel pero no usarla', () => {
+  it('la escala puede definir --fuente-pixel pero no usarla', () => {
     const tokens = estilos[ARCHIVO_DE_TOKENS]
     expect(tokens).toMatch(/--fuente-pixel\s*:/)
     expect(tokens).not.toMatch(/var\(\s*--fuente-pixel/)

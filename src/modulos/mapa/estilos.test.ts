@@ -1,10 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { CORTE_PANEL_LATERAL_REM } from '@/config/constantes'
 import estilosBase from './estilos.css?raw'
+import estilosHoja from './hoja.estilos.css?raw'
 import estilosDestacados from './destacados.estilos.css?raw'
 import estilosBotones from '@/styles/botones.estilos.css?raw'
 
-const estilosCss = estilosBase
+// Los dos archivos del módulo: el mapa y la lista, y la hoja inferior con la barra de volver
+const estilosCss = `${estilosBase}
+${estilosHoja}`
 
 // El CSS no puede leer las constantes: este test comprueba que el corte entre el panel lateral
 // y la hoja inferior coincide con CORTE_PANEL_LATERAL_REM.

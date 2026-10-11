@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { ATRIBUTO_TEMA, TEMAS } from '@/config/constantes'
-import tokensCss from './tokens.css?raw'
+import colores from './tokens.css?raw'
+import escala from './escala.tokens.css?raw'
+import movimiento from './movimiento.tokens.css?raw'
+
+// Todos los tokens del sitio: los colores y alias en tokens.css; la escala y el movimiento aparte
+const tokensCss = [colores, escala, movimiento].join('\n')
 
 // Selectores de atributo que aparecen en tokens.css, por ejemplo [data-tema='claro']
 const PATRON_SELECTOR_ATRIBUTO = /\[([a-z-]+)=['"]?([a-z-]+)['"]?\]/g
@@ -37,8 +42,6 @@ const TOKENS_DE_LA_CARTILLA = [
   '--texto-tenue',
   '--texto-suave',
   '--panel-ancho',
-  '--hoja-alto-lista',
-  '--hoja-alto-cartilla',
   '--foto-proporcion',
   '--estado-bueno-fondo',
   '--estado-bueno-texto',
@@ -49,6 +52,32 @@ const TOKENS_DE_LA_CARTILLA = [
   '--estado-otro-fondo',
   '--estado-otro-texto',
 ]
+
+describe('reparto de los tokens en archivos', () => {
+  it('colores y alias van en tokens.css; escala y movimiento no llevan colores literales', () => {
+    expect(colores).toContain('--copa-carmin:')
+    for (const hoja of [escala, movimiento]) {
+      expect(hoja).not.toMatch(/#[0-9a-fA-F]{3,8}|rgba?\(|hsla?\(/)
+    }
+    expect(escala).toContain('--texto-cuerpo:')
+    expect(escala).toContain('--espacio-12:')
+    expect(movimiento).toContain('--duracion-hover:')
+    expect(movimiento).toContain('--escala-presion:')
+    expect(colores).not.toContain('--duracion-hover:')
+    expect(colores).not.toContain('--texto-cuerpo:')
+  })
+
+  it('ya no existen los tokens del brillo ni los alturas viejas de la hoja', () => {
+    expect(tokensCss).not.toContain('--destacado-brillo')
+    expect(tokensCss).not.toContain('--hoja-alto')
+  })
+
+  it('cada archivo de tokens cabe en ~300 líneas', () => {
+    for (const hoja of [colores, escala, movimiento]) {
+      expect(hoja.split('\n').length).toBeLessThanOrEqual(300)
+    }
+  })
+})
 
 describe('tokens.css', () => {
   it('los selectores de tema usan el atributo y los valores de las constantes', () => {
@@ -62,7 +91,7 @@ describe('tokens.css', () => {
   })
 
   it('el tema claro redefine solo alias semánticos (--color-*)', () => {
-    const bloqueClaro = tokensCss.match(PATRON_BLOQUE_CLARO)?.[1]
+    const bloqueClaro = colores.match(PATRON_BLOQUE_CLARO)?.[1]
     expect(bloqueClaro).toBeDefined()
     const propiedades = propiedadesDe(bloqueClaro ?? '').filter(
       (nombre) => nombre !== 'color-scheme',
@@ -82,7 +111,7 @@ describe('tokens.css', () => {
   })
 
   it('los alias de la cartilla existen en el oscuro y el claro los redefine', () => {
-    const bloqueClaro = tokensCss.match(PATRON_BLOQUE_CLARO)?.[1] ?? ''
+    const bloqueClaro = colores.match(PATRON_BLOQUE_CLARO)?.[1] ?? ''
     for (const alias of ALIAS_DE_LA_CARTILLA) {
       expect(tokensCss).toContain(`${alias}:`)
       expect(bloqueClaro).toContain(`${alias}:`)

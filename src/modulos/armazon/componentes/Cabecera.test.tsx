@@ -2,6 +2,7 @@ import { fireEvent, render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
 import { describe, expect, it } from 'vitest'
 import { NOMBRE_PRODUCTO, RUTAS, TEXTOS_ARMAZON } from '@/config/constantes'
+import escalaTokens from '@/styles/escala.tokens.css?raw'
 import estilosCss from '../estilos.css?raw'
 import { Cabecera } from './Cabecera'
 
@@ -127,6 +128,33 @@ describe('Cabecera', () => {
     fireEvent.click(boton)
     fireEvent.click(screen.getByRole('link', { name: TEXTOS_ARMAZON.cifras }))
     expect(boton).toHaveAttribute('aria-expanded', 'false')
+  })
+})
+
+describe('Cabecera: tipografía de los enlaces', () => {
+  const regla = /\.armazon-cabecera__enlace\s*\{([^}]*)\}/.exec(estilosCss)?.[1] ?? ''
+  const tamano = /--texto-sm:\s*([\d.]+)rem/.exec(escalaTokens)?.[1]
+
+  it('los enlaces (en línea y en el menú móvil) heredan la fuente del sitio', () => {
+    expect(regla).not.toBe('')
+    expect(regla).not.toMatch(/font-family/)
+    expect(estilosCss).not.toMatch(/\.armazon-cabecera[^{]*\{[^}]*font-family:\s*(?!inherit)/)
+    expect(estilosCss).not.toMatch(/serif/)
+  })
+
+  it('miden al menos 0.875rem, resuelto desde el token', () => {
+    expect(regla).toMatch(/font-size:\s*var\(--(texto-sm|texto-md|texto-cuerpo|texto-base)\)/)
+    expect(Number(tamano)).toBeGreaterThanOrEqual(0.875)
+  })
+
+  it('en el menú móvil los enlaces suben a 1rem', () => {
+    expect(estilosCss).toMatch(
+      /@media \(width < 48rem\)[\s\S]*\.armazon-cabecera__enlace\s*\{[^}]*font-size:\s*var\(--texto-md\)/,
+    )
+  })
+
+  it('el objetivo táctil de cada enlace es de 44 px', () => {
+    expect(regla).toMatch(/min-block-size:\s*var\(--tamano-control\)/)
   })
 })
 
