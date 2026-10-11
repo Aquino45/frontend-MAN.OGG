@@ -1,7 +1,13 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { ArbolFeature } from '@/api/cliente'
-import { ESTRELLA_CONTORNO, TEXTOS_DESTACADO, TEXTOS_MAPA, TEXTOS_PANEL } from '@/config/constantes'
+import {
+  ESTRELLA_CONTORNO,
+  TEXTOS_DESTACADO,
+  TEXTOS_ESTADOS,
+  TEXTOS_MAPA,
+  TEXTOS_PANEL,
+} from '@/config/constantes'
 import { arbolesSector1Mock, sectoresMock } from '@/mocks'
 import type { EstadoArbolesDeSector } from '../hooks/useArbolesDeSector'
 import { ordenarDestacadosPrimero } from '../lib/ordenArboles'
@@ -52,21 +58,34 @@ describe('PanelSector', () => {
 
   it('estado cargando: muestra la frase de carga', () => {
     montar({ estado: 'cargando' })
-    expect(screen.getByRole('status')).toHaveTextContent(FRASE)
+    const estado = screen.getByRole('status')
+    expect(estado).toHaveTextContent(FRASE)
+    expect(estado).toHaveAttribute('aria-busy', 'true')
+    expect(estado).toHaveClass('estado-carga--lista')
   })
 
-  it('estado error: muestra el mensaje y «Reintentar» lo pide de nuevo', () => {
+  it('estado error: usa el error compartido y «Reintentar» lo pide de nuevo', () => {
     const alReintentar = vi.fn()
     montar({ estado: 'error', error: new Error('503') }, { onReintentar: alReintentar })
     expect(screen.getByRole('alert')).toHaveTextContent(TEXTOS_PANEL.errorArboles)
-    fireEvent.click(screen.getByRole('button', { name: TEXTOS_PANEL.reintentar }))
+    const reintentar = screen.getByRole('button', { name: TEXTOS_ESTADOS.reintentar })
+    expect(reintentar).toHaveClass('boton', 'boton--secundario')
+    fireEvent.click(reintentar)
     expect(alReintentar).toHaveBeenCalledOnce()
   })
 
-  it('estado vacío: dice «Aún sin árboles registrados»', () => {
-    montar({ estado: 'listo', arboles: [] })
+  it('estado vacío: usa el vacío compartido y dice «Aún sin árboles registrados»', () => {
+    const { container } = montar({ estado: 'listo', arboles: [] })
     expect(screen.getByText(TEXTOS_PANEL.sinArboles)).toBeInTheDocument()
+    expect(container.querySelector('.estado--vacio')).not.toBeNull()
     expect(screen.queryByRole('list')).not.toBeInTheDocument()
+  })
+
+  it('«Volver a los sectores» es un botón secundario del sistema', () => {
+    montar({ estado: 'cargando' })
+    const volver = screen.getByRole('button', { name: new RegExp(TEXTOS_PANEL.volverASectores) })
+    expect(volver).toHaveClass('boton', 'boton--secundario')
+    expect(volver).not.toHaveClass('boton--texto')
   })
 
   it('estado listo: una fila por árbol, con los destacados primero, y sus datos', () => {
@@ -111,24 +130,24 @@ describe('PanelSector', () => {
     expect(alVolver).toHaveBeenCalledOnce()
   })
 
-  it('la fila de un destacado lleva la estrella y su motivo; las demás no', () => {
+  it('la fila de un destacado lleva la estrella y la palabra «Destacado», sin repetir el motivo', () => {
     const { container } = montar({ estado: 'listo', arboles: arbolesSector1Mock.features })
     const estrellas = container.querySelectorAll('.fila-arbol__estrella')
     expect(estrellas).toHaveLength(1)
     const fila = estrellas[0].closest('li') as HTMLElement
     expect(fila.querySelector('.fila-arbol__codigo')).toHaveTextContent('S01-A012')
     expect(fila).toHaveTextContent(TEXTOS_DESTACADO.etiqueta)
-    expect(fila).toHaveTextContent('ejemplar de mayor copa del sector')
+    expect(fila).not.toHaveTextContent('ejemplar de mayor copa del sector')
+    expect(container.querySelector('.fila-arbol__motivo')).toBeNull()
     expect(estrellas[0].querySelector('path')).toHaveAttribute('d', ESTRELLA_CONTORNO)
   })
 
-  it('un destacado sin motivo muestra solo la etiqueta', () => {
+  it('un destacado sin motivo también muestra la etiqueta', () => {
     const sinMotivo: ArbolFeature = {
       ...arbolesSector1Mock.features[2],
       properties: { ...arbolesSector1Mock.features[2].properties, motivo_destacado: null },
     }
-    const { container } = montar({ estado: 'listo', arboles: [sinMotivo] })
-    expect(container.querySelector('.fila-arbol__motivo')).toBeNull()
+    montar({ estado: 'listo', arboles: [sinMotivo] })
     expect(screen.getByText(TEXTOS_DESTACADO.etiqueta)).toBeInTheDocument()
   })
 

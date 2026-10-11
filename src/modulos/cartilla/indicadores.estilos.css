@@ -1,0 +1,281 @@
+/* Cartilla: indicadores, bloque de CO₂, estados de campo, observaciones y pie. */
+
+.indicadores-arbol {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espacio-3);
+  padding-inline: var(--espacio-3);
+}
+
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+  min-inline-size: 0;
+  padding: var(--espacio-3);
+  border-radius: var(--radio-tarjeta);
+  background: var(--color-tarjeta);
+}
+
+.tarjeta__etiqueta {
+  font-family: var(--fuente-etiqueta);
+  font-weight: var(--etiqueta-peso);
+  text-transform: uppercase;
+  letter-spacing: var(--etiqueta-espaciado);
+  font-size: var(--texto-cartilla-etiqueta);
+  color: var(--color-texto-tenue);
+}
+
+.tarjeta__valor {
+  font-size: var(--texto-cartilla-valor);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.indicador-altura__pista {
+  block-size: var(--indicador-barra-alto);
+  border-radius: var(--radio-chip);
+  background: var(--color-pista);
+}
+
+.indicador-altura__relleno {
+  block-size: 100%;
+  border-radius: inherit;
+  background: var(--copa-carmin);
+}
+
+.indicador-copa {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.indicador-copa__dibujo {
+  flex: none;
+  inline-size: var(--indicador-copa-lado);
+  block-size: var(--indicador-copa-lado);
+}
+
+.indicador-copa__anillo {
+  fill: none;
+  stroke: var(--color-pista);
+  stroke-width: 2;
+  stroke-dasharray: 4 4;
+}
+
+.indicador-copa__elipse {
+  fill: var(--copa-magenta);
+}
+
+.indicador-copa__cero {
+  fill: none;
+  stroke: var(--copa-carmin);
+  stroke-width: 3;
+  stroke-dasharray: 3 3;
+}
+
+.indicador-copa__centro {
+  fill: var(--color-texto);
+}
+
+.indicador-copa__valores {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-1);
+  min-inline-size: 0;
+}
+
+.indicador-copa__valor {
+  font-size: var(--texto-cartilla-dato);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.indicador-dap {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.indicador-dap__dato {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-1);
+  min-inline-size: 0;
+}
+
+.indicador-dap__nota {
+  max-inline-size: var(--medida-nota);
+  font-size: var(--texto-cartilla-menor);
+  line-height: var(--interlinea-cuerpo);
+  text-align: end;
+  color: var(--color-texto-tenue);
+  overflow-wrap: anywhere;
+}
+
+.bloque-co2 {
+  margin-inline: var(--espacio-3);
+  padding: var(--espacio-3);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--espacio-3);
+  border-radius: var(--radio-tarjeta);
+  background: var(--color-co2-fondo);
+  color: var(--color-co2-texto);
+}
+
+/* El «Sin dato» de un bloque invertido toma el color del texto del bloque, no el tenue del tema. */
+.bloque-co2 .sin-dato {
+  color: var(--color-co2-texto);
+}
+
+.bloque-co2__columna {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-1);
+  min-inline-size: 0;
+}
+
+.bloque-co2__columna--derecha {
+  text-align: end;
+}
+
+.bloque-co2__etiqueta {
+  font-family: var(--fuente-etiqueta);
+  font-weight: var(--etiqueta-peso);
+  text-transform: uppercase;
+  letter-spacing: var(--etiqueta-espaciado);
+  font-size: var(--texto-cartilla-etiqueta);
+}
+
+.bloque-co2__principal {
+  font-size: var(--texto-xl);
+  font-weight: 800;
+  line-height: var(--interlinea-display);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.bloque-co2__unidad {
+  font-size: var(--texto-cartilla-menor);
+  font-weight: 600;
+}
+
+.bloque-co2__captura {
+  font-size: var(--texto-base);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-co2-acento);
+}
+
+.estados-arbol {
+  margin: 0;
+  padding-inline: var(--espacio-3);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espacio-2) var(--espacio-3);
+  font-size: var(--texto-cartilla-menor);
+}
+
+.estados-arbol__campo {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.estados-arbol__etiqueta {
+  font-family: var(--fuente-etiqueta);
+  font-weight: var(--etiqueta-peso);
+  text-transform: uppercase;
+  letter-spacing: var(--etiqueta-espaciado);
+  font-size: var(--texto-cartilla-etiqueta);
+  color: var(--color-texto-tenue);
+}
+
+.estados-arbol__valor {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.observaciones-arbol {
+  margin: 0;
+  max-inline-size: var(--medida-cuerpo);
+  padding-inline: var(--espacio-3);
+  font-size: var(--texto-cartilla-menor);
+  line-height: var(--interlinea-cuerpo);
+  color: var(--color-texto-suave);
+  overflow-wrap: anywhere;
+}
+
+.pie-arbol {
+  margin-block-start: auto;
+  padding: var(--espacio-3);
+  border-block-start: var(--grosor-borde-ui) solid var(--color-superficie);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-1);
+  font-size: var(--texto-cartilla-etiqueta);
+  color: var(--color-texto-tenue);
+  overflow-wrap: anywhere;
+}
+
+.pie-arbol__ubicacion {
+  font-family: var(--fuente-etiqueta);
+  font-weight: var(--etiqueta-peso);
+  text-transform: uppercase;
+  letter-spacing: var(--etiqueta-espaciado);
+}
+
+/* Los bloques de la cartilla entran uno tras otro (200 ms, desde scale 0.98 y opacidad 0).
+   Escalonado de 40 ms en 5 pasos como máximo. */
+@keyframes entrada-bloque {
+  from {
+    opacity: 0;
+    transform: scale(var(--entrada-escala-inicial));
+  }
+}
+
+.cartilla > * {
+  animation: entrada-bloque var(--duracion-entrada) var(--curva-salida) backwards;
+}
+
+.cartilla > :nth-child(2) {
+  animation-delay: calc(1 * var(--retraso-escalonado));
+}
+
+.cartilla > :nth-child(3) {
+  animation-delay: calc(2 * var(--retraso-escalonado));
+}
+
+.cartilla > :nth-child(4) {
+  animation-delay: calc(3 * var(--retraso-escalonado));
+}
+
+.cartilla > :nth-child(n + 5) {
+  animation-delay: calc(4 * var(--retraso-escalonado));
+}
+
+/* En un panel angosto (celular) los indicadores van uno debajo del otro. */
+@container (max-width: 26rem) {
+  .indicadores-arbol {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .bloque-co2,
+  .indicador-dap {
+    flex-wrap: wrap;
+  }
+
+  .indicador-dap__nota {
+    text-align: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cartilla > * {
+    animation: none;
+  }
+}

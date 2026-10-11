@@ -1,0 +1,106 @@
+/* Estados compartidos: carga (esqueleto), vacío y error.
+   El esqueleto toma el color del texto de su bloque al 14 %, así sigue al tema y a las franjas invertidas. */
+
+.estado {
+  inline-size: 100%;
+  min-block-size: var(--estado-alto-minimo);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-3);
+  padding: var(--espacio-4) 0;
+  text-align: center;
+}
+
+.estado__mensaje {
+  margin: 0;
+  max-inline-size: var(--medida-cuerpo);
+  font-size: var(--texto-cuerpo);
+  line-height: var(--interlinea-cuerpo);
+  overflow-wrap: anywhere;
+}
+
+.estado-carga {
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.estado-carga__piezas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-12);
+}
+
+.estado-carga__barra,
+.estado-carga__miniatura,
+.estado-carga__foto,
+.estado-carga__bloque {
+  display: block;
+  background: color-mix(in srgb, currentColor var(--esqueleto-mezcla), transparent);
+}
+
+.estado-carga__barra {
+  block-size: var(--esqueleto-texto-alto);
+  border-radius: var(--radio-chip);
+}
+
+.estado-carga__barra--corta {
+  inline-size: 60%;
+}
+
+.estado-carga__barra--titulo {
+  block-size: var(--esqueleto-cifra-alto);
+  inline-size: 70%;
+}
+
+.estado-carga__barra--cifra {
+  block-size: var(--esqueleto-cifra-alto);
+  inline-size: 50%;
+}
+
+.estado-carga__fila {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-12);
+}
+
+.estado-carga__miniatura {
+  flex: none;
+  inline-size: var(--miniatura-lado);
+  block-size: var(--miniatura-lado);
+  border-radius: var(--radio-chip);
+}
+
+.estado-carga__textos {
+  flex: 1;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+}
+
+.estado-carga__foto {
+  aspect-ratio: var(--foto-proporcion);
+  border-radius: var(--radio-tarjeta);
+}
+
+.estado-carga__bloque {
+  inline-size: 100%;
+  min-block-size: var(--estado-alto-minimo);
+  max-inline-size: var(--mapa-inicio-ancho-maximo);
+  border-radius: var(--radio-tarjeta);
+}
+
+.estado-carga--cifras .estado-carga__piezas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13.75rem), 1fr));
+  gap: var(--espacio-4);
+}
+
+.estado-carga__cifra {
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+}

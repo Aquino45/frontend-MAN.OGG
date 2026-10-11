@@ -1,5 +1,7 @@
 import { useId } from 'react'
 import type { SectorFeature } from '@/api/cliente'
+import { EstadoCarga } from '@/compartido/EstadoCarga'
+import { EstadoError } from '@/compartido/EstadoError'
 import { TEXTOS_INICIO } from '@/config/constantes'
 import type { ConteoDeSector } from '../lib/cifras'
 import { EnlaceMapa } from './EnlaceMapa'
@@ -36,17 +38,14 @@ export function FranjaSectores({ estado, sectores, conteos, onReintentar }: Prop
         <div className="inicio-franja__mapa">
           {estado === 'listo' && <MapaInicio sectores={sectores} conteos={conteos} />}
           {estado === 'cargando' && (
-            <div className="inicio-esqueleto-mapa" role="status" aria-busy="true">
-              <span className="solo-lectores">{TEXTOS_INICIO.cargandoSectores}</span>
-            </div>
+            <EstadoCarga
+              etiqueta={TEXTOS_INICIO.cargandoSectores}
+              forma="bloque"
+              proporcion="var(--mapa-inicio-proporcion)"
+            />
           )}
           {estado === 'error' && (
-            <div className="inicio-error" role="alert">
-              <p className="inicio-error__mensaje">{TEXTOS_INICIO.errorSectores}</p>
-              <button className="inicio-error__boton" type="button" onClick={onReintentar}>
-                {TEXTOS_INICIO.reintentar}
-              </button>
-            </div>
+            <EstadoError mensaje={TEXTOS_INICIO.errorSectores} onReintentar={onReintentar} />
           )}
         </div>
       </div>

@@ -1,8 +1,16 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { Arbol } from '@/api/cliente'
-import { NOMBRE_CAMPUS, TEXTOS_CARTILLA, TEXTOS_DESTACADO } from '@/config/constantes'
+import {
+  MARCADOR_TITULO,
+  NOMBRE_CAMPUS,
+  TEXTOS_CAPSULA,
+  TEXTOS_CARTILLA,
+  TEXTOS_DESTACADO,
+  TEXTOS_SOBRE_ARBOL,
+} from '@/config/constantes'
 import { arbolDemoMock, arbolRealMock } from '@/mocks'
+import { CAMPOS_AYUDA_VISIBLES } from '../lib/capsulas'
 import { CartillaArbol } from './CartillaArbol'
 
 const NOMBRE_SECTOR = 'Sector 1'
@@ -37,7 +45,7 @@ describe('CartillaArbol', () => {
 
   it('muestra la cartilla demo completa con su sello y sus valores formateados', () => {
     const { container } = mostrar(arbolDemoMock)
-    expect(screen.getByText(TEXTOS_CARTILLA.selloDemo)).toBeInTheDocument()
+    expect(screen.getAllByText(TEXTOS_CARTILLA.selloDemo)).not.toHaveLength(0)
     expect(screen.getByRole('heading', { name: 'Huarango' })).toBeInTheDocument()
     expect(screen.getByText('Prosopis pallida')).toBeInTheDocument()
     expect(screen.getByText('Nativa')).toBeInTheDocument()
@@ -62,7 +70,7 @@ describe('CartillaArbol', () => {
     expect(insignia?.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
     expect(insignia).toHaveTextContent(TEXTOS_DESTACADO.etiqueta)
     expect(insignia).toHaveTextContent(arbolDemoMock.motivo_destacado ?? '')
-    expect(screen.getByText(TEXTOS_CARTILLA.selloDemo)).toBeVisible()
+    expect(screen.getAllByText(TEXTOS_CARTILLA.selloDemo)[0]).toBeVisible()
   })
 
   it('un destacado sin motivo muestra solo «Destacado»', () => {
@@ -166,5 +174,49 @@ describe('CartillaArbol', () => {
     const fotos = screen.getAllByAltText('Foto del árbol S01-A001 (Molle)')
     expect(fotos).toHaveLength(2)
     expect(screen.queryByText(TEXTOS_CARTILLA.fotoPendiente)).not.toBeInTheDocument()
+  })
+
+  describe('cápsulas «?» y «Sobre este árbol»', () => {
+    it('con las cápsulas de los ejemplos hay un botón «?» por cada dato visible, con el título de la API', () => {
+      mostrar(arbolDemoMock)
+      for (const campo of CAMPOS_AYUDA_VISIBLES) {
+        const capsula = arbolDemoMock.capsulas.find((c) => c.campo === campo)
+        expect(capsula, campo).toBeDefined()
+        const nombre = TEXTOS_CAPSULA.etiquetaBoton.replace(MARCADOR_TITULO, capsula?.titulo ?? '')
+        const conTitulo = screen.queryAllByRole('button', {
+          name: new RegExp(`^${nombre}|${capsula?.titulo}`),
+        })
+        expect(conTitulo.length, campo).toBeGreaterThan(0)
+      }
+    })
+
+    it('como la API real de hoy (capsulas vacías y sin ficha) no hay botones «?» ni sección', () => {
+      const { container } = mostrar({
+        ...arbolRealMock,
+        capsulas: [],
+        ficha_especie: null,
+        destacado: false,
+        motivo_destacado: null,
+      })
+      expect(screen.queryByRole('button', { name: /Qué significa/ })).not.toBeInTheDocument()
+      expect(container.querySelector('.sobre-arbol')).toBeNull()
+      expect(container.querySelector('.capsula')).toBeNull()
+    })
+
+    it('el árbol de ejemplo trae la sección «Sobre este árbol» como h3, tras el h2 del nombre', () => {
+      mostrar(arbolDemoMock)
+      const niveles = screen.getAllByRole('heading').map((titulo) => titulo.tagName)
+      expect(niveles.indexOf('H2')).toBeLessThan(niveles.indexOf('H3'))
+      expect(
+        screen.getByRole('heading', { level: 3, name: TEXTOS_SOBRE_ARBOL.titulo }),
+      ).toBeVisible()
+    })
+
+    it('abrir una cápsula dentro de la cartilla muestra lo que dice la API', () => {
+      mostrar(arbolDemoMock)
+      const dap = arbolDemoMock.capsulas.find((c) => c.campo === 'dap_cm')
+      fireEvent.click(screen.getByRole('button', { name: `Qué significa ${dap?.titulo}` }))
+      expect(screen.getAllByText(dap?.que_es ?? '')[0]).toBeVisible()
+    })
   })
 })

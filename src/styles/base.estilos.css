@@ -1,0 +1,63 @@
+/* Reglas de base del sitio: selección, foco, deshabilitado y movimiento reducido.
+   Las importa global.css. */
+
+html {
+  accent-color: var(--color-acento);
+  scrollbar-color: var(--scrollbar-pulgar) var(--scrollbar-pista);
+}
+
+::selection {
+  background: var(--seleccion-fondo);
+  color: var(--seleccion-texto);
+}
+
+/* Cifras y medidas alinean sus dígitos */
+.cifra,
+.medida,
+[data-cifra] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Foco igual en todo lo interactivo; en SVG lo marca el grosor del trazo (ver el mapa) */
+:focus-visible {
+  outline: var(--grosor-foco-ui) solid var(--color-texto);
+  outline-offset: var(--separacion-foco);
+}
+
+/* Un título que recibe el foco por programa (por ejemplo al abrir la cartilla) no dibuja anillo */
+h1:focus,
+h2:focus,
+h3:focus,
+h4:focus,
+h5:focus,
+h6:focus {
+  outline: none;
+}
+
+/* Lo deshabilitado se ve a media opacidad y no responde */
+:disabled,
+[aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---------- Movimiento reducido ----------
+   Quien pide menos movimiento no recibe ninguno: los cambios de estado se ven, pero al instante. */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+
+  :active {
+    transform: none !important;
+  }
+
+  .sector--activo {
+    transform: none !important;
+  }
+}

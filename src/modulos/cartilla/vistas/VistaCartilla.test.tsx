@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { TEXTOS_CARTILLA, TEXTOS_DESTACADO } from '@/config/constantes'
+import { TEXTOS_CARTILLA, TEXTOS_DESTACADO, TEXTOS_ESTADOS } from '@/config/constantes'
 import { arbolDemoMock } from '@/mocks'
 import { VistaCartilla } from './VistaCartilla'
 
@@ -24,18 +24,25 @@ describe('VistaCartilla', () => {
   it('la cartilla de un destacado muestra su motivo al cargar', async () => {
     render(<VistaCartilla codigo="S01-A012" nombreSector="Sector 1" onVolver={() => {}} />)
     await screen.findByRole('heading', { name: 'Huarango' })
-    expect(screen.getByText(arbolDemoMock.motivo_destacado ?? '')).toBeInTheDocument()
+    expect(screen.getAllByText(arbolDemoMock.motivo_destacado ?? '').length).toBeGreaterThanOrEqual(
+      1,
+    )
     expect(screen.getByText(TEXTOS_DESTACADO.etiqueta)).toBeInTheDocument()
   })
 
   it('un árbol que no existe dice «No encontramos el árbol» y deja volver', async () => {
     const alVolver = vi.fn()
     render(<VistaCartilla codigo="S01-A099" nombreSector="Sector 1" onVolver={alVolver} />)
-    expect(await screen.findByRole('alert')).toHaveTextContent(
-      `${TEXTOS_CARTILLA.noEncontrado} S01-A099`,
-    )
+    expect(await screen.findByText(`${TEXTOS_CARTILLA.noEncontrado} S01-A099`)).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: TEXTOS_CARTILLA.volverALista }))
     expect(alVolver).toHaveBeenCalledOnce()
+  })
+
+  it('mientras carga muestra el esqueleto compartido con la forma de la cartilla', () => {
+    const { container } = render(
+      <VistaCartilla codigo="S01-A012" nombreSector="Sector 1" onVolver={() => {}} />,
+    )
+    expect(container.querySelector('.estado-carga--tarjeta')).not.toBeNull()
   })
 
   it('un 503 muestra el error y «Reintentar» vuelve a pedir la cartilla', async () => {
@@ -49,7 +56,9 @@ describe('VistaCartilla', () => {
     )
     render(<VistaCartilla codigo="S01-A012" nombreSector="Sector 1" onVolver={() => {}} />)
     expect(await screen.findByRole('alert')).toHaveTextContent(TEXTOS_CARTILLA.error)
-    fireEvent.click(screen.getByRole('button', { name: TEXTOS_CARTILLA.reintentar }))
+    const reintentar = screen.getByRole('button', { name: TEXTOS_ESTADOS.reintentar })
+    expect(reintentar).toHaveClass('boton--secundario')
+    fireEvent.click(reintentar)
     expect(await screen.findByRole('heading', { name: 'Huarango' })).toBeInTheDocument()
   })
 })

@@ -5,6 +5,7 @@ import type { Arbol } from '@/api/cliente'
 import { GlifoPixelArbol } from '@/compartido/GlifoPixelArbol'
 import { SelloDemo } from '@/compartido/SelloDemo'
 import { TEXTOS_CARTILLA } from '@/config/constantes'
+import { CapsulaAyuda } from './CapsulaAyuda'
 import { ChipEstado } from './ChipEstado'
 
 interface PropsFotoArbol {
@@ -20,41 +21,44 @@ export function FotoArbol({ arbol }: PropsFotoArbol) {
   const hayFoto = fotoPrincipal !== null
 
   return (
-    <div className="foto-arbol">
-      {hayFoto ? (
-        <>
-          {arbol.foto_miniatura_url && arbol.foto_url && (
+    <div className="foto-bloque">
+      <div className="foto-arbol">
+        {hayFoto ? (
+          <>
+            {arbol.foto_miniatura_url && arbol.foto_url && (
+              <img
+                className="foto-arbol__imagen"
+                src={arbol.foto_miniatura_url}
+                alt={textoAlternativo}
+              />
+            )}
             <img
-              className="foto-arbol__imagen"
-              src={arbol.foto_miniatura_url}
+              className={`foto-arbol__imagen foto-arbol__imagen--completa${
+                arbol.foto_miniatura_url && arbol.foto_url && !fotoCompletaLista
+                  ? ' foto-arbol__imagen--pendiente'
+                  : ''
+              }`}
+              src={fotoPrincipal}
               alt={textoAlternativo}
+              onLoad={() => setFotoCompletaLista(true)}
             />
-          )}
-          <img
-            className={`foto-arbol__imagen foto-arbol__imagen--completa${
-              arbol.foto_miniatura_url && arbol.foto_url && !fotoCompletaLista
-                ? ' foto-arbol__imagen--pendiente'
-                : ''
-            }`}
-            src={fotoPrincipal}
-            alt={textoAlternativo}
-            onLoad={() => setFotoCompletaLista(true)}
-          />
-        </>
-      ) : (
-        <div className="foto-arbol__pendiente">
-          <GlifoPixelArbol />
-          <span className="foto-arbol__pendiente-texto">{TEXTOS_CARTILLA.fotoPendiente}</span>
-        </div>
-      )}
-      {arbol.demo && (
-        <span className="foto-arbol__sello">
-          <SelloDemo />
-        </span>
-      )}
-      <span className="foto-arbol__estado">
+          </>
+        ) : (
+          <div className="foto-arbol__pendiente">
+            <GlifoPixelArbol />
+            <span className="foto-arbol__pendiente-texto">{TEXTOS_CARTILLA.fotoPendiente}</span>
+          </div>
+        )}
+        {arbol.demo && (
+          <span className="foto-arbol__sello">
+            <SelloDemo />
+          </span>
+        )}
+      </div>
+      <div className="foto-arbol__estado">
         <ChipEstado estadoGeneral={arbol.estado_general} />
-      </span>
+        <CapsulaAyuda campo="estado_general" />
+      </div>
     </div>
   )
 }

@@ -3,6 +3,7 @@ import type { Arbol } from '@/api/cliente'
 import { SinDato } from '@/compartido/SinDato'
 import { MEDIDAS, TEXTOS_CARTILLA } from '@/config/constantes'
 import { formatearNumero } from '@/lib/formatear'
+import { CapsulaAyuda } from './CapsulaAyuda'
 
 interface PropsBloqueCo2 {
   arbol: Arbol
@@ -14,7 +15,10 @@ export function BloqueCo2({ arbol }: PropsBloqueCo2) {
   return (
     <div className="bloque-co2">
       <div className="bloque-co2__columna">
-        <span className="bloque-co2__etiqueta">{TEXTOS_CARTILLA.co2Almacenado}</span>
+        <span className="bloque-co2__etiqueta">
+          {TEXTOS_CARTILLA.co2Almacenado}
+          <CapsulaAyuda campo="co2_almacenado_kg" />
+        </span>
         <span className="bloque-co2__principal">
           {almacenado === null ? (
             <SinDato />
@@ -27,7 +31,10 @@ export function BloqueCo2({ arbol }: PropsBloqueCo2) {
         </span>
       </div>
       <div className="bloque-co2__columna bloque-co2__columna--derecha">
-        <span className="bloque-co2__etiqueta">{TEXTOS_CARTILLA.capturaAnual}</span>
+        <span className="bloque-co2__etiqueta">
+          {TEXTOS_CARTILLA.capturaAnual}
+          <CapsulaAyuda campo="co2_captura_anual_kg" />
+        </span>
         <span className="bloque-co2__captura">
           {captura === null ? <SinDato /> : `+${captura} ${MEDIDAS.co2CapturaAnualKg.unidad}`}
         </span>

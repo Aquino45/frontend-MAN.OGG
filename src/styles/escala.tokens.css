@@ -1,0 +1,50 @@
+/* Escala tipográfica y espaciado (base 4). Sin colores: los colores viven en tokens.css. */
+:root {
+  /* Espacios */
+  /* Base 4: 4 · 8 · 12 · 16 · 24 · 32 · 40 · 64 px */
+  --espacio-1: 0.25rem;
+  --espacio-2: 0.5rem;
+  --espacio-12: 0.75rem;
+  --espacio-3: 1rem;
+  --espacio-4: 1.5rem;
+  --espacio-32: 2rem;
+  --espacio-5: 2.5rem;
+  --espacio-6: 4rem;
+
+  /* Tipografía (pila del sistema) */
+  --fuente-base: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --fuente-mono: ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace;
+  --fuente-display: 'Bricolage Grotesque', var(--fuente-base);
+  --fuente-pixel: 'Silkscreen', var(--fuente-mono);
+  /* Etiquetas y rótulos pequeños del sitio: la pila de títulos en peso 600, mayúsculas y espaciado */
+  --fuente-etiqueta: var(--fuente-display);
+  --etiqueta-peso: 600;
+  --etiqueta-espaciado: var(--tracking-etiqueta);
+  /* Escala tipográfica (~1.25). 0.75rem es el mínimo absoluto y solo para etiquetas en mayúsculas. */
+  --texto-xs: 0.75rem;
+  --texto-sm: 0.875rem;
+  --texto-md: 1rem;
+  --texto-cuerpo: 1.125rem;
+  --texto-lg: 1.4rem;
+  --texto-xl: 1.75rem;
+  --texto-2xl: 2.25rem;
+  --texto-display: clamp(2.75rem, 1.25rem + 7vw, 6rem);
+  --interlinea-cuerpo: 1.5;
+  --interlinea-display: 1;
+  --interlinea-titulo: 1.05;
+  --tracking-display: -0.03em;
+  --tracking-etiqueta: 0.08em;
+  --medida-cuerpo: 65ch;
+  --medida-nota: 24ch;
+  --texto-titulo: var(--texto-display);
+  --texto-cabecera: clamp(1.75rem, 4vw + 1rem, 3rem);
+  --texto-subtitulo: var(--texto-lg);
+  --texto-base: var(--texto-cuerpo);
+  --texto-pequeno: var(--texto-sm);
+  /* Cartilla */
+  --texto-cartilla-titulo: clamp(var(--texto-xl), 8vw, var(--texto-2xl));
+  --texto-cartilla-valor: var(--texto-xl);
+  --texto-cartilla-dato: var(--texto-sm);
+  --texto-cartilla-menor: var(--texto-sm);
+  --texto-cartilla-etiqueta: var(--texto-xs);
+}

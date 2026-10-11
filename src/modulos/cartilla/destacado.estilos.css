@@ -1,27 +1,33 @@
-/* Insignia del árbol destacado: amarillo con texto de noche (≈10:1 en claro y oscuro).
-   El borde de noche separa la insignia del fondo claro (≥ 3:1). Brilla una vez al aparecer. */
+/* Insignia del árbol destacado: borde fino ámbar sobre la superficie de la tarjeta, estrella ámbar
+   fija con borde noche (se ve igual en los 2 temas) y una sombra sobria con desplazamiento.
+   El texto va en el color del tema sobre la tarjeta (más de 11:1 en claro y oscuro). Sin halo ni brillo. */
 .insignia-destacado {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--espacio-1) var(--espacio-2);
   align-self: flex-start;
+  min-inline-size: 0;
   max-inline-size: 100%;
   box-sizing: border-box;
   margin: 0 0 var(--espacio-1);
   padding: var(--espacio-1) var(--espacio-2);
-  border: var(--grosor-borde-ui) solid var(--punto-destacado-borde);
-  border-radius: var(--radio-sm);
-  background: var(--punto-destacado);
-  color: var(--punto-destacado-borde);
+  border: var(--grosor-borde-ui) solid var(--punto-destacado);
+  border-radius: var(--radio-chip);
+  background: var(--color-tarjeta);
+  box-shadow: 0 var(--espacio-1) var(--espacio-2) var(--color-sombra);
+  color: var(--color-texto);
   font-size: var(--texto-cartilla-menor);
-  animation: brillo-insignia-destacado var(--destacado-brillo-duracion) var(--curva-salida) 1;
 }
 
 .insignia-destacado__estrella {
   flex: none;
   inline-size: var(--insignia-estrella-tamano);
   block-size: var(--insignia-estrella-tamano);
+  fill: var(--punto-destacado);
+  stroke: var(--punto-destacado-borde);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
 }
 
 .insignia-destacado__etiqueta {
@@ -34,24 +40,4 @@
   min-inline-size: 0;
   font-weight: 600;
   overflow-wrap: anywhere;
-}
-
-@keyframes brillo-insignia-destacado {
-  from {
-    box-shadow: 0 0 0 0 var(--punto-destacado);
-  }
-
-  40% {
-    box-shadow: 0 0 var(--espacio-3) var(--espacio-1) var(--punto-destacado);
-  }
-
-  to {
-    box-shadow: 0 0 0 0 transparent;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .insignia-destacado {
-    animation: none;
-  }
 }

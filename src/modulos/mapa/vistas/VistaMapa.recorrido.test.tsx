@@ -1,7 +1,7 @@
 // Recorrido completo con los mocks: mapa → sector → árbol, con el estado en la URL.
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { TEXTOS_CARTILLA, TEXTOS_PANEL } from '@/config/constantes'
+import { TEXTOS_CARTILLA, TEXTOS_PANEL, TEXTOS_SOBRE_ARBOL } from '@/config/constantes'
 import { VistaMapa } from './VistaMapa'
 
 const SIEMPRE_CERO = () => 0
@@ -37,7 +37,10 @@ describe('VistaMapa: recorrido sector → árbol', () => {
     expect(window.location.search).toBe('?sector=1&arbol=S01-A012')
     const titulo = await screen.findByRole('heading', { name: 'Huarango' })
     await waitFor(() => expect(titulo).toHaveFocus())
-    expect(screen.getByText(TEXTOS_CARTILLA.selloDemo)).toBeInTheDocument()
+    // El sello de la foto y la nota al inicio de «Sobre este árbol»
+    expect(screen.getAllByText(TEXTOS_CARTILLA.selloDemo)).toHaveLength(2)
+    const sobreArbol = screen.getByRole('region', { name: TEXTOS_SOBRE_ARBOL.titulo })
+    expect(within(sobreArbol).getByText(TEXTOS_CARTILLA.selloDemo)).toBeInTheDocument()
 
     fireEvent.keyDown(window, { key: 'Escape' })
     await waitFor(() => expect(window.location.search).toBe('?sector=1'))
@@ -98,6 +101,36 @@ describe('VistaMapa: recorrido sector → árbol', () => {
     expect(await screen.findByRole('complementary', { name: /Sector 1/ })).toBeInTheDocument()
     fireEvent.click(await screen.findByRole('button', { name: /^S01-A012, Huarango. Destacado/ }))
     expect(await screen.findByRole('complementary', { name: 'S01-A012' })).toBeInTheDocument()
+  })
+
+  it('el panel es el mismo elemento al abrir la cartilla y al cerrarla con Esc (no repite su entrada)', async () => {
+    render(<VistaMapa aleatorio={SIEMPRE_CERO} />)
+    fireEvent.click(await screen.findByRole('button', { name: /^Sector 1,/ }))
+    const panel = await screen.findByRole('complementary', { name: /Sector 1/ })
+
+    fireEvent.click(await screen.findByRole('button', { name: /^S01-A012, Huarango. Destacado/ }))
+    await screen.findByRole('heading', { name: 'Huarango' })
+    expect(screen.getByRole('complementary', { name: 'S01-A012' })).toBe(panel)
+
+    fireEvent.keyDown(window, { key: 'Escape' })
+    await waitFor(() => expect(window.location.search).toBe('?sector=1'))
+    expect(await screen.findByRole('complementary', { name: /Sector 1/ })).toBe(panel)
+
+    fireEvent.click(screen.getAllByRole('button', { name: /^Sector 2,/ })[0])
+    expect(await screen.findByRole('complementary', { name: /Sector 2/ })).toBe(panel)
+  })
+
+  it('en el panel del sector la fila del destacado no repite el motivo; la cartilla sí lo trae', async () => {
+    render(<VistaMapa aleatorio={SIEMPRE_CERO} />)
+    fireEvent.click(await screen.findByRole('button', { name: /^Sector 1,/ }))
+    const lista = await screen.findByRole('list')
+    expect(lista).not.toHaveTextContent('ejemplar de mayor copa del sector')
+    fireEvent.click(within(lista).getByRole('button', { name: /S01-A012/ }))
+    await screen.findByRole('heading', { name: 'Huarango' })
+    // El motivo va en la insignia del destacado y en «Sobre este árbol»
+    expect(screen.getAllByText(/ejemplar de mayor copa del sector/)).toHaveLength(2)
+    const sobreArbol = screen.getByRole('region', { name: TEXTOS_SOBRE_ARBOL.titulo })
+    expect(within(sobreArbol).getByText(/ejemplar de mayor copa del sector/)).toBeInTheDocument()
   })
 
   it('una URL con sector y árbol lleva directo a la cartilla', async () => {

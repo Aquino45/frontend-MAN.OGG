@@ -1,7 +1,7 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
 import { describe, expect, it } from 'vitest'
-import { NOMBRE_CAMPUS, RUTAS, TEXTOS_INICIO } from '@/config/constantes'
+import { ID_TITULO_DESTACADOS, NOMBRE_CAMPUS, RUTAS, TEXTOS_INICIO } from '@/config/constantes'
 import { Portada } from './Portada'
 
 function verPortada(cantidadSectores: number | null) {
@@ -52,9 +52,42 @@ describe('Portada', () => {
     const enlace = screen.getByRole('link', { name: TEXTOS_INICIO.explorarMapa })
     expect(enlace).toHaveAttribute('href', RUTAS.mapa)
     expect(enlace.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
-    expect(screen.queryByText(/destacados/i)).not.toBeInTheDocument()
     // El árbol pixel grande es decorativo
     const arbol = container.querySelector('.inicio-portada__arbol svg.glifo-pixel')
     expect(arbol).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it('el enlace principal es el botón del sistema con forma de píldora', () => {
+    verPortada(5)
+    const enlace = screen.getByRole('link', { name: TEXTOS_INICIO.explorarMapa })
+    expect(enlace).toHaveClass('boton', 'boton--pildora')
+  })
+
+  it('trae «Ver destacados» como botón secundario que apunta al bloque de destacados', () => {
+    verPortada(5)
+    const ancla = screen.getByRole('link', { name: TEXTOS_INICIO.verDestacados })
+    expect(ancla).toHaveClass('boton', 'boton--secundario')
+    expect(ancla).not.toHaveClass('boton--pildora')
+    expect(ancla).toHaveAttribute('href', `#${ID_TITULO_DESTACADOS}`)
+  })
+
+  it('al pulsar «Ver destacados» el foco pasa al título del bloque', () => {
+    verPortada(5)
+    const titulo = document.createElement('h2')
+    titulo.id = ID_TITULO_DESTACADOS
+    titulo.tabIndex = -1
+    document.body.append(titulo)
+    fireEvent.click(screen.getByRole('link', { name: TEXTOS_INICIO.verDestacados }))
+    expect(titulo).toHaveFocus()
+    titulo.remove()
+  })
+
+  it('el principal sigue primero y hay un solo botón por objetivo', () => {
+    const { container } = verPortada(5)
+    const botones = container.querySelectorAll('.inicio-portada__acciones a')
+    expect([...botones].map((b) => b.textContent)).toEqual([
+      TEXTOS_INICIO.explorarMapa,
+      TEXTOS_INICIO.verDestacados,
+    ])
   })
 })

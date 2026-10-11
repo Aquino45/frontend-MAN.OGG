@@ -1,6 +1,11 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import { CANTIDAD_CIFRAS_INICIO, REGION_INTERFAZ, TEXTOS_INICIO } from '@/config/constantes'
+import {
+  CANTIDAD_CIFRAS_INICIO,
+  REGION_INTERFAZ,
+  TEXTOS_ESTADOS,
+  TEXTOS_INICIO,
+} from '@/config/constantes'
 import type { Cifras } from '../lib/cifras'
 import { CifrasCenso } from './CifrasCenso'
 
@@ -52,13 +57,11 @@ describe('CifrasCenso', () => {
     for (const { nota } of Object.values(TEXTOS_INICIO.cifras)) expect(nota).not.toMatch(/\d/)
   })
 
-  it('cargando muestra 4 bloques de esqueleto ocupados y ningún dígito', () => {
+  it('cargando muestra el esqueleto compartido de 4 cifras, ocupado y sin ningún dígito', () => {
     const { container } = verCifras({ estado: 'cargando', cifras: null })
     const seccion = screen.getByRole('region', { name: TEXTOS_INICIO.tituloCifras })
-    expect(seccion.querySelector('[aria-busy="true"]')).not.toBeNull()
-    expect(container.querySelectorAll('.inicio-cifras__esqueleto')).toHaveLength(
-      CANTIDAD_CIFRAS_INICIO,
-    )
+    expect(within(seccion).getByRole('status')).toHaveAttribute('aria-busy', 'true')
+    expect(container.querySelectorAll('.estado-carga__cifra')).toHaveLength(CANTIDAD_CIFRAS_INICIO)
     expect(seccion.textContent).not.toMatch(/\d/)
   })
 
@@ -66,7 +69,9 @@ describe('CifrasCenso', () => {
     const { onReintentar } = verCifras({ estado: 'error', cifras: null })
     expect(screen.getByRole('alert')).toHaveTextContent(TEXTOS_INICIO.errorCifras)
     expect(screen.queryByRole('list')).not.toBeInTheDocument()
-    fireEvent.click(screen.getByRole('button', { name: TEXTOS_INICIO.reintentar }))
+    const reintentar = screen.getByRole('button', { name: TEXTOS_ESTADOS.reintentar })
+    expect(reintentar).toHaveClass('boton', 'boton--secundario')
+    fireEvent.click(reintentar)
     expect(onReintentar).toHaveBeenCalledTimes(1)
   })
 })

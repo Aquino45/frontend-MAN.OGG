@@ -25,8 +25,8 @@
   transform-box: fill-box;
   transform-origin: center;
   transition:
-    transform var(--duracion-rapida) var(--curva-salida),
-    fill var(--duracion-rapida) var(--curva-salida);
+    transform var(--duracion-hover) var(--curva-salida),
+    fill var(--duracion-hover) var(--curva-hover);
 }
 
 /* Los puntos de ejemplo se distinguen por el trazo punteado, no solo por el color. */
@@ -53,7 +53,6 @@
 .vista-mapa__panel {
   container-type: inline-size;
   min-inline-size: 0;
-  animation: entrada-panel var(--duracion-media) var(--curva-salida);
 }
 
 .panel-sector,
@@ -88,15 +87,8 @@
   color: var(--color-texto-tenue);
 }
 
-.panel-sector__mensaje,
-.vista-cartilla__mensaje {
-  margin: 0;
-  padding: var(--espacio-4) 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--espacio-3);
-  text-align: center;
+.panel-sector__volver {
+  align-self: flex-start;
 }
 
 .panel-sector__lista {
@@ -108,31 +100,43 @@
   gap: var(--espacio-2);
 }
 
+.panel-sector__lista > li {
+  min-inline-size: 0;
+}
+
 .fila-arbol {
   inline-size: 100%;
+  min-inline-size: 0;
+  min-block-size: var(--tamano-control);
   display: flex;
   align-items: center;
-  gap: var(--espacio-3);
+  gap: var(--espacio-12);
   padding: var(--espacio-2);
   border: var(--grosor-borde-ui) solid transparent;
-  border-radius: var(--radio-md);
+  border-radius: var(--radio-control);
   background: var(--color-tarjeta);
   color: var(--color-texto);
   font: inherit;
   text-align: start;
   cursor: pointer;
   transition:
-    transform var(--duracion-rapida) var(--curva-salida),
-    border-color var(--duracion-rapida) var(--curva-salida);
+    transform var(--duracion-presion) var(--curva-salida),
+    border-color var(--duracion-hover) var(--curva-hover);
 }
 
 .fila-arbol:active {
-  transform: scale(var(--escala-presion));
+  transform: scale(var(--escala-activo));
 }
 
 .fila-arbol--resaltada,
 .fila-arbol:focus-visible {
   border-color: var(--color-acento);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .fila-arbol:hover {
+    border-color: var(--color-acento);
+  }
 }
 
 .fila-arbol__miniatura {
@@ -157,9 +161,11 @@
 }
 
 .fila-arbol__texto {
+  flex: 1;
   min-inline-size: 0;
   display: flex;
   flex-direction: column;
+  overflow-wrap: anywhere;
 }
 
 .fila-arbol__nombre {
@@ -190,84 +196,11 @@
   font-size: var(--texto-cartilla-etiqueta);
 }
 
-/* ---------- Disposición: panel al costado en pantallas anchas, hoja inferior en celular ---------- */
-@keyframes entrada-panel {
-  from {
-    opacity: 0;
-    transform: translateX(var(--desplazamiento-entrada));
-  }
-}
-
-@keyframes entrada-hoja {
-  from {
-    opacity: 0;
-    transform: translateY(var(--desplazamiento-entrada));
-  }
-}
-
-@media (min-width: 56rem) {
-  .vista-mapa--con-sector {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) var(--panel-ancho);
-    align-items: start;
-    gap: var(--espacio-4);
-  }
-
-  .vista-mapa__panel {
-    position: sticky;
-    inset-block-start: var(--espacio-3);
-    max-block-size: calc(100vh - 2 * var(--espacio-3));
-    overflow-y: auto;
-  }
-}
-
-@media (max-width: 55.99rem) {
-  .vista-mapa--con-sector .mapa-sectores__svg {
-    max-block-size: 40vh;
-  }
-
-  .vista-mapa__panel {
-    position: fixed;
-    inset-inline: 0;
-    inset-block-end: 0;
-    z-index: 2;
-    max-block-size: var(--hoja-alto-lista);
-    overflow-y: auto;
-    padding: var(--espacio-4) var(--espacio-3) var(--espacio-3);
-    border-start-start-radius: var(--radio-lg);
-    border-start-end-radius: var(--radio-lg);
-    background: var(--color-fondo);
-    box-shadow: 0 calc(-1 * var(--espacio-2)) var(--espacio-4) var(--color-sombra);
-    animation-name: entrada-hoja;
-  }
-
-  .vista-mapa__panel:has(.vista-cartilla) {
-    max-block-size: var(--hoja-alto-cartilla);
-  }
-
-  /* Asa de la hoja inferior */
-  .vista-mapa__panel::before {
-    content: '';
-    position: absolute;
-    inset-block-start: var(--espacio-2);
-    inset-inline-start: 50%;
-    inline-size: var(--hoja-asa-ancho);
-    block-size: var(--hoja-asa-alto);
-    border-radius: var(--radio-sm);
-    background: var(--color-pista);
-    transform: translateX(-50%);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .sector__etiqueta,
   .punto-arbol,
   .fila-arbol {
     transition: none;
-  }
-
-  .vista-mapa__panel {
-    animation: none;
   }
 
   .punto-arbol--resaltado,

@@ -161,7 +161,7 @@ export interface components {
       type: 'FeatureCollection'
       features: components['schemas']['ArbolResumenFeature'][]
     }
-    /** @description La cartilla del árbol. Los 19 campos de la visión del stakeholder, más su contexto de campo y su trazabilidad. Los textos de estado son los del catálogo de la planilla de la brigada. */
+    /** @description La cartilla del árbol. Los 19 campos de la visión del stakeholder, más su contexto de campo, su trazabilidad y sus cápsulas de ayuda. Los textos de estado son los del catálogo de la planilla de la brigada. */
     Arbol: {
       codigo: components['schemas']['CodigoArbol']
       /**
@@ -218,6 +218,33 @@ export interface components {
       destacado: boolean
       /** @description Por qué se destaca; `null` si no es destacado */
       motivo_destacado: string | null
+      /** @description Ayudas en lenguaje simple, una por cada campo que tiene ayuda activa (son las mismas para todo árbol). Se muestran junto a cada dato de la cartilla. */
+      capsulas: components['schemas']['Capsula'][]
+      /** @description Ficha de la especie del árbol. Solo sale si está publicada; si no hay ficha publicada, es `null`. */
+      ficha_especie: components['schemas']['FichaEspecie'] | null
+    }
+    /** @description Ayuda en lenguaje simple sobre un dato de la cartilla. */
+    Capsula: {
+      /** @description Clave de la ayuda. No siempre es una propiedad de `Arbol` (por ejemplo `ubicacion` o `tipo_individuo`). */
+      campo: string
+      /** @description Nombre del dato tal como se muestra al público. */
+      titulo: string
+      /** @description Qué significa ese dato */
+      que_es: string
+      /** @description Explicación del valor que tiene ESTE árbol en ese campo, si ese valor está en el catálogo; `null` si no está. */
+      en_este_arbol: string | null
+    }
+    /** @description Qué aporta la especie del árbol, en lenguaje simple. Siempre cita su fuente. */
+    FichaEspecie: {
+      /** @description En cursiva en la UI. */
+      nombre_cientifico: string
+      nombre_comun: string
+      /** @description Lo que aporta la especie */
+      beneficios: string[]
+      dato_curioso: string | null
+      cuidados: string | null
+      /** @description De dónde sale el texto de la ficha. Nunca vacío. */
+      fuente: string
     }
   }
   responses: {
@@ -343,7 +370,7 @@ export interface operations {
     }
     requestBody?: never
     responses: {
-      /** @description La cartilla con los 19 campos de la visión, más su contexto de campo y su trazabilidad. */
+      /** @description La cartilla con los 19 campos de la visión, más su contexto de campo, su trazabilidad y sus cápsulas de ayuda. */
       200: {
         headers: {
           [name: string]: unknown

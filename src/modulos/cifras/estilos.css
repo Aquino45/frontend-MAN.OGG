@@ -1,0 +1,226 @@
+/* Página «Cifras del censo»: bloques con gráfico de barras y tabla. Una columna a 360 px y grilla
+   de bloques en pantallas anchas. Campo = relleno liso; ejemplo = rayado (no solo por color). */
+
+.cifras {
+  max-inline-size: var(--inicio-ancho-maximo);
+  margin-inline: auto;
+  padding: var(--espacio-5) var(--espacio-3) var(--espacio-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-4);
+  min-inline-size: 0;
+}
+
+.cifras__titulo {
+  margin: 0;
+  font-family: var(--fuente-display);
+  font-weight: 800;
+  font-size: var(--texto-cabecera);
+  line-height: var(--interlinea-titulo);
+  letter-spacing: var(--tracking-display);
+  overflow-wrap: anywhere;
+}
+
+.cifras__nota {
+  margin: 0;
+  max-inline-size: var(--medida-cuerpo);
+  color: var(--color-texto-suave);
+}
+
+/* ---------- Resumen ---------- */
+.cifras-resumen {
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-12);
+}
+
+.cifras-resumen__lista {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13.75rem), 1fr));
+  gap: var(--espacio-3);
+}
+
+.cifras-resumen__cifra {
+  min-inline-size: 0;
+  padding: var(--espacio-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-1);
+  border-radius: var(--radio-tarjeta);
+  background: var(--color-tarjeta);
+}
+
+.cifras-resumen__etiqueta {
+  color: var(--color-texto-suave);
+}
+
+.cifras-resumen__valor {
+  margin: 0;
+  font-family: var(--fuente-display);
+  font-weight: 800;
+  font-size: var(--texto-cifra);
+  line-height: var(--interlinea-display);
+  letter-spacing: var(--tracking-display);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Bloques ---------- */
+.cifras__bloques {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
+  gap: var(--espacio-4);
+}
+
+.cifras-bloque {
+  min-inline-size: 0;
+  padding: var(--espacio-4) var(--espacio-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-3);
+  border-radius: var(--radio-tarjeta);
+  background: var(--color-tarjeta);
+}
+
+.cifras-bloque__titulo {
+  margin: 0;
+  font-family: var(--fuente-display);
+  font-weight: 800;
+  font-size: var(--texto-xl);
+  line-height: var(--interlinea-titulo);
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Leyenda ---------- */
+.cifras-leyenda {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-1) var(--espacio-4);
+  font-size: var(--texto-sm);
+}
+
+.cifras-leyenda__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
+.cifras-leyenda__muestra {
+  flex: none;
+  inline-size: var(--muestra-leyenda-ancho);
+  block-size: var(--muestra-leyenda-alto);
+  border-radius: var(--radio-chip);
+}
+
+.cifras-leyenda__muestra--campo,
+.cifras-grafico__campo {
+  background: var(--grafico-campo);
+}
+
+.cifras-leyenda__muestra--ejemplo,
+.cifras-grafico__ejemplo {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--grafico-ejemplo) 0 var(--grafico-trama-ancho),
+    transparent var(--grafico-trama-ancho) calc(2 * var(--grafico-trama-ancho))
+  );
+}
+
+/* La muestra de la leyenda lleva borde para verse como un recuadro rayado */
+.cifras-leyenda__muestra--ejemplo {
+  border: var(--grosor-borde-ui) solid var(--grafico-ejemplo);
+}
+
+/* ---------- Gráfico de barras ---------- */
+.cifras-grafico {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-12);
+}
+
+.cifras-grafico__fila {
+  min-inline-size: 0;
+  display: grid;
+  gap: var(--espacio-1);
+}
+
+.cifras-grafico__etiqueta {
+  min-inline-size: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.cifras-grafico__barra {
+  display: flex;
+  block-size: var(--grafico-barra-alto);
+  border-radius: var(--radio-chip);
+  background: var(--grafico-pista);
+  overflow: hidden;
+}
+
+.cifras-grafico__campo,
+.cifras-grafico__ejemplo {
+  display: block;
+  block-size: 100%;
+  box-sizing: border-box;
+}
+
+.cifras-grafico__valores {
+  font-size: var(--texto-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-texto-suave);
+}
+
+/* ---------- Tabla accesible ---------- */
+.cifras-tabla {
+  max-inline-size: 100%;
+  overflow-x: auto;
+  border-radius: var(--radio-control);
+}
+
+.cifras-tabla__tabla {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: var(--texto-sm);
+}
+
+.cifras-tabla__caption {
+  padding-block-end: var(--espacio-2);
+  text-align: start;
+  color: var(--color-texto-tenue);
+}
+
+.cifras-tabla__tabla th,
+.cifras-tabla__tabla td {
+  padding: var(--espacio-2) var(--espacio-12) var(--espacio-2) 0;
+  border-block-end: var(--grosor-borde-ui) solid var(--grafico-pista);
+  text-align: start;
+  vertical-align: top;
+}
+
+.cifras-tabla__tabla tbody th {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.cifras-tabla__tabla thead th {
+  font-family: var(--fuente-etiqueta);
+  font-weight: var(--etiqueta-peso);
+  font-size: var(--texto-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--etiqueta-espaciado);
+  color: var(--color-texto-tenue);
+}
+
+.cifras-tabla__tabla .cifras-tabla__numero {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}

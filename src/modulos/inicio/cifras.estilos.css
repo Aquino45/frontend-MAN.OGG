@@ -1,63 +1,4 @@
-/* Esqueletos, errores y cifras del censo de Inicio. */
-
-/* ---------- Esqueletos y errores ---------- */
-.inicio-esqueleto-mapa {
-  inline-size: 100%;
-  max-inline-size: var(--mapa-inicio-ancho-maximo);
-  aspect-ratio: var(--mapa-inicio-proporcion);
-  border-radius: var(--radio-lg);
-  background: var(--esqueleto-franja);
-}
-
-.inicio-esqueleto-barra {
-  display: block;
-  block-size: var(--esqueleto-texto-alto);
-  border-radius: var(--radio-sm);
-  background: var(--esqueleto-cifras);
-}
-
-.inicio-esqueleto-barra--cifra {
-  block-size: var(--esqueleto-cifra-alto);
-  inline-size: 50%;
-}
-
-.inicio-esqueleto-barra--corta {
-  inline-size: 60%;
-}
-
-.inicio-error {
-  inline-size: 100%;
-  max-inline-size: var(--mapa-inicio-ancho-maximo);
-  min-block-size: var(--mapa-alto-reserva);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--espacio-3);
-  text-align: center;
-}
-
-.inicio-error__mensaje {
-  margin: 0;
-  font-size: var(--texto-frase);
-  overflow-wrap: anywhere;
-}
-
-.inicio-error__boton {
-  min-block-size: var(--tamano-control);
-  padding-inline: var(--espacio-4);
-  border: var(--grosor-borde-ui) solid var(--boton-secundario-borde);
-  border-radius: var(--radio-md);
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.inicio-franja .inicio-error__boton {
-  border-color: var(--franja-contraste-tenue);
-}
+/* Cifras del censo de Inicio. Los estados de carga y error son los compartidos. */
 
 /* ---------- Cifras del censo ---------- */
 .inicio-cifras {
@@ -67,7 +8,7 @@
 .inicio-cifras__contenido {
   max-inline-size: var(--inicio-ancho-maximo);
   margin-inline: auto;
-  padding: var(--espacio-5) var(--espacio-3);
+  padding: var(--espacio-6) var(--espacio-3);
   display: flex;
   flex-direction: column;
   gap: var(--espacio-4);
@@ -105,8 +46,9 @@
   font-family: var(--fuente-display);
   font-weight: 800;
   font-size: var(--texto-cifra);
-  line-height: 1;
-  letter-spacing: -0.02em;
+  line-height: var(--interlinea-display);
+  letter-spacing: var(--tracking-display);
+  font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
 }
 
@@ -118,8 +60,4 @@
 .inicio-cifra__nota {
   font-size: var(--texto-pequeno);
   color: var(--color-texto-tenue);
-}
-
-.inicio-cifras__esqueleto {
-  gap: var(--espacio-2);
 }

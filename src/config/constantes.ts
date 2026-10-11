@@ -79,6 +79,14 @@ export const PESOS_FRASES_CARGA: Record<keyof typeof FRASES_CARGA, number> = {
 // PESO DE CADA FORMA DE GLIFO DECORATIVO DE ÁRBOL DENTRO DE LOS SECTORES
 export const PESOS_GLIFOS_ARBOL = { copaRedonda: 3, copaAlta: 2, palma: 1 } as const
 
+// ---------- ESTADOS COMPARTIDOS (carga, vacío y error) ----------
+
+// TEXTOS DE LAS ACCIONES DE LOS ESTADOS COMPARTIDOS
+export const TEXTOS_ESTADOS = {
+  reintentar: 'Reintentar',
+  limpiarFiltros: 'Limpiar filtros',
+} as const
+
 // ---------- PRODUCTO ----------
 
 // NOMBRE PÚBLICO DEL PRODUCTO (título de la página y de la cabecera)
@@ -178,7 +186,6 @@ export const TEXTOS_CARTILLA = {
   cerrar: 'Cerrar cartilla',
   cargando: 'Abriendo la cartilla…',
   error: 'No pudimos cargar la cartilla.',
-  reintentar: 'Reintentar',
   noEncontrado: 'No encontramos el árbol',
   selloDemo: 'Dato de ejemplo',
   fotoPendiente: 'Foto pendiente',
@@ -201,6 +208,33 @@ export const TEXTOS_CARTILLA = {
   registrado: 'Registrado',
 } as const
 
+// ---------- CÁPSULAS «?» Y «SOBRE ESTE ÁRBOL» ----------
+
+// MARCADORES DE LAS PLANTILLAS DE TEXTO (se reemplazan por lo que manda la API)
+export const MARCADOR_TITULO = '{titulo}'
+export const MARCADOR_TEXTO = '{texto}'
+export const MARCADOR_FUENTE = '{fuente}'
+
+// CONSULTA DE MEDIOS: SOLO ASÍ UNA CÁPSULA SE ABRE AL PASAR EL CURSOR (en pantallas táctiles, con toque)
+export const CONSULTA_HOVER_FINO = '(hover: hover) and (pointer: fine)'
+
+// TEXTOS DE LAS CÁPSULAS «?» (la explicación de cada dato sale solo de la API)
+export const TEXTOS_CAPSULA = {
+  etiquetaBoton: 'Qué significa {titulo}',
+  enEsteArbol: 'En este árbol: {texto}',
+  unirTitulos: ' y ',
+} as const
+
+// TEXTOS DE LA SECCIÓN «SOBRE ESTE ÁRBOL»
+export const TEXTOS_SOBRE_ARBOL = {
+  titulo: 'Sobre este árbol',
+  motivo: 'Por qué se destaca',
+  beneficios: 'Qué aporta su especie',
+  datoCurioso: 'Dato curioso',
+  cuidados: 'Cuidados',
+  fuente: 'Fuente: {fuente}',
+} as const
+
 // CONSULTA DE MEDIOS DE QUIEN PIDE MENOS MOVIMIENTO
 export const CONSULTA_MOVIMIENTO_REDUCIDO = '(prefers-reduced-motion: reduce)'
 
@@ -210,7 +244,12 @@ export const MARCA_HISTORIAL = 'censoArboreoEntrada'
 // ---------- RUTAS Y ARMAZÓN DEL SITIO ----------
 
 // RUTAS DEL SITIO (la cartilla y el sector viajan en la consulta de /mapa: ?sector=…&arbol=…)
-export const RUTAS = { inicio: '/', mapa: '/mapa' } as const
+export const RUTAS = {
+  inicio: '/',
+  mapa: '/mapa',
+  arboles: '/arboles',
+  cifras: '/cifras',
+} as const
 
 // LICENCIA DE LOS DATOS DEL CONTORNO DEL CAMPUS (OpenStreetMap, ODbL)
 export const URL_LICENCIA_ODBL = 'https://opendatacommons.org/licenses/odbl/1-0/'
@@ -220,13 +259,127 @@ export const TEXTOS_ARMAZON = {
   navegacionPrincipal: 'Principal',
   inicio: 'Inicio',
   mapa: 'Mapa',
-  notaDatos: 'Sector 1 con datos de la brigada; sectores 2 a 5 con datos de ejemplo.',
+  arboles: 'Árboles',
+  cifras: 'Cifras',
+  menu: 'Menú',
   creditoContorno: 'Contorno del campus © colaboradores de OpenStreetMap',
   nombreLicencia: 'ODbL',
   tituloNoEncontrada: 'Página no encontrada',
   fraseNoEncontrada: 'La dirección que abriste no existe o cambió de lugar.',
   volverAlInicio: 'Volver al inicio',
 } as const
+
+// PLANTILLAS DE LA NOTA DEL PIE SOBRE EL ORIGEN DE LOS DATOS. Los nombres de sector salen de la API
+// y reemplazan el marcador; nada de aquí afirma qué sector es de campo.
+export const MARCADOR_SECTORES = '{sectores}'
+export const PLANTILLAS_NOTA_DATOS = {
+  campoUno: '{sectores} tiene datos de campo.',
+  campoVarios: '{sectores} tienen datos de campo.',
+  ejemploUno: '{sectores} solo tiene datos de ejemplo.',
+  ejemploVarios: '{sectores} solo tienen datos de ejemplo.',
+  todosCampo: 'Todos los sectores tienen datos de campo.',
+  todosEjemplo: 'Por ahora todos los sectores tienen solo datos de ejemplo.',
+} as const
+
+// ENLACES DE LA NAVEGACIÓN PRINCIPAL, EN ORDEN (agregar una página es agregar una fila).
+// «exacta» evita que Inicio quede activo en todas las rutas.
+export const ENLACES_NAVEGACION = [
+  { ruta: RUTAS.inicio, texto: TEXTOS_ARMAZON.inicio, exacta: true },
+  { ruta: RUTAS.mapa, texto: TEXTOS_ARMAZON.mapa, exacta: false },
+  { ruta: RUTAS.arboles, texto: TEXTOS_ARMAZON.arboles, exacta: false },
+  { ruta: RUTAS.cifras, texto: TEXTOS_ARMAZON.cifras, exacta: false },
+] as const
+
+// ---------- EXPLORAR ÁRBOLES Y CIFRAS DEL CENSO ----------
+
+// TEXTOS DE LAS PÁGINAS DE EXPLORAR Y DE CIFRAS (mientras llegan sus vistas completas)
+export const TEXTOS_EXPLORAR = {
+  titulo: 'Explorar árboles',
+  ariaFiltros: 'Buscar y filtrar árboles',
+  buscar: 'Buscar',
+  ayudaBuscar: 'Código, nombre común o nombre científico',
+  sector: 'Sector',
+  todosSectores: 'Todos los sectores',
+  sectorDesconocido: 'Sector {id}',
+  estado: 'Estado general',
+  todosEstados: 'Todos los estados',
+  origen: 'Origen del dato',
+  todosOrigenes: 'Todos los orígenes',
+  origenCampo: 'Datos de campo',
+  origenEjemplo: 'Datos de ejemplo',
+  soloDestacados: 'Solo destacados',
+  resultados: 'Resultados',
+  arbolSingular: 'árbol',
+  arbolPlural: 'árboles',
+  cargando: 'Cargando los árboles…',
+  error: 'No pudimos cargar los árboles.',
+  sinResultados: 'Ningún árbol coincide con la búsqueda y los filtros.',
+  sinArboles: 'Aún no hay árboles registrados.',
+} as const
+
+// NOMBRES DE LOS PARÁMETROS DE LA URL DE EXPLORAR (?q=…&sector=…&estado=…&destacados=1&origen=…)
+export const PARAMETROS_EXPLORAR = {
+  busqueda: 'q',
+  sector: 'sector',
+  estado: 'estado',
+  destacados: 'destacados',
+  origen: 'origen',
+} as const
+
+// VALORES DEL FILTRO «ORIGEN DEL DATO» EN LA URL (campo = registrado por la brigada; ejemplo = demo)
+export const ORIGENES_DATO = { campo: 'campo', ejemplo: 'ejemplo' } as const
+
+// PAUSA, EN ms, ANTES DE ESCRIBIR EN LA URL LO QUE SE TECLEA EN EL BUSCADOR
+export const DEBOUNCE_BUSQUEDA_MS = 200
+
+// TIEMPO, EN ms, QUE VALE LO YA PEDIDO DE SECTORES Y ÁRBOLES DEL CAMPUS ANTES DE VOLVER A PEDIRLO
+export const TIEMPO_VIDA_CACHE_CAMPUS_MS = 5 * 60 * 1000
+
+// VALOR DEL PARÁMETRO «destacados» CUANDO EL FILTRO ESTÁ ACTIVO
+export const VALOR_FILTRO_ACTIVO = '1'
+
+export const TEXTOS_CIFRAS = {
+  titulo: 'Cifras del censo',
+  cargando: 'Cargando las cifras del censo…',
+  error: 'No pudimos cargar las cifras del censo.',
+  sinArboles: 'Aún no hay árboles registrados.',
+  campo: 'Datos de campo',
+  ejemplo: 'Datos de ejemplo',
+  total: 'Total',
+  unidadCampo: 'campo',
+  unidadEjemplo: 'ejemplo',
+  notaSeparados: 'Los datos de campo y los de ejemplo se cuentan siempre por separado.',
+  resumen: 'Resumen',
+  arbolesDeCampo: 'Árboles de campo',
+  arbolesDeEjemplo: 'Árboles de ejemplo',
+  otras: 'Otras',
+  sinEspecie: 'Sin especie identificada',
+  sectorSinNombre: 'Sector {id}',
+  tablaConDesplazamiento: 'Tabla (se desplaza hacia los lados en pantallas angostas)',
+  porSector: {
+    titulo: 'Árboles por sector',
+    columna: 'Sector',
+    descripcion: 'Árboles por sector, separados en datos de campo y datos de ejemplo',
+  },
+  porEstado: {
+    titulo: 'Árboles por estado general',
+    columna: 'Estado general',
+    descripcion: 'Árboles por estado general, separados en datos de campo y datos de ejemplo',
+  },
+  porEspecie: {
+    titulo: 'Árboles por especie',
+    columna: 'Especie (nombre científico)',
+    descripcion: 'Especies más frecuentes, separadas en datos de campo y datos de ejemplo',
+  },
+  destacados: {
+    titulo: 'Árboles destacados por sector',
+    columna: 'Sector',
+    descripcion: 'Árboles destacados por sector, separados en datos de campo y datos de ejemplo',
+  },
+} as const
+
+// CUÁNTAS ESPECIES SE MUESTRAN POR SEPARADO EN LAS CIFRAS (las demás se agrupan en «Otras»)
+export const CANTIDAD_ESPECIES_CIFRAS = 5
 
 // ---------- PÁGINA DE INICIO ----------
 
@@ -240,6 +393,7 @@ export const TEXTOS_INICIO = {
   frasePortada:
     'Recorre el campus por sectores, entra a cualquier árbol y abre su cartilla: especie, altura, diámetro, estado y foto.',
   explorarMapa: 'Explorar el mapa',
+  verDestacados: 'Ver destacados',
   tituloFranja: 'El campus, árbol por árbol.',
   fraseFranja:
     'Elige un sector en el mapa para ver sus árboles. Cada punto abre una cartilla con su especie, sus medidas y su estado.',
@@ -250,10 +404,18 @@ export const TEXTOS_INICIO = {
   sinArbolesAun: 'Sin árboles aún',
   cargandoSectores: 'Cargando los sectores…',
   errorSectores: 'No pudimos cargar los sectores.',
+  tituloDestacados: 'Árboles destacados',
+  cargandoDestacados: 'Cargando los árboles destacados…',
+  errorDestacados: 'No pudimos cargar los árboles destacados.',
+  sinDestacados: 'Aún no hay árboles destacados.',
+  destacados: {
+    dap: 'DAP',
+    altura: 'Altura',
+    cargandoMedidas: 'Cargando medidas…',
+  },
   tituloCifras: 'El censo hoy',
   cargandoCifras: 'Cargando las cifras del censo…',
   errorCifras: 'No pudimos cargar las cifras del censo.',
-  reintentar: 'Reintentar',
   cifras: {
     arbolesDeCampo: { etiqueta: 'Árboles de campo', nota: 'registrados por la brigada' },
     sectores: { etiqueta: 'Sectores del campus', nota: 'los que muestra el mapa' },
@@ -264,6 +426,12 @@ export const TEXTOS_INICIO = {
     arbolesDeEjemplo: { etiqueta: 'Árboles de ejemplo', nota: 'hasta que llegue la data real' },
   },
 } as const
+
+// CUÁNTAS TARJETAS DE ÁRBOLES DESTACADOS MUESTRA INICIO (como máximo)
+export const CANTIDAD_DESTACADOS_INICIO = 6
+
+// ID DEL TÍTULO DEL BLOQUE DE DESTACADOS (a él apunta «Ver destacados» de la portada)
+export const ID_TITULO_DESTACADOS = 'destacados'
 
 // CUÁNTOS BLOQUES DE ESQUELETO SE MUESTRAN EN LAS CIFRAS MIENTRAS CARGAN (uno por cifra)
 export const CANTIDAD_CIFRAS_INICIO = Object.keys(TEXTOS_INICIO.cifras).length

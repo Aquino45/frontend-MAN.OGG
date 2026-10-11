@@ -69,9 +69,7 @@
   --punto-destacado: #ffd166;
   --punto-destacado-borde: var(--tronco-noche);
   --punto-destacado-escala: 1.25;
-  --destacado-brillo-duracion: 600ms;
   --insignia-estrella-tamano: 1.125em;
-  --destacado-brillo-intensidad: 1.6;
   --mapa-opacidad-glifo: 0.75;
   /* Grosores en píxeles de pantalla (el trazo no escala con el mapa) */
   --mapa-grosor-borde: 2;
@@ -91,12 +89,15 @@
 
   /* Panel del sector y cartilla */
   --panel-ancho: 28rem;
-  --hoja-alto-lista: 48vh;
-  --hoja-alto-cartilla: 90vh;
   --hoja-asa-ancho: 2.5rem;
   --hoja-asa-alto: 0.3125rem;
   --foto-proporcion: 11 / 5;
   --foto-glifo: 5.25rem;
+  --foto-glifo-pendiente: 4rem;
+  /* Alto de la cabecera cerrada (una sola fila, celular y escritorio): 44 + 2 × 16 = 76 px.
+     La hoja inferior del mapa se queda debajo de esta franja. */
+  --capa-cabecera: 3;
+  --alto-cabecera: calc(var(--tamano-control) + 2 * var(--espacio-3));
   --miniatura-lado: 3rem;
   --indicador-barra-alto: 0.5rem;
   --indicador-copa-lado: 4rem;
@@ -126,45 +127,22 @@
   --grosor-acento: 4px;
   --desplazamiento-entrada: 6px;
 
-  /* Espacios */
-  --espacio-1: 0.25rem;
-  --espacio-2: 0.5rem;
-  --espacio-3: 1rem;
-  --espacio-4: 1.5rem;
-  --espacio-5: 2.5rem;
-  --espacio-6: 4rem;
-
   /* Radios */
   --radio-sm: 0.25rem;
   --radio-md: 0.5rem;
   --radio-lg: 1rem;
+  /* Por uso: 4 chips, sellos y miniaturas · 8 filas, campos y botones · 16 tarjetas, cartilla y hoja */
+  --radio-chip: 0.25rem;
+  --radio-control: 0.5rem;
+  --radio-tarjeta: 1rem;
+  /* Única sombra de lo que flota (hoja inferior y menú) */
+  --sombra-flotante: 0 -8px 24px var(--color-sombra);
 
-  /* Tipografía (pila del sistema) */
-  --fuente-base: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --fuente-mono: ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace;
-  --fuente-display: 'Bricolage Grotesque', var(--fuente-base);
-  --fuente-pixel: 'Silkscreen', var(--fuente-mono);
-  /* Etiquetas y rótulos pequeños del sitio: la pila de títulos en peso 600, mayúsculas y espaciado */
-  --fuente-etiqueta: var(--fuente-display);
-  --etiqueta-peso: 600;
-  --etiqueta-espaciado: 0.14em;
-  --texto-titulo: clamp(2.5rem, 10vw + 0.5rem, 5rem);
-  --texto-cabecera: clamp(1.75rem, 4vw + 1rem, 3rem);
-  --texto-subtitulo: 1.5rem;
-  --texto-base: 1.125rem;
-  --texto-pequeno: 0.9375rem;
-  /* Cartilla */
-  --texto-cartilla-titulo: clamp(2rem, 8vw, 2.75rem);
-  --texto-cartilla-valor: 1.625rem;
-  --texto-cartilla-dato: 0.9375rem;
-  --texto-cartilla-menor: 0.8125rem;
-  --texto-cartilla-etiqueta: 0.625rem;
-
-  /* Duraciones y curvas */
-  --duracion-rapida: 150ms;
-  --duracion-media: 300ms;
-  --curva-salida: cubic-bezier(0.23, 1, 0.32, 1);
-  --escala-presion: 0.96;
+  /* Superficies del navegador: selección en magenta oscuro con texto claro (6.6:1) */
+  --seleccion-fondo: var(--copa-magenta-oscuro);
+  --seleccion-texto: var(--texto-lectura);
+  --scrollbar-pulgar: var(--color-secundario);
+  --scrollbar-pista: var(--color-fondo);
 }
 
 /* Tema claro: redefine solo los alias semánticos.
@@ -225,18 +203,18 @@
   --boton-secundario-borde: var(--color-texto-tenue);
 
   /* Tamaños de Inicio. En 360 px: portada ≈ 45 px, título de franja ≈ 36 px, cifra ≈ 44 px. */
-  --texto-portada: clamp(2.75rem, 1.25rem + 7vw, 6.5rem);
+  --texto-portada: var(--texto-display);
   --texto-franja-titulo: clamp(2.25rem, 0.75rem + 5.4vw, 5rem);
   --texto-cifra: clamp(2.75rem, 1.5rem + 3.5vw, 4rem);
-  --texto-antetitulo: 0.8125rem;
-  --texto-frase: clamp(1.0625rem, 0.95rem + 0.5vw, 1.25rem);
+  --texto-antetitulo: var(--texto-xs);
+  --texto-frase: var(--texto-cuerpo);
   --inicio-ancho-maximo: 77.5rem;
   --glifo-portada: min(26rem, 100%);
   --glifo-marca: 2rem;
   --alto-boton-grande: 3.25rem;
   --radio-pildora: 999px;
-  --duracion-aparicion: 400ms;
-  --desplazamiento-aparicion: 12px;
+  --duracion-aparicion: var(--duracion-entrada);
+  --desplazamiento-aparicion: 8px;
 }
 
 /* Tema claro: lo que cambia de los tokens de arriba.
@@ -287,4 +265,14 @@
   --esqueleto-cifras: color-mix(in srgb, var(--color-texto) 14%, var(--franja-cifras-fondo));
   --esqueleto-cifra-alto: 3.5rem;
   --esqueleto-texto-alto: 1rem;
+  /* Esqueleto de los estados compartidos: el color del texto de su bloque al 14 % */
+  --esqueleto-mezcla: 14%;
+  --estado-alto-minimo: 12rem;
+  /* Gráficos de barras de las cifras. Campo y ejemplo se distinguen por relleno liso o rayado
+     (no solo por color); las dos marcas siguen al tema y llevan 7:1 o más sobre la tarjeta. */
+  --grafico-campo: var(--color-texto);
+  --grafico-ejemplo: var(--color-texto);
+  --grafico-pista: var(--color-pista);
+  --grafico-barra-alto: 0.75rem;
+  --grafico-trama-ancho: 4px;
 }

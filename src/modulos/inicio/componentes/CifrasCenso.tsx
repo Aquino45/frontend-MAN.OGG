@@ -1,4 +1,6 @@
 import { useId } from 'react'
+import { EstadoCarga } from '@/compartido/EstadoCarga'
+import { EstadoError } from '@/compartido/EstadoError'
 import { CANTIDAD_CIFRAS_INICIO, REGION_INTERFAZ, TEXTOS_INICIO } from '@/config/constantes'
 import type { Cifras } from '../lib/cifras'
 
@@ -17,8 +19,6 @@ const CIFRAS_EN_ORDEN = [
   'especiesIdentificadas',
   'arbolesDeEjemplo',
 ] as const satisfies readonly (keyof Cifras)[]
-
-const ESQUELETOS = Array.from({ length: CANTIDAD_CIFRAS_INICIO }, (_, indice) => indice)
 
 // «El censo hoy»: 4 cifras que salen de la API, con esqueleto mientras cargan y error con reintento.
 export function CifrasCenso({ estado, cifras, onReintentar }: PropsCifrasCenso) {
@@ -46,28 +46,14 @@ export function CifrasCenso({ estado, cifras, onReintentar }: PropsCifrasCenso) 
           </ul>
         )}
         {estado === 'cargando' && (
-          <div className="inicio-cifras__lista" role="status" aria-busy="true">
-            <span className="solo-lectores">{TEXTOS_INICIO.cargandoCifras}</span>
-            {ESQUELETOS.map((indice) => (
-              <div
-                key={indice}
-                className="inicio-cifra inicio-cifras__esqueleto"
-                aria-hidden="true"
-              >
-                <span className="inicio-esqueleto-barra inicio-esqueleto-barra--cifra" />
-                <span className="inicio-esqueleto-barra" />
-                <span className="inicio-esqueleto-barra inicio-esqueleto-barra--corta" />
-              </div>
-            ))}
-          </div>
+          <EstadoCarga
+            etiqueta={TEXTOS_INICIO.cargandoCifras}
+            forma="cifras"
+            cantidad={CANTIDAD_CIFRAS_INICIO}
+          />
         )}
         {estado === 'error' && (
-          <div className="inicio-error" role="alert">
-            <p className="inicio-error__mensaje">{TEXTOS_INICIO.errorCifras}</p>
-            <button className="inicio-error__boton" type="button" onClick={onReintentar}>
-              {TEXTOS_INICIO.reintentar}
-            </button>
-          </div>
+          <EstadoError mensaje={TEXTOS_INICIO.errorCifras} onReintentar={onReintentar} />
         )}
       </div>
     </section>

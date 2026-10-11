@@ -1,16 +1,20 @@
 import '../estilos.css'
 import { useMemo } from 'react'
-import { useSectores } from '@/modulos/mapa'
+import { useArbolesDelCampus } from '@/compartido/useArbolesDelCampus'
+import { useSectoresDelCampus } from '@/compartido/useSectoresDelCampus'
+import { CANTIDAD_DESTACADOS_INICIO } from '@/config/constantes'
+import { BloqueDestacados } from '../componentes/BloqueDestacados'
 import { CifrasCenso } from '../componentes/CifrasCenso'
 import { FranjaSectores } from '../componentes/FranjaSectores'
 import { Portada } from '../componentes/Portada'
-import { useArbolesDelCampus } from '../hooks/useArbolesDelCampus'
+import { useMedidasDeDestacados } from '../hooks/useMedidasDeDestacados'
 import { calcularCifras, conteoPorSector } from '../lib/cifras'
+import { elegirDestacados } from '../lib/destacados'
 
-// Página de Inicio: portada, franja de sectores y cifras del censo.
+// Página de Inicio: portada, franja de sectores, cifras del censo y árboles destacados.
 // Cada bloque maneja su propio estado de carga y de error.
 export function VistaInicio() {
-  const sectores = useSectores()
+  const sectores = useSectoresDelCampus()
   const sectoresListos = sectores.estado === 'listo' ? sectores.sectores : null
   const idsDeSectores = useMemo(
     () => sectoresListos?.map((sector) => sector.properties.id) ?? null,
@@ -27,15 +31,28 @@ export function VistaInicio() {
     () => (sectoresListos && arbolesListos ? calcularCifras(sectoresListos, arbolesListos) : null),
     [sectoresListos, arbolesListos],
   )
+  const destacados = useMemo(
+    () =>
+      sectoresListos && arbolesListos
+        ? elegirDestacados(arbolesListos, sectoresListos, CANTIDAD_DESTACADOS_INICIO)
+        : null,
+    [sectoresListos, arbolesListos],
+  )
+  const codigosDestacados = useMemo(
+    () => destacados?.map(({ arbol }) => arbol.codigo) ?? null,
+    [destacados],
+  )
+  const medidasDe = useMedidasDeDestacados(codigosDestacados)
 
-  // Las cifras necesitan sectores y árboles; el primero que falle define el error y su reintento.
-  const estadoCifras =
+  // Las cifras y los destacados necesitan sectores y árboles; el primero que falle define el
+  // error y su reintento.
+  const estadoCampus =
     sectores.estado === 'error' || arboles.estado === 'error'
       ? 'error'
       : cifras
         ? 'listo'
         : 'cargando'
-  const reintentarCifras = sectores.estado === 'error' ? sectores.reintentar : arboles.reintentar
+  const reintentarCampus = sectores.estado === 'error' ? sectores.reintentar : arboles.reintentar
 
   return (
     <div className="inicio">
@@ -46,7 +63,13 @@ export function VistaInicio() {
         conteos={conteos}
         onReintentar={sectores.reintentar}
       />
-      <CifrasCenso estado={estadoCifras} cifras={cifras} onReintentar={reintentarCifras} />
+      <CifrasCenso estado={estadoCampus} cifras={cifras} onReintentar={reintentarCampus} />
+      <BloqueDestacados
+        estado={estadoCampus}
+        destacados={destacados ?? []}
+        medidasDe={medidasDe}
+        onReintentar={reintentarCampus}
+      />
     </div>
   )
 }

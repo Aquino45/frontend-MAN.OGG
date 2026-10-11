@@ -9,7 +9,7 @@ Registro de canarios de este repo. La política completa vive en el contexto del
 - Informe sin canario o con otra palabra: se rechaza y se relanza con contexto fresco.
 
 ## Familia de este repo
-rocas metamórficas. Libres: mármol, pizarra, cuarcita, gneis, esquisto, serpentinita, filita, anfibolita, milonita, corneana, eclogita, migmatita.
+rocas metamórficas. Libres: gneis, esquisto, filita, anfibolita, milonita, corneana.
 
 ## Registro
 | Fecha | Ticket | Palabra | Rol | Sesión |
@@ -21,3 +21,4 @@ rocas metamórficas. Libres: mármol, pizarra, cuarcita, gneis, esquisto, serpen
 | 09/10/2026 | FE-005 | cuarcita | ORQ-RISC | riolita |
 | 11/10/2026 | FE-007 | fluorita | ORQ-CA | eclogita |
 | 11/10/2026 | FE-006 | jaspe | ORQ-CA | eclogita |
+| 11/10/2026 | FE-008 | serpentinita | ORQ-CA | tonalita, migmatita |

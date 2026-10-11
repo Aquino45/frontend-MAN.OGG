@@ -3,15 +3,16 @@
    El mapa compacto y las cifras tienen sus propios archivos. */
 @import './mapa.estilos.css';
 @import './cifras.estilos.css';
+@import './destacados.estilos.css';
 .inicio {
   min-inline-size: 0;
 }
 
-/* ---------- Aparición (corta, ease-out) ---------- */
+/* ---------- Aparición (200 ms, ease-out, desde scale 0.98 y opacidad 0) ---------- */
 @keyframes inicio-aparecer {
   from {
     opacity: 0;
-    transform: translateY(var(--desplazamiento-aparicion));
+    transform: scale(var(--entrada-escala-inicial));
   }
 }
 
@@ -23,52 +24,11 @@
   animation-delay: calc(var(--retraso-escalonado) * 3);
 }
 
-/* ---------- Botones ---------- */
-.inicio-boton {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--espacio-2);
-  min-block-size: var(--alto-boton-grande);
-  padding-inline: var(--espacio-4);
-  font-size: var(--texto-base);
-  font-weight: 600;
-  text-decoration: none;
-  transition: transform var(--duracion-rapida) var(--curva-salida);
-}
-
-.inicio-boton:active {
-  transform: scale(var(--escala-presion));
-}
-
-/* Principal: blanco semibold de 18 px sobre carmín (4.72:1) */
-.inicio-boton--portada {
-  border-radius: var(--radio-pildora);
-  background: var(--boton-principal-fondo);
-  color: var(--boton-principal-texto);
-}
-
-.inicio-boton--franja {
-  border-radius: var(--radio-md);
-  background: var(--franja-contraste-boton-fondo);
-  color: var(--franja-contraste-boton-texto);
-}
-
-.inicio-boton__flecha {
-  flex: none;
-  inline-size: var(--tamano-icono);
-  block-size: var(--tamano-icono);
-  fill: none;
-  stroke: currentColor;
-  stroke-width: var(--grosor-icono);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
 /* ---------- Portada ---------- */
 .inicio-portada__contenido {
   max-inline-size: var(--inicio-ancho-maximo);
   margin-inline: auto;
-  padding: var(--espacio-5) var(--espacio-3) var(--espacio-6);
+  padding: var(--espacio-6) var(--espacio-3);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -99,8 +59,8 @@
   font-family: var(--fuente-display);
   font-weight: 800;
   font-size: var(--texto-portada);
-  line-height: 0.95;
-  letter-spacing: -0.03em;
+  line-height: var(--interlinea-display);
+  letter-spacing: var(--tracking-display);
   overflow-wrap: break-word;
 }
 
@@ -111,9 +71,9 @@
 
 .inicio-portada__frase {
   margin: 0;
-  max-inline-size: var(--inicio-ancho-frase);
+  max-inline-size: min(var(--inicio-ancho-frase), var(--medida-cuerpo));
   font-size: var(--texto-frase);
-  line-height: 1.55;
+  line-height: var(--interlinea-cuerpo);
   color: var(--color-texto-suave);
 }
 
@@ -145,6 +105,13 @@
   color: var(--franja-contraste-texto);
 }
 
+.inicio-franja {
+  --boton-principal-fondo: var(--franja-contraste-boton-fondo);
+  --boton-principal-texto: var(--franja-contraste-boton-texto);
+  --boton-secundario-borde: var(--franja-contraste-tenue);
+  --boton-secundario-texto: var(--franja-contraste-texto);
+}
+
 .inicio-franja :focus-visible {
   outline-color: var(--franja-contraste-texto);
 }
@@ -172,16 +139,16 @@
   font-family: var(--fuente-display);
   font-weight: 800;
   font-size: var(--texto-franja-titulo);
-  line-height: 0.98;
-  letter-spacing: -0.03em;
+  line-height: var(--interlinea-display);
+  letter-spacing: var(--tracking-display);
   overflow-wrap: break-word;
 }
 
 .inicio-franja__frase {
   margin: 0;
-  max-inline-size: var(--inicio-ancho-frase);
+  max-inline-size: min(var(--inicio-ancho-frase), var(--medida-cuerpo));
   font-size: var(--texto-frase);
-  line-height: 1.55;
+  line-height: var(--interlinea-cuerpo);
   color: var(--franja-contraste-tenue);
 }
 
@@ -221,7 +188,7 @@
   flex: none;
   inline-size: var(--muestra-leyenda-ancho);
   block-size: var(--muestra-leyenda-alto);
-  border-radius: var(--radio-sm);
+  border-radius: var(--radio-chip);
 }
 
 .inicio-leyenda__muestra--campo {
@@ -232,17 +199,10 @@
   border: var(--grosor-foco-ui) dashed var(--mapa-inicio-borde-ejemplo);
   background: var(--mapa-inicio-relleno-ejemplo);
 }
+
 /* ---------- Movimiento reducido ---------- */
 @media (prefers-reduced-motion: reduce) {
   .inicio-aparece {
     animation: none;
-  }
-
-  .inicio-boton {
-    transition: none;
-  }
-
-  .inicio-boton:active {
-    transform: none;
   }
 }

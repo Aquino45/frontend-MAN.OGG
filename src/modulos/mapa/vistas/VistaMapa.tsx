@@ -1,8 +1,11 @@
 // Pantalla principal: el mapa de sectores y, al entrar en uno, su panel con la lista de árboles
 // o la cartilla del árbol abierto. El sector y el árbol abiertos viven en la URL.
 import '../estilos.css'
+import '../hoja.estilos.css'
 import '../destacados.estilos.css'
 import { useEffect, useMemo, useState } from 'react'
+import { EstadoCarga } from '@/compartido/EstadoCarga'
+import { EstadoError } from '@/compartido/EstadoError'
 import { VistaCartilla } from '@/modulos/cartilla'
 import {
   FRASES_CARGA,
@@ -22,6 +25,8 @@ import { useRetornoDeFoco } from '../hooks/useRetornoDeFoco'
 import { useSeleccionEnUrl } from '../hooks/useSeleccionEnUrl'
 
 const TECLA_ESCAPE = 'Escape'
+// Proporción del esqueleto del mapa mientras carga (la misma del mapa compacto de Inicio)
+const PROPORCION_MAPA = 'var(--mapa-inicio-proporcion)'
 
 interface PropsVistaMapa {
   // Fuente de azar para las variantes de adorno; se inyecta en los tests.
@@ -65,9 +70,7 @@ export function VistaMapa({ aleatorio = Math.random }: PropsVistaMapa) {
   if (sectores.estado === 'cargando') {
     return (
       <section className="vista-mapa">
-        <p className="vista-mapa__carga" role="status">
-          {fraseCarga}
-        </p>
+        <EstadoCarga etiqueta={fraseCarga} forma="bloque" proporcion={PROPORCION_MAPA} />
       </section>
     )
   }
@@ -75,12 +78,7 @@ export function VistaMapa({ aleatorio = Math.random }: PropsVistaMapa) {
   if (sectores.estado === 'error') {
     return (
       <section className="vista-mapa">
-        <div className="vista-mapa__error" role="alert">
-          <p>{TEXTOS_MAPA.errorSectores}</p>
-          <button type="button" className="boton" onClick={sectores.reintentar}>
-            {TEXTOS_MAPA.reintentar}
-          </button>
-        </div>
+        <EstadoError mensaje={TEXTOS_MAPA.errorSectores} onReintentar={sectores.reintentar} />
       </section>
     )
   }
@@ -111,7 +109,6 @@ export function VistaMapa({ aleatorio = Math.random }: PropsVistaMapa) {
       {sectorAbierto && (
         <aside
           className="vista-mapa__panel"
-          key={arbolCodigo ?? sectorAbierto.id}
           aria-label={
             arbolCodigo ?? `${TEXTOS_PANEL.hojaInferior}: ${sectorAbierto.properties.nombre}`
           }
