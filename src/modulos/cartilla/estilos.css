@@ -48,10 +48,17 @@
   overflow-wrap: anywhere;
 }
 
+/* Foto y fila del chip de estado; van pegadas a la franja del código, como en el diseño. */
+.foto-bloque {
+  margin-block-start: calc(-1 * var(--espacio-3));
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-12);
+}
+
 .foto-arbol {
   position: relative;
-  /* La foto va pegada a la franja del código, como en el diseño. */
-  margin-block-start: calc(-1 * var(--espacio-3));
   aspect-ratio: var(--foto-proporcion);
   display: grid;
   place-items: center;
@@ -73,10 +80,16 @@
 }
 
 .foto-arbol__pendiente {
+  /* Deja sitio al sello de ejemplo, arriba a la izquierda, para que no roce el árbol */
+  padding-block-start: var(--espacio-5);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--espacio-2);
+}
+
+.foto-arbol__pendiente .glifo-pixel {
+  inline-size: var(--foto-glifo-pendiente);
 }
 
 .foto-arbol__pendiente-texto {
@@ -92,13 +105,10 @@
   max-inline-size: calc(100% - 2 * var(--espacio-2));
 }
 
-/* El chip de estado va abajo a la derecha: así nunca choca con el sello de ejemplo. */
+/* El chip de estado va en su propia fila bajo la foto: nunca tapa el texto ni el árbol. */
 .foto-arbol__estado {
-  position: absolute;
-  inset-block-end: var(--espacio-2);
-  inset-inline-end: var(--espacio-2);
   min-inline-size: 0;
-  max-inline-size: calc(100% - 2 * var(--espacio-2));
+  padding-inline: var(--espacio-3);
 }
 
 .chip-estado {

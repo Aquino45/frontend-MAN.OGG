@@ -97,6 +97,11 @@
   --hoja-asa-alto: 0.3125rem;
   --foto-proporcion: 11 / 5;
   --foto-glifo: 5.25rem;
+  --foto-glifo-pendiente: 4rem;
+  /* Alto de la cabecera cerrada (una sola fila, celular y escritorio): 44 + 2 × 16 = 76 px.
+     La hoja inferior del mapa se queda debajo de esta franja. */
+  --capa-cabecera: 3;
+  --alto-cabecera: calc(var(--tamano-control) + 2 * var(--espacio-3));
   --miniatura-lado: 3rem;
   --indicador-barra-alto: 0.5rem;
   --indicador-copa-lado: 4rem;

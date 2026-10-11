@@ -153,6 +153,17 @@ describe('tokens.css', () => {
     expect(tokensCss).toMatch(/--color-co2-texto:/)
   })
 
+  it('define el alto de la cabecera cerrada para que la hoja del mapa quede debajo', () => {
+    expect(tokensCss).toMatch(
+      /--alto-cabecera:\s*calc\(var\(--tamano-control\) \+ 2 \* var\(--espacio-3\)\)/,
+    )
+    expect(tokensCss).toMatch(/--foto-glifo-pendiente:/)
+  })
+
+  it('la capa de la cabecera está por encima de la de la hoja del mapa (2)', () => {
+    expect(tokensCss).toMatch(/--capa-cabecera:\s*3;/)
+  })
+
   it('las superficies del navegador salen de tokens', () => {
     for (const token of ['--seleccion-fondo', '--seleccion-texto', '--scrollbar-pulgar']) {
       expect(tokensCss).toContain(`${token}:`)

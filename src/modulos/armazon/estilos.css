@@ -8,6 +8,11 @@
   inline-size: 100%;
   max-inline-size: var(--inicio-ancho-maximo);
   margin-inline: auto;
+  min-block-size: var(--alto-cabecera);
+  /* Por encima de la hoja inferior del mapa (fija): así el menú abierto se ve completo */
+  position: relative;
+  z-index: var(--capa-cabecera);
+  background: var(--color-fondo);
   padding: var(--espacio-3);
   display: flex;
   flex-wrap: wrap;
@@ -19,10 +24,10 @@
 .armazon-cabecera__marca {
   display: flex;
   align-items: center;
+  flex: 1 1 0;
   gap: var(--espacio-12);
   min-inline-size: 0;
   min-block-size: var(--tamano-control);
-  margin-inline-end: auto;
   color: var(--color-texto);
   text-decoration: none;
 }
@@ -44,12 +49,13 @@
 .armazon-cabecera__nombre {
   min-inline-size: 0;
   font-weight: 600;
-  font-size: var(--texto-base);
+  font-size: var(--texto-sm);
   line-height: var(--interlinea-titulo);
   overflow-wrap: anywhere;
 }
 
 .armazon-cabecera__acciones {
+  flex: none;
   order: 2;
   display: flex;
   align-items: center;
@@ -103,6 +109,15 @@
 @media (width >= 48rem) {
   .armazon-cabecera__menu {
     display: none;
+  }
+
+  .armazon-cabecera__marca {
+    flex: 0 1 auto;
+    margin-inline-end: auto;
+  }
+
+  .armazon-cabecera__nombre {
+    font-size: var(--texto-base);
   }
 }
 

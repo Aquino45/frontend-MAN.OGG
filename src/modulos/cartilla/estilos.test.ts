@@ -60,14 +60,21 @@ describe('cartilla a 360 px: reglas que evitan el desborde', () => {
       '.bloque-co2__columna',
       '.indicador-dap__dato',
       '.indicador-copa__valores',
-      '.foto-arbol__estado',
     ]) {
       expect(reglaDe(selector), selector).toMatch(/min-inline-size:\s*0/)
     }
   })
 
-  it('el chip de estado no se sale de la foto', () => {
-    expect(reglaDe('.foto-arbol__estado')).toMatch(/max-inline-size:\s*calc\(/)
+  it('el chip de estado va en su propia fila bajo la foto, no encima del texto', () => {
+    expect(reglaDe('.foto-arbol__estado')).not.toMatch(/position:\s*absolute/)
+    expect(reglaDe('.foto-arbol__estado')).toMatch(/min-inline-size:\s*0/)
+  })
+
+  it('«Foto pendiente» deja sitio al sello: glifo más chico y desplazado hacia abajo', () => {
+    expect(reglaDe('.foto-arbol__pendiente')).toMatch(/padding-block-start:/)
+    expect(estilosCss).toMatch(
+      /\.foto-arbol__pendiente \.glifo-pixel\s*\{[^}]*var\(--foto-glifo-pendiente\)/,
+    )
   })
 
   it('el valor de la copa puede partirse', () => {

@@ -91,6 +91,40 @@
   align-self: flex-start;
 }
 
+/* Dentro de la hoja, el botón de volver es una barra propia con el fondo opaco de la hoja:
+   el contenido que se desplaza no se ve por encima ni por debajo de ella. */
+.vista-mapa__panel :is(.vista-cartilla__volver, .panel-sector__volver) {
+  --boton-fondo: var(--color-fondo);
+  --boton-fondo-hover: var(--color-fondo);
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+  align-self: stretch;
+  margin-block-end: 0;
+}
+
+.vista-mapa__panel :is(.vista-cartilla__volver, .panel-sector__volver)::before,
+.vista-mapa__panel :is(.vista-cartilla__volver, .panel-sector__volver)::after {
+  content: '';
+  position: absolute;
+  inset-inline: calc(-1 * var(--espacio-3));
+  z-index: -1;
+  background: var(--color-fondo);
+  pointer-events: none;
+}
+
+/* Hueco que queda por encima (el relleno de la hoja) */
+.vista-mapa__panel :is(.vista-cartilla__volver, .panel-sector__volver)::before {
+  inset-block-end: 100%;
+  block-size: var(--espacio-4);
+}
+
+/* Hueco hasta el contenido de abajo */
+.vista-mapa__panel :is(.vista-cartilla__volver, .panel-sector__volver)::after {
+  inset-block-start: 100%;
+  block-size: var(--espacio-3);
+}
+
 .panel-sector__lista {
   margin: 0;
   padding: 0;
@@ -231,7 +265,8 @@
     inset-inline: 0;
     inset-block-end: 0;
     z-index: 2;
-    max-block-size: var(--alto-hoja);
+    max-block-size: min(var(--alto-hoja), calc(100dvh - var(--alto-cabecera)));
+    overscroll-behavior: contain;
     overflow-y: auto;
     padding: var(--espacio-4) var(--espacio-3)
       calc(var(--espacio-3) + env(safe-area-inset-bottom, 0px));

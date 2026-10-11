@@ -42,8 +42,14 @@ describe('hoja inferior', () => {
     estilosCss.indexOf(`(max-width: ${CORTE_PANEL_LATERAL_REM - 0.01}rem)`),
   )
 
+  it('nunca pasa por encima de la cabecera', () => {
+    expect(hoja).toMatch(
+      /max-block-size:\s*min\(\s*var\(--alto-hoja\),\s*calc\(100dvh - var\(--alto-cabecera\)\)\s*\)/,
+    )
+  })
+
   it('llega a --alto-hoja en dvh, suma la zona segura y usa la sombra y el radio del sistema', () => {
-    expect(hoja).toMatch(/max-block-size:\s*var\(--alto-hoja\)/)
+    expect(hoja).toContain('var(--alto-hoja)')
     expect(hoja).toContain('env(safe-area-inset-bottom')
     expect(hoja).toMatch(/box-shadow:\s*var\(--sombra-flotante\)/)
     expect(hoja).toContain('var(--radio-tarjeta)')
@@ -54,6 +60,30 @@ describe('hoja inferior', () => {
   it('no usa unidades vh para su alto', () => {
     expect(estilosCss).not.toMatch(/\d\s*vh\b/)
     expect(estilosCss).not.toMatch(/--hoja-alto/)
+  })
+})
+
+describe('barra del botón de volver dentro de la hoja', () => {
+  const barra =
+    estilosCss.match(
+      /\.vista-mapa__panel :is\(\.vista-cartilla__volver, \.panel-sector__volver\)\s*\{[^}]*\}/,
+    )?.[0] ?? ''
+
+  it('es una fila propia, pegada arriba y con el fondo opaco de la hoja', () => {
+    expect(barra).toMatch(/position:\s*sticky/)
+    expect(barra).toMatch(/inset-block-start:\s*0/)
+    expect(barra).toMatch(/align-self:\s*stretch/)
+    expect(barra).toMatch(/--boton-fondo:\s*var\(--color-fondo\)/)
+    expect(barra).toMatch(/--boton-fondo-hover:\s*var\(--color-fondo\)/)
+    expect(barra).not.toMatch(/box-shadow|drop-shadow/)
+  })
+
+  it('un relleno del mismo fondo tapa el hueco de arriba y de abajo de la barra', () => {
+    expect(estilosCss).toMatch(
+      /__volver\)::before,\s*\.vista-mapa__panel :is\([^)]*\)::after\s*\{[^}]*background:\s*var\(--color-fondo\)/,
+    )
+    expect(estilosCss).toMatch(/__volver\)::before\s*\{[^}]*inset-block-end:\s*100%/)
+    expect(estilosCss).toMatch(/__volver\)::after\s*\{[^}]*inset-block-start:\s*100%/)
   })
 })
 

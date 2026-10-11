@@ -144,6 +144,29 @@ describe('Cabecera: estilos', () => {
     expect(estilosCss).toMatch(/\.armazon-cabecera__menu\s*\{[^}]*display:\s*none/)
   })
 
+  it('a 360 px la cabecera es de una sola fila: la marca encoge y el nombre pasa a 2 líneas', () => {
+    expect(estilosCss).toMatch(/\.armazon-cabecera__marca\s*\{[^}]*flex:\s*1 1 0/)
+    expect(estilosCss).toMatch(/\.armazon-cabecera__marca\s*\{[^}]*min-inline-size:\s*0/)
+    expect(estilosCss).not.toMatch(/text-overflow:\s*ellipsis/)
+    expect(estilosCss).not.toMatch(/white-space:\s*nowrap/)
+    expect(estilosCss).toMatch(/\.armazon-cabecera__nombre\s*\{[^}]*font-size:\s*var\(--texto-sm\)/)
+    expect(estilosCss).toMatch(
+      /\.armazon-cabecera__nombre\s*\{[^}]*line-height:\s*var\(--interlinea-titulo\)/,
+    )
+    expect(estilosCss).toMatch(/\.armazon-cabecera__nombre\s*\{[^}]*overflow-wrap:\s*anywhere/)
+    expect(estilosCss).toMatch(/\.armazon-cabecera__acciones\s*\{[^}]*flex:\s*none/)
+    expect(estilosCss).toMatch(
+      /\.armazon-cabecera\s*\{[^}]*min-block-size:\s*var\(--alto-cabecera\)/,
+    )
+  })
+
+  it('la cabecera queda por encima de la hoja del mapa, opaca y sin sombra de color', () => {
+    expect(estilosCss).toMatch(/\.armazon-cabecera\s*\{[^}]*position:\s*relative/)
+    expect(estilosCss).toMatch(/\.armazon-cabecera\s*\{[^}]*z-index:\s*var\(--capa-cabecera\)/)
+    expect(estilosCss).toMatch(/\.armazon-cabecera\s*\{[^}]*background:\s*var\(--color-fondo\)/)
+    expect(estilosCss).not.toMatch(/box-shadow/)
+  })
+
   it('la píldora se queda en los enlaces de navegación', () => {
     expect(estilosCss).toMatch(/\.armazon-cabecera__enlace\s*\{[^}]*var\(--radio-pildora\)/)
     expect(estilosCss.match(/--radio-pildora/g)).toHaveLength(1)
