@@ -1,19 +1,25 @@
+import { NOMBRE_PRODUCTO } from '@/config/constantes'
+import { VistaEntrada } from '@/modulos/entrada'
 import { VistaMapa } from '@/modulos/mapa'
 import { InterruptorTema } from '@/modulos/tema'
 
-export default function App() {
+interface PropsApp {
+  // Fuente de azar del sorteo de la entrada; se inyecta en los tests.
+  aleatorioEntrada?: () => number
+}
+
+export default function App({ aleatorioEntrada }: PropsApp) {
   return (
-    <div className="app">
-      <header className="cabecera">
-        <div>
-          <h1 className="cabecera__titulo">MAN.OGG</h1>
-          <p className="cabecera__linea">Censo arbóreo · UPeU Ñaña</p>
-        </div>
-        <InterruptorTema />
-      </header>
-      <main>
-        <VistaMapa />
-      </main>
-    </div>
+    <VistaEntrada aleatorio={aleatorioEntrada}>
+      <div className="app">
+        <header className="cabecera">
+          <h1 className="cabecera__titulo">{NOMBRE_PRODUCTO}</h1>
+          <InterruptorTema />
+        </header>
+        <main>
+          <VistaMapa />
+        </main>
+      </div>
+    </VistaEntrada>
   )
 }

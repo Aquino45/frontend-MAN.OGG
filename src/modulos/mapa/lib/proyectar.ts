@@ -5,6 +5,7 @@ import {
   MAPA_ANCHO_VIEWBOX,
   MAPA_DECIMALES_SVG,
   MAPA_GLIFOS_POR_SECTOR,
+  MAPA_MARGEN_ENTRADA,
   MAPA_MARGEN_VIEWBOX,
   MAPA_TAMANO_GLIFO,
 } from '@/config/constantes'
@@ -22,17 +23,29 @@ export interface SectorGeografico {
   geometry: { coordinates: readonly (readonly Posicion[])[] }
 }
 
+// Recuadro de un viewBox SVG
+export interface Recuadro {
+  x: number
+  y: number
+  ancho: number
+  alto: number
+}
+
 export interface SectorProyectado {
   id: number
   trazado: string
   etiqueta: Punto2D
   glifos: Punto2D[]
+  // Recuadro al que se acerca el mapa al entrar al sector, con la proporción del mapa completo
+  recuadro: Recuadro
 }
 
 export interface Proyeccion {
   ancho: number
   alto: number
   sectores: SectorProyectado[]
+  // Lleva una posición [lon, lat] a coordenadas del viewBox, igual que los polígonos
+  proyectarPosicion: (posicion: Posicion) => Punto2D
 }
 
 export interface OpcionesProyeccion {
@@ -159,6 +172,20 @@ export function puntosGlifos(
   return puntos
 }
 
+// Recuadro que contiene los puntos con un margen, ampliado hasta tener la proporción dada.
+export function recuadroDe(
+  puntos: readonly Punto2D[],
+  margen: number,
+  proporcion: number,
+): Recuadro {
+  const { minX, maxX, minY, maxY } = limitesDe(puntos)
+  let ancho = maxX - minX + 2 * margen
+  let alto = maxY - minY + 2 * margen
+  if (ancho / alto < proporcion) ancho = alto * proporcion
+  else alto = ancho / proporcion
+  return { x: (minX + maxX - ancho) / 2, y: (minY + maxY - alto) / 2, ancho, alto }
+}
+
 function redondear(valor: number, decimales: number): number {
   const factor = 10 ** decimales
   return Math.round(valor * factor) / factor
@@ -184,7 +211,9 @@ export function proyectarSectores(
     ...opciones,
   }
   const posiciones = sectores.flatMap((sector) => sector.geometry.coordinates.flat())
-  if (posiciones.length === 0) return { ancho, alto: 2 * margen, sectores: [] }
+  if (posiciones.length === 0) {
+    return { ancho, alto: 2 * margen, sectores: [], proyectarPosicion: () => ({ x: 0, y: 0 }) }
+  }
 
   const latitudes = posiciones.map(([, latitud]) => latitud)
   const latitudMedia = (Math.min(...latitudes) + Math.max(...latitudes)) / 2
@@ -206,9 +235,11 @@ export function proyectarSectores(
     }
   }
 
+  const altoRedondeado = redondear(alto, decimales)
   return {
     ancho,
-    alto: redondear(alto, decimales),
+    alto: altoRedondeado,
+    proyectarPosicion: aViewBox,
     sectores: sectores.map((sector) => {
       const anillos = sector.geometry.coordinates.map((anillo) => anillo.map(aViewBox))
       const exterior = anillos[0]
@@ -218,6 +249,7 @@ export function proyectarSectores(
         trazado: trazadoDe(anillos, decimales),
         etiqueta,
         glifos: puntosGlifos(exterior, etiqueta, glifosPorSector, tamanoGlifo),
+        recuadro: recuadroDe(exterior, MAPA_MARGEN_ENTRADA, ancho / altoRedondeado),
       }
     }),
   }

@@ -1,21 +1,31 @@
 import { describe, expect, it } from 'vitest'
 import {
   ATRIBUTO_TEMA,
-  DURACION_EASTER_EGG_MS,
+  DURACION_ENTRADA_ALTERNA_MS,
+  DURACION_SALIDA_ENTRADA_MS,
   FRASES_CARGA,
   PESOS_FRASES_CARGA,
   PESOS_GLIFOS_ARBOL,
-  PROBABILIDAD_EASTER_EGG,
+  PESOS_ENTRADA,
   TEMAS,
 } from './constantes'
 
-describe('constantes de negocio', () => {
-  it('la probabilidad del easter egg es 1 entre 999', () => {
-    expect(PROBABILIDAD_EASTER_EGG).toBe(1 / 999)
+describe('constantes de la entrada al mapa', () => {
+  it('los pesos de las variantes son positivos', () => {
+    expect(Object.keys(PESOS_ENTRADA).sort()).toEqual(['alterna', 'estandar'])
+    Object.values(PESOS_ENTRADA).forEach((peso) => expect(peso).toBeGreaterThan(0))
   })
 
-  it('la duración del easter egg es 3000 ms', () => {
-    expect(DURACION_EASTER_EGG_MS).toBe(3000)
+  it('la variante alterna sale con probabilidad exactamente 1 entre 999', () => {
+    const total = PESOS_ENTRADA.estandar + PESOS_ENTRADA.alterna
+    expect(PESOS_ENTRADA.alterna).toBe(1)
+    expect(PESOS_ENTRADA.alterna / total).toBe(1 / 999)
+  })
+
+  it('la ilustración se ve 3000 ms y se desvanece en menos tiempo del que se ve', () => {
+    expect(DURACION_ENTRADA_ALTERNA_MS).toBe(3000)
+    expect(DURACION_SALIDA_ENTRADA_MS).toBeGreaterThan(0)
+    expect(DURACION_SALIDA_ENTRADA_MS).toBeLessThan(DURACION_ENTRADA_ALTERNA_MS)
   })
 })
 

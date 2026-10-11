@@ -1,12 +1,19 @@
 // Mapa ilustrado: un trazado por sector, con su nombre y glifos decorativos.
 // No pide datos: recibe los sectores y el estado de la interacción por props.
-import { useMemo, useRef, type KeyboardEvent, type PointerEvent } from 'react'
-import type { SectorFeature } from '@/api/cliente'
-import { MAPA_TAMANO_GLIFO, TEXTOS_MAPA } from '@/config/constantes'
+import { useMemo, useRef, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react'
+import type { ArbolFeature, SectorFeature } from '@/api/cliente'
+import {
+  MAPA_DURACION_ENTRADA_MS,
+  MAPA_RADIO_PUNTO,
+  MAPA_TAMANO_GLIFO,
+  TEXTOS_MAPA,
+} from '@/config/constantes'
+import { useRecuadroAnimado } from '../hooks/useRecuadroAnimado'
 import { proyectarSectores } from '../lib/proyectar'
 import { nombreAccesibleSector } from '../lib/textosSector'
 import { GlifoArbol, type FormaGlifo } from './GlifoArbol'
 import { LeyendaMapa } from './LeyendaMapa'
+import { PuntosArboles } from './PuntosArboles'
 
 const TECLAS_SELECCION = new Set(['Enter', ' '])
 const PUNTERO_TACTIL = 'touch'
@@ -18,7 +25,15 @@ interface PropsMapaSectores {
   formasGlifos: readonly FormaGlifo[]
   onResaltar: (sectorId: number | null) => void
   onSeleccionar: (sectorId: number) => void
+  // Árboles del sector seleccionado, que se dibujan como puntos al entrar en él
+  arboles?: readonly ArbolFeature[]
+  arbolResaltado?: string | null
+  onResaltarArbol?: (codigo: string | null) => void
+  onAbrirArbol?: (codigo: string) => void
 }
+
+const SIN_ARBOLES: readonly ArbolFeature[] = []
+const SIN_ACCION = () => {}
 
 export function MapaSectores({
   sectores,
@@ -27,8 +42,21 @@ export function MapaSectores({
   formasGlifos,
   onResaltar,
   onSeleccionar,
+  arboles = SIN_ARBOLES,
+  arbolResaltado = null,
+  onResaltarArbol = SIN_ACCION,
+  onAbrirArbol = SIN_ACCION,
 }: PropsMapaSectores) {
   const proyeccion = useMemo(() => proyectarSectores(sectores), [sectores])
+  const mapaCompleto = useMemo(
+    () => ({ x: 0, y: 0, ancho: proyeccion.ancho, alto: proyeccion.alto }),
+    [proyeccion],
+  )
+  const recuadroObjetivo =
+    proyeccion.sectores.find((sector) => sector.id === sectorSeleccionado)?.recuadro ?? mapaCompleto
+  const recuadro = useRecuadroAnimado(recuadroObjetivo, MAPA_DURACION_ENTRADA_MS)
+  // Cuánto se acercó el mapa: los trazos de texto y los puntos se achican en la misma medida.
+  const escalaZoom = recuadro.ancho / proyeccion.ancho
   // Tipo del puntero que está presionando un sector; null si la interacción es por teclado.
   const punteroEnCurso = useRef<string | null>(null)
   const sectorActivo = sectorResaltado ?? sectorSeleccionado
@@ -70,8 +98,20 @@ export function MapaSectores({
   return (
     <figure className="mapa-sectores">
       <svg
-        className={`mapa-sectores__svg${sectorActivo === null ? '' : ' mapa-sectores__svg--con-activo'}`}
-        viewBox={`0 0 ${proyeccion.ancho} ${proyeccion.alto}`}
+        className={[
+          'mapa-sectores__svg',
+          sectorActivo !== null && 'mapa-sectores__svg--con-activo',
+          sectorSeleccionado !== null && 'mapa-sectores__svg--entrado',
+        ]
+          .filter(Boolean)
+          .join(' ')}
+        viewBox={`${recuadro.x} ${recuadro.y} ${recuadro.ancho} ${recuadro.alto}`}
+        style={
+          {
+            aspectRatio: `${proyeccion.ancho} / ${proyeccion.alto}`,
+            '--escala-zoom': escalaZoom,
+          } as CSSProperties
+        }
         role="group"
         aria-label={TEXTOS_MAPA.tituloRegion}
       >
@@ -81,6 +121,7 @@ export function MapaSectores({
             'sector',
             properties.provisional && 'sector--provisional',
             proyectado.id === sectorActivo && 'sector--activo',
+            proyectado.id === sectorSeleccionado && 'sector--seleccionado',
           ].filter(Boolean)
           return (
             <g key={proyectado.id} className={clases.join(' ')} data-sector={proyectado.id}>
@@ -99,7 +140,7 @@ export function MapaSectores({
                 onClick={() => alHacerClick(proyectado.id)}
                 onKeyDown={(evento) => alPulsarTecla(evento, proyectado.id)}
               />
-              {formasGlifos.length > 0 && (
+              {formasGlifos.length > 0 && proyectado.id !== sectorSeleccionado && (
                 <g className="sector__glifos" aria-hidden="true">
                   {proyectado.glifos.map((centro, indiceGlifo) => (
                     <GlifoArbol
@@ -122,6 +163,16 @@ export function MapaSectores({
             </g>
           )
         })}
+        {sectorSeleccionado !== null && arboles.length > 0 && (
+          <PuntosArboles
+            arboles={arboles}
+            proyectarPosicion={proyeccion.proyectarPosicion}
+            radio={MAPA_RADIO_PUNTO * escalaZoom}
+            codigoResaltado={arbolResaltado}
+            onResaltar={onResaltarArbol}
+            onAbrir={onAbrirArbol}
+          />
+        )}
       </svg>
       <LeyendaMapa hayProvisionales={hayProvisionales} />
     </figure>

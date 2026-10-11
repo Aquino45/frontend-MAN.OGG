@@ -20,6 +20,19 @@ npm run contrato:tipos
 
 Con `VITE_USAR_MOCKS=true` el front usa los ejemplos del contrato (`src/mocks/`); con `false`, la API de `VITE_API_URL`.
 
+### Correr el front contra el back
+1. Levanta el back y carga sus datos (en `backend-MAN.OGG`, ver su README): `docker compose up -d`, `migrate`, `importar_sectores` e `importar_planilla`.
+2. En el `.env` del front, apunta a la API y apaga los mocks:
+
+```ini
+VITE_API_URL=http://localhost:8000/api/v1   # el puerto es API_PUERTO del .env del back
+VITE_USAR_MOCKS=false
+```
+
+3. `npm run dev` y abre `http://localhost:5173/` (el puerto es `PUERTO_DEV`). El back debe aceptar ese origen en `CORS_ORIGENES_PERMITIDOS`.
+
+Sin árboles cargados, los sectores dicen «Aún sin árboles registrados». Si el back no responde, la pantalla muestra el mensaje de error con «Reintentar». El sector y el árbol abiertos quedan en la URL (`?sector=1&arbol=S01-A001`), así que se puede compartir el enlace.
+
 Antes de abrir un PR: `npm test`, `npm run lint`, `npm run formato:verificar`, `npm run tipos`, `npm run verificar:colores` y `npm run build`.
 
 ## Documentación

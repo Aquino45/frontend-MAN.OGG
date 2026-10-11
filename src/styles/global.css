@@ -1,3 +1,8 @@
+@import '@fontsource/bricolage-grotesque/400.css';
+@import '@fontsource/bricolage-grotesque/600.css';
+@import '@fontsource/bricolage-grotesque/800.css';
+@import '@fontsource/silkscreen/400.css';
+
 *,
 *::before,
 *::after {
@@ -52,11 +57,6 @@ body {
   font-size: var(--texto-cabecera);
   line-height: 1.1;
   overflow-wrap: anywhere;
-}
-
-.cabecera__linea {
-  margin: 0;
-  color: var(--color-texto);
 }
 
 /* ---------- Controles ---------- */
@@ -257,34 +257,52 @@ body {
   vector-effect: non-scaling-stroke;
 }
 
-.franja-sector {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--espacio-2) var(--espacio-3);
-  padding: var(--espacio-3) var(--espacio-4);
-  border-inline-start: var(--grosor-acento) solid var(--color-acento);
-  border-radius: var(--radio-md);
-  background: var(--color-superficie);
-  animation: entrada-franja var(--duracion-media) var(--curva-salida);
+/* ---------- Piezas compartidas ---------- */
+
+/* ---------- Panel del sector y cartilla ---------- */
+.boton--texto {
+  align-self: flex-start;
+  padding: var(--espacio-1) var(--espacio-2);
+  border-color: transparent;
+  background: transparent;
+  color: var(--color-texto);
 }
 
-.franja-sector__nombre {
-  margin: 0;
-  font-size: var(--texto-subtitulo);
-  line-height: 1.2;
+.sello-demo {
+  display: inline-block;
+  padding: var(--espacio-1) var(--espacio-2);
+  border: var(--grosor-borde-ui) dashed currentColor;
+  font-family: var(--fuente-pixel);
+  font-size: var(--texto-cartilla-etiqueta);
+  color: var(--color-texto);
 }
 
-.franja-sector__total {
-  margin: 0;
+.sin-dato {
+  color: var(--color-texto-tenue);
+  font-style: italic;
+  font-weight: 400;
 }
 
-@keyframes entrada-franja {
-  from {
-    opacity: 0;
-    transform: translateY(var(--desplazamiento-entrada));
-  }
+.glifo-pixel {
+  inline-size: var(--foto-glifo);
+  block-size: auto;
+  shape-rendering: crispEdges;
+}
+
+.glifo-pixel__copa-alta {
+  fill: var(--copa-carmin);
+}
+
+.glifo-pixel__copa-media {
+  fill: var(--copa-magenta);
+}
+
+.glifo-pixel__copa-baja {
+  fill: var(--copa-magenta-oscuro);
+}
+
+.glifo-pixel__tronco {
+  fill: var(--tronco-noche);
 }
 
 /* ---------- Movimiento reducido ---------- */
@@ -303,9 +321,5 @@ body {
   .boton:active,
   .sector--activo {
     transform: none;
-  }
-
-  .franja-sector {
-    animation: none;
   }
 }
