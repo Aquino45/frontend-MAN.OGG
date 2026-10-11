@@ -1,1 +1,5 @@
 export { VistaMapa } from './vistas/VistaMapa'
+export { useSectores, type EstadoSectores } from './hooks/useSectores'
+export { proyectarSectores, type Proyeccion, type SectorProyectado } from './lib/proyectar'
+export { nombreAccesibleSector, textoTotalArboles } from './lib/textosSector'
+export { tieneSeleccion } from './lib/seleccionUrl'

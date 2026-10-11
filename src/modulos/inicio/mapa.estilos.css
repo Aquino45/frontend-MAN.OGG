@@ -1,0 +1,106 @@
+/* Mapa compacto de los sectores de Inicio. */
+
+/* ---------- Mapa compacto ---------- */
+.inicio-mapa {
+  display: block;
+  inline-size: 100%;
+  max-inline-size: var(--mapa-inicio-ancho-maximo);
+  block-size: auto;
+  overflow: visible;
+}
+
+.inicio-sector {
+  cursor: pointer;
+  outline: none;
+}
+
+.inicio-sector__forma {
+  stroke-width: var(--mapa-inicio-grosor-borde);
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  transition: stroke-width var(--duracion-rapida) var(--curva-salida);
+}
+
+.inicio-sector--campo .inicio-sector__forma {
+  fill: var(--mapa-inicio-relleno-campo);
+  stroke: var(--mapa-inicio-borde-campo);
+}
+
+.inicio-sector--ejemplo .inicio-sector__forma {
+  fill: var(--mapa-inicio-relleno-ejemplo);
+  stroke: var(--mapa-inicio-borde-ejemplo);
+}
+
+.inicio-sector--provisional .inicio-sector__forma {
+  stroke-dasharray: var(--mapa-trazo-provisional);
+}
+
+/* El foco se marca con un borde grueso en el color de texto de la franja. */
+.inicio-sector:focus-visible .inicio-sector__forma {
+  stroke: var(--franja-contraste-texto);
+  stroke-width: var(--mapa-grosor-foco);
+}
+
+@media (hover: hover) {
+  .inicio-sector:hover .inicio-sector__forma {
+    stroke-width: var(--mapa-grosor-foco);
+  }
+}
+
+.inicio-sector__texto {
+  font-family: var(--fuente-display);
+  text-anchor: middle;
+  pointer-events: none;
+  paint-order: stroke;
+  stroke-width: var(--mapa-inicio-grosor-halo);
+  stroke-linejoin: round;
+}
+
+.inicio-sector__texto--campo {
+  stroke: var(--mapa-inicio-relleno-campo);
+}
+
+.inicio-sector__texto--ejemplo {
+  stroke: var(--mapa-inicio-relleno-ejemplo);
+}
+
+.inicio-sector__nombre {
+  font-size: var(--mapa-inicio-texto-nombre);
+  font-weight: 800;
+}
+
+.inicio-sector__conteo {
+  font-size: var(--mapa-inicio-texto-conteo);
+  font-weight: 600;
+}
+
+.inicio-sector__texto--campo .inicio-sector__nombre,
+.inicio-sector__texto--campo .inicio-sector__conteo {
+  fill: var(--mapa-inicio-etiqueta-campo);
+}
+
+.inicio-sector__texto--ejemplo .inicio-sector__nombre {
+  fill: var(--mapa-inicio-etiqueta);
+}
+
+.inicio-sector__texto--ejemplo .inicio-sector__conteo {
+  fill: var(--mapa-inicio-nota);
+}
+
+/* En pantallas angostas el mapa se ve más chico: el texto crece para seguir legible. */
+@media (max-width: 37rem) {
+  .inicio-sector__nombre {
+    font-size: var(--mapa-inicio-texto-nombre-estrecho);
+  }
+
+  .inicio-sector__conteo {
+    font-size: var(--mapa-inicio-texto-conteo-estrecho);
+  }
+}
+
+/* ---------- Movimiento reducido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .inicio-sector__forma {
+    transition: none;
+  }
+}

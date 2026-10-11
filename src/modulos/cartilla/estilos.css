@@ -25,7 +25,10 @@
   padding: var(--espacio-2) var(--espacio-3);
   background: var(--copa-magenta-oscuro);
   color: var(--texto-lectura);
-  font-family: var(--fuente-pixel);
+  font-family: var(--fuente-etiqueta);
+  font-weight: var(--etiqueta-peso);
+  text-transform: uppercase;
+  letter-spacing: var(--etiqueta-espaciado);
 }
 
 .cartilla__codigo {
@@ -175,7 +178,10 @@
 }
 
 .tarjeta__etiqueta {
-  font-family: var(--fuente-pixel);
+  font-family: var(--fuente-etiqueta);
+  font-weight: var(--etiqueta-peso);
+  text-transform: uppercase;
+  letter-spacing: var(--etiqueta-espaciado);
   font-size: var(--texto-cartilla-etiqueta);
   color: var(--color-texto-tenue);
 }
@@ -284,7 +290,10 @@
 }
 
 .bloque-co2__etiqueta {
-  font-family: var(--fuente-pixel);
+  font-family: var(--fuente-etiqueta);
+  font-weight: var(--etiqueta-peso);
+  text-transform: uppercase;
+  letter-spacing: var(--etiqueta-espaciado);
   font-size: var(--texto-cartilla-etiqueta);
 }
 
@@ -320,7 +329,10 @@
 }
 
 .estados-arbol__etiqueta {
-  font-family: var(--fuente-pixel);
+  font-family: var(--fuente-etiqueta);
+  font-weight: var(--etiqueta-peso);
+  text-transform: uppercase;
+  letter-spacing: var(--etiqueta-espaciado);
   font-size: var(--texto-cartilla-etiqueta);
   color: var(--color-texto-tenue);
 }
@@ -350,7 +362,10 @@
 }
 
 .pie-arbol__ubicacion {
-  font-family: var(--fuente-pixel);
+  font-family: var(--fuente-etiqueta);
+  font-weight: var(--etiqueta-peso);
+  text-transform: uppercase;
+  letter-spacing: var(--etiqueta-espaciado);
 }
 
 /* Los bloques de la cartilla entran uno tras otro con un escalonado mínimo. */

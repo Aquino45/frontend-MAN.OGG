@@ -6,6 +6,7 @@ import {
   DURACION_ENTRADA_ALTERNA_MS,
   DURACION_SALIDA_ENTRADA_MS,
 } from '@/config/constantes'
+import '@fontsource/silkscreen/400.css'
 import ilustracionEntrada from '../recursos/ilustracion-entrada.gif'
 
 interface PropsEntradaAlterna {

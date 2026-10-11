@@ -133,6 +133,10 @@
   --fuente-mono: ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace;
   --fuente-display: 'Bricolage Grotesque', var(--fuente-base);
   --fuente-pixel: 'Silkscreen', var(--fuente-mono);
+  /* Etiquetas y rótulos pequeños del sitio: la pila de títulos en peso 600, mayúsculas y espaciado */
+  --fuente-etiqueta: var(--fuente-display);
+  --etiqueta-peso: 600;
+  --etiqueta-espaciado: 0.14em;
   --texto-titulo: clamp(2.5rem, 10vw + 0.5rem, 5rem);
   --texto-cabecera: clamp(1.75rem, 4vw + 1rem, 3rem);
   --texto-subtitulo: 1.5rem;
@@ -169,4 +173,107 @@
   --color-co2-texto: var(--texto-lectura);
   --color-co2-acento: var(--texto-lectura);
   color-scheme: light;
+}
+
+/* ---------- Armazón del sitio y página de Inicio (se suman a los tokens de arriba) ----------
+   Contrastes calculados con la fórmula de WCAG 2.x. Texto normal: mínimo 4.5:1.
+   El carmín va solo en títulos grandes (3.32:1 sobre noche, 4.14:1 sobre el neutro de lectura). */
+:root {
+  /* Franja de contraste (sectores): invierte el tema.
+     Oscuro: texto noche sobre el neutro de lectura 13.73:1, tenue (sombra violeta) 8.96:1,
+     botón blanco sobre magenta oscuro 7.48:1. */
+  --franja-contraste-fondo: var(--texto-lectura);
+  --franja-contraste-texto: var(--tronco-noche);
+  --franja-contraste-tenue: var(--sombra-violeta);
+  --franja-contraste-boton-fondo: var(--copa-magenta-oscuro);
+  --franja-contraste-boton-texto: var(--blanco);
+
+  /* Mapa compacto de Inicio, sobre la franja de contraste.
+     Oscuro: etiqueta blanca sobre el relleno de campo (magenta oscuro) 7.48:1;
+     etiqueta noche sobre el relleno de ejemplo (superficie clara) 11.14:1;
+     nota sombra violeta sobre el relleno de ejemplo 7.26:1.
+     El punteado de los límites provisionales reutiliza --mapa-trazo-provisional. */
+  --mapa-inicio-relleno-campo: var(--copa-magenta-oscuro);
+  --mapa-inicio-borde-campo: var(--tronco-noche);
+  --mapa-inicio-relleno-ejemplo: var(--superficie-clara);
+  --mapa-inicio-borde-ejemplo: var(--copa-magenta-oscuro);
+  --mapa-inicio-etiqueta: var(--tronco-noche);
+  --mapa-inicio-etiqueta-campo: var(--blanco);
+  --mapa-inicio-nota: var(--sombra-violeta);
+
+  /* Franja de cifras. Oscuro: texto de lectura sobre la tarjeta 11.85:1, texto suave 10.20:1,
+     texto tenue 8.99:1. El separador es decorativo. */
+  --franja-cifras-fondo: var(--superficie-tarjeta);
+  --cifras-separador: var(--sombra-violeta);
+
+  /* Botones. Principal: blanco sobre carmín 4.72:1 (el texto lectura daría 4.14:1);
+     el texto del botón va en 18 px o más y semibold.
+     Secundario: borde tenue sobre noche 10.42:1 (sobre el neutro de lectura, en claro, 8.96:1). */
+  --boton-principal-fondo: var(--copa-carmin);
+  --boton-principal-texto: var(--blanco);
+  --boton-secundario-borde: var(--color-texto-tenue);
+
+  /* Tamaños de Inicio. En 360 px: portada ≈ 45 px, título de franja ≈ 36 px, cifra ≈ 44 px. */
+  --texto-portada: clamp(2.75rem, 1.25rem + 7vw, 6.5rem);
+  --texto-franja-titulo: clamp(2.25rem, 0.75rem + 5.4vw, 5rem);
+  --texto-cifra: clamp(2.75rem, 1.5rem + 3.5vw, 4rem);
+  --texto-antetitulo: 0.8125rem;
+  --texto-frase: clamp(1.0625rem, 0.95rem + 0.5vw, 1.25rem);
+  --inicio-ancho-maximo: 77.5rem;
+  --glifo-portada: min(26rem, 100%);
+  --glifo-marca: 2rem;
+  --alto-boton-grande: 3.25rem;
+  --radio-pildora: 999px;
+  --duracion-aparicion: 400ms;
+  --desplazamiento-aparicion: 12px;
+}
+
+/* Tema claro: lo que cambia de los tokens de arriba.
+   Franja de contraste invertida: texto de lectura sobre noche 13.73:1, tenue 10.42:1,
+   botón noche sobre el neutro de lectura 13.73:1.
+   Mapa compacto: etiqueta de lectura sobre el relleno de ejemplo (tarjeta) 11.85:1, etiqueta
+   blanca sobre el relleno de campo 7.48:1, nota tenue sobre el relleno de ejemplo 8.99:1.
+   Cifras: texto noche sobre la superficie clara 11.14:1, texto tenue (sombra violeta) 7.26:1. */
+:root[data-tema='claro'] {
+  --franja-contraste-fondo: var(--tronco-noche);
+  --franja-contraste-texto: var(--texto-lectura);
+  --franja-contraste-tenue: var(--texto-tenue);
+  --franja-contraste-boton-fondo: var(--texto-lectura);
+  --franja-contraste-boton-texto: var(--tronco-noche);
+
+  --mapa-inicio-borde-campo: var(--texto-lectura);
+  --mapa-inicio-relleno-ejemplo: var(--superficie-tarjeta);
+  --mapa-inicio-borde-ejemplo: var(--texto-tenue);
+  --mapa-inicio-etiqueta: var(--texto-lectura);
+  --mapa-inicio-nota: var(--texto-tenue);
+
+  --franja-cifras-fondo: var(--superficie-clara);
+  --cifras-separador: var(--copa-magenta-oscuro);
+}
+
+/* Esqueletos y tamaños del mapa compacto de Inicio (bloques decorativos, sin texto).
+   Los textos del mapa están en unidades del viewBox (1000 de ancho): el «estrecho» es para
+   pantallas donde el mapa se ve a menos de la mitad de su tamaño y el texto sería ilegible.
+   Los colores se mezclan con los tokens de cada franja, así que siguen al tema. */
+:root {
+  --inicio-ancho-frase: 35rem;
+  --mapa-inicio-ancho-maximo: 35rem;
+  --mapa-inicio-proporcion: 1000 / 1052;
+  --mapa-inicio-texto-nombre: 44px;
+  --mapa-inicio-texto-conteo: 28px;
+  --mapa-inicio-texto-nombre-estrecho: 50px;
+  --mapa-inicio-texto-conteo-estrecho: 32px;
+  /* Halo del texto del mapa, del color del relleno: si el texto se sale del sector sigue legible */
+  --mapa-inicio-grosor-halo: 8px;
+  --mapa-inicio-grosor-borde: 2;
+  --muestra-leyenda-ancho: 1.125rem;
+  --muestra-leyenda-alto: 0.75rem;
+  --esqueleto-franja: color-mix(
+    in srgb,
+    var(--franja-contraste-texto) 14%,
+    var(--franja-contraste-fondo)
+  );
+  --esqueleto-cifras: color-mix(in srgb, var(--color-texto) 14%, var(--franja-cifras-fondo));
+  --esqueleto-cifra-alto: 3.5rem;
+  --esqueleto-texto-alto: 1rem;
 }

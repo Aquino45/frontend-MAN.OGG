@@ -183,7 +183,10 @@
 }
 
 .fila-arbol__codigo {
-  font-family: var(--fuente-pixel);
+  font-family: var(--fuente-etiqueta);
+  font-weight: var(--etiqueta-peso);
+  text-transform: uppercase;
+  letter-spacing: var(--etiqueta-espaciado);
   font-size: var(--texto-cartilla-etiqueta);
 }
 

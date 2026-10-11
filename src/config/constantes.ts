@@ -188,3 +188,70 @@ export const CONSULTA_MOVIMIENTO_REDUCIDO = '(prefers-reduced-motion: reduce)'
 
 // MARCA QUE LA APP DEJA EN EL ESTADO DEL HISTORIAL DE LAS ENTRADAS QUE ELLA AGREGA
 export const MARCA_HISTORIAL = 'censoArboreoEntrada'
+
+// ---------- RUTAS Y ARMAZÓN DEL SITIO ----------
+
+// RUTAS DEL SITIO (la cartilla y el sector viajan en la consulta de /mapa: ?sector=…&arbol=…)
+export const RUTAS = { inicio: '/', mapa: '/mapa' } as const
+
+// LICENCIA DE LOS DATOS DEL CONTORNO DEL CAMPUS (OpenStreetMap, ODbL)
+export const URL_LICENCIA_ODBL = 'https://opendatacommons.org/licenses/odbl/1-0/'
+
+// TEXTOS FIJOS DE LA CABECERA, EL PIE Y LA PÁGINA «NO ENCONTRADA»
+export const TEXTOS_ARMAZON = {
+  navegacionPrincipal: 'Principal',
+  inicio: 'Inicio',
+  mapa: 'Mapa',
+  notaDatos: 'Sector 1 con datos de la brigada; sectores 2 a 5 con datos de ejemplo.',
+  creditoContorno: 'Contorno del campus © colaboradores de OpenStreetMap',
+  nombreLicencia: 'ODbL',
+  tituloNoEncontrada: 'Página no encontrada',
+  fraseNoEncontrada: 'La dirección que abriste no existe o cambió de lugar.',
+  volverAlInicio: 'Volver al inicio',
+} as const
+
+// ---------- PÁGINA DE INICIO ----------
+
+// TEXTOS FIJOS DE LA PÁGINA DE INICIO (ninguna cifra va escrita aquí: todas salen de la API)
+export const TEXTOS_INICIO = {
+  ciudad: 'Lima',
+  sectorSingular: 'sector',
+  sectorPlural: 'sectores',
+  tituloPortada: 'Cada árbol del campus, ',
+  tituloPortadaAcento: 'con nombre y medida.',
+  frasePortada:
+    'Recorre el campus por sectores, entra a cualquier árbol y abre su cartilla: especie, altura, diámetro, estado y foto.',
+  explorarMapa: 'Explorar el mapa',
+  tituloFranja: 'El campus, árbol por árbol.',
+  fraseFranja:
+    'Elige un sector en el mapa para ver sus árboles. Cada punto abre una cartilla con su especie, sus medidas y su estado.',
+  leyendaCampo: 'Datos de campo',
+  leyendaEjemplo: 'Datos de ejemplo · límites provisionales',
+  conteoDeCampo: 'de campo',
+  conteoDeEjemplo: 'de ejemplo',
+  sinArbolesAun: 'Sin árboles aún',
+  cargandoSectores: 'Cargando los sectores…',
+  errorSectores: 'No pudimos cargar los sectores.',
+  tituloCifras: 'El censo hoy',
+  cargandoCifras: 'Cargando las cifras del censo…',
+  errorCifras: 'No pudimos cargar las cifras del censo.',
+  reintentar: 'Reintentar',
+  cifras: {
+    arbolesDeCampo: { etiqueta: 'Árboles de campo', nota: 'registrados por la brigada' },
+    sectores: { etiqueta: 'Sectores del campus', nota: 'los que muestra el mapa' },
+    especiesIdentificadas: {
+      etiqueta: 'Especies identificadas',
+      nota: 'nombres científicos distintos, sin contar los de ejemplo',
+    },
+    arbolesDeEjemplo: { etiqueta: 'Árboles de ejemplo', nota: 'hasta que llegue la data real' },
+  },
+} as const
+
+// CUÁNTOS BLOQUES DE ESQUELETO SE MUESTRAN EN LAS CIFRAS MIENTRAS CARGAN (uno por cifra)
+export const CANTIDAD_CIFRAS_INICIO = Object.keys(TEXTOS_INICIO.cifras).length
+
+// INTERLINEADO DE LOS TEXTOS DE CADA SECTOR EN EL MAPA DE INICIO, EN em
+export const MAPA_INICIO_INTERLINEA_EM = 1.25
+
+// CUÁNTO SUBE EL NOMBRE DEL SECTOR POR CADA LÍNEA DE CONTEO, EN em (así el bloque queda centrado)
+export const MAPA_INICIO_SUBIDA_POR_LINEA_EM = 0.5

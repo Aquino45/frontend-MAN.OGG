@@ -1,0 +1,169 @@
+/* Estilos del armazón del sitio: cabecera, pie y página «no encontrada». */
+
+/* ---------- Cabecera ---------- */
+.armazon-cabecera {
+  inline-size: 100%;
+  max-inline-size: var(--inicio-ancho-maximo);
+  margin-inline: auto;
+  padding: var(--espacio-3);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espacio-3);
+}
+
+.armazon-cabecera__marca {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+  min-block-size: var(--tamano-control);
+  color: var(--color-texto);
+  text-decoration: none;
+}
+
+.armazon-cabecera__glifo {
+  flex: none;
+  display: block;
+}
+
+.armazon-cabecera__glifo .glifo-pixel {
+  inline-size: var(--glifo-marca);
+}
+
+/* El tronco del glifo se aclara para que se vea sobre el fondo del sitio. */
+.armazon-cabecera__glifo .glifo-pixel__tronco {
+  fill: var(--color-texto-tenue);
+}
+
+.armazon-cabecera__nombre {
+  font-weight: 600;
+  font-size: var(--texto-base);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.armazon-cabecera__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
+.armazon-cabecera__enlaces {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
+.armazon-cabecera__enlace {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--tamano-control);
+  padding-inline: var(--espacio-3);
+  border-radius: var(--radio-pildora);
+  color: var(--color-texto);
+  font-size: var(--texto-pequeno);
+  text-decoration: none;
+  transition: background-color var(--duracion-rapida) var(--curva-salida);
+}
+
+.armazon-cabecera__enlace[aria-current='page'] {
+  background: var(--color-tarjeta);
+  font-weight: 600;
+}
+
+@media (hover: hover) {
+  .armazon-cabecera__enlace:hover {
+    background: var(--color-superficie);
+  }
+}
+
+/* ---------- Pie ---------- */
+.armazon-pie {
+  border-block-start: var(--grosor-borde-ui) solid var(--color-superficie);
+}
+
+.armazon-pie__contenido {
+  max-inline-size: var(--inicio-ancho-maximo);
+  margin-inline: auto;
+  padding: var(--espacio-4) var(--espacio-3);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--espacio-2) var(--espacio-4);
+}
+
+.armazon-pie__texto {
+  margin: 0;
+  font-size: var(--texto-cartilla-dato);
+  color: var(--color-texto-tenue);
+  overflow-wrap: anywhere;
+}
+
+.armazon-pie__enlace {
+  color: inherit;
+  text-underline-offset: var(--separacion-foco);
+}
+
+/* ---------- Página «no encontrada» ---------- */
+.armazon-no-encontrada {
+  max-inline-size: var(--inicio-ancho-maximo);
+  margin-inline: auto;
+  padding: var(--espacio-6) var(--espacio-3);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--espacio-3);
+}
+
+.armazon-no-encontrada__titulo {
+  margin: 0;
+  font-family: var(--fuente-display);
+  font-weight: 800;
+  font-size: var(--texto-cabecera);
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.armazon-no-encontrada__frase {
+  margin: 0;
+  max-inline-size: 40rem;
+  font-size: var(--texto-frase);
+  color: var(--color-texto-suave);
+}
+
+/* Botón de las páginas del armazón: blanco semibold de 18 px o más sobre carmín (4.72:1). */
+.armazon-boton {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--alto-boton-grande);
+  padding-inline: var(--espacio-4);
+  border-radius: var(--radio-pildora);
+  background: var(--boton-principal-fondo);
+  color: var(--boton-principal-texto);
+  font-weight: 600;
+  font-size: var(--texto-base);
+  text-decoration: none;
+  transition: transform var(--duracion-rapida) var(--curva-salida);
+}
+
+.armazon-boton:active {
+  transform: scale(var(--escala-presion));
+}
+
+/* ---------- Movimiento reducido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .armazon-cabecera__enlace,
+  .armazon-boton {
+    transition: none;
+  }
+
+  .armazon-boton:active {
+    transform: none;
+  }
+}
