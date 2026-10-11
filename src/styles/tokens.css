@@ -70,6 +70,7 @@
   --punto-destacado-borde: var(--tronco-noche);
   --punto-destacado-escala: 1.25;
   --destacado-brillo-duracion: 600ms;
+  --insignia-estrella-tamano: 1.125em;
   --destacado-brillo-intensidad: 1.6;
   --mapa-opacidad-glifo: 0.75;
   /* Grosores en píxeles de pantalla (el trazo no escala con el mapa) */
