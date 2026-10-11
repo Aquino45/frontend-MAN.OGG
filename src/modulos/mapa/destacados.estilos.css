@@ -1,5 +1,4 @@
 /* Árboles destacados del sector: estrella en el mapa, en la lista y en la leyenda. */
-/* Árbol destacado: estrella ámbar con borde oscuro, por encima de los demás puntos. */
 @keyframes brillo-destacado {
   from {
     filter: brightness(var(--destacado-brillo-intensidad));
