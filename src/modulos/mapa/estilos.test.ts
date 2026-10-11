@@ -88,6 +88,13 @@ describe('barra del botón de volver dentro de la hoja', () => {
     expect(estilosCss).toMatch(/__volver\)::before\s*\{[^}]*inset-block-end:\s*100%/)
     expect(estilosCss).toMatch(/__volver\)::after\s*\{[^}]*inset-block-start:\s*100%/)
   })
+
+  it('el relleno de arriba pasa del relleno de la hoja (no deja un hilo) y el asa queda encima', () => {
+    expect(estilosCss).toMatch(
+      /__volver\)::before\s*\{[^}]*block-size:\s*calc\(var\(--espacio-4\) \+ var\(--espacio-1\)\)/,
+    )
+    expect(estilosCss).toMatch(/\.vista-mapa__panel::before\s*\{[^}]*z-index:\s*2/)
+  })
 })
 
 describe('panel sin repetir su entrada', () => {

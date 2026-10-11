@@ -22,10 +22,11 @@
   pointer-events: none;
 }
 
-/* Hueco que queda por encima (el relleno de la hoja) */
+/* Hueco que queda por encima (el relleno de la hoja), con un poco de más: lo que sobra queda
+   recortado por el borde de la hoja y evita que se asome el borde de lo que pasa por debajo. */
 .vista-mapa__panel :is(.vista-cartilla__volver, .panel-sector__volver)::before {
   inset-block-end: 100%;
-  block-size: var(--espacio-4);
+  block-size: calc(var(--espacio-4) + var(--espacio-1));
 }
 
 /* Hueco hasta el contenido de abajo */
@@ -86,6 +87,7 @@
     content: '';
     position: absolute;
     inset-block-start: var(--espacio-2);
+    z-index: 2;
     inset-inline-start: 50%;
     inline-size: var(--hoja-asa-ancho);
     block-size: var(--hoja-asa-alto);
