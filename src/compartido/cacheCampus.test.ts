@@ -6,7 +6,13 @@ import {
   type ArbolColeccion,
 } from '@/api/cliente'
 import { arbolesSector1Mock, sectoresMock } from '@/mocks'
-import { cargarArbolesDelCampus, cargarSectores, invalidarCacheCampus } from './cacheCampus'
+import { TIEMPO_VIDA_CACHE_CAMPUS_MS } from '@/config/constantes'
+import {
+  alInvalidarCacheCampus,
+  cargarArbolesDelCampus,
+  cargarSectores,
+  invalidarCacheCampus,
+} from './cacheCampus'
 
 vi.mock('@/api/cliente', async (importarOriginal) => ({
   ...(await importarOriginal<typeof import('@/api/cliente')>()),
@@ -66,5 +72,39 @@ describe('cacheCampus', () => {
     await cargarArbolesDelCampus([1])
     expect(obtenerSectoresFalso).toHaveBeenCalledTimes(2)
     expect(obtenerArbolesFalso).toHaveBeenCalledTimes(2)
+  })
+
+  it('lo guardado vence pasado su tiempo de vida y entonces vuelve a pedir', async () => {
+    obtenerSectoresFalso.mockResolvedValue(sectoresMock)
+    obtenerArbolesFalso.mockResolvedValue(VACIA)
+    const ahora = Date.now()
+    const reloj = vi.spyOn(Date, 'now').mockReturnValue(ahora)
+    await cargarSectores()
+    await cargarArbolesDelCampus([1])
+    reloj.mockReturnValue(ahora + TIEMPO_VIDA_CACHE_CAMPUS_MS - 1)
+    await cargarSectores()
+    await cargarArbolesDelCampus([1])
+    expect(obtenerSectoresFalso).toHaveBeenCalledTimes(1)
+    expect(obtenerArbolesFalso).toHaveBeenCalledTimes(1)
+    reloj.mockReturnValue(ahora + TIEMPO_VIDA_CACHE_CAMPUS_MS)
+    await cargarSectores()
+    await cargarArbolesDelCampus([1])
+    expect(obtenerSectoresFalso).toHaveBeenCalledTimes(2)
+    expect(obtenerArbolesFalso).toHaveBeenCalledTimes(2)
+    reloj.mockRestore()
+  })
+
+  it('al invalidar avisa a quien escucha, y deja de avisar a quien se da de baja', () => {
+    const oyente = vi.fn()
+    const darDeBaja = alInvalidarCacheCampus('arboles', oyente)
+    invalidarCacheCampus(['sectores'])
+    expect(oyente).not.toHaveBeenCalled()
+    invalidarCacheCampus()
+    expect(oyente).toHaveBeenCalledTimes(1)
+    invalidarCacheCampus(['arboles'])
+    expect(oyente).toHaveBeenCalledTimes(2)
+    darDeBaja()
+    invalidarCacheCampus()
+    expect(oyente).toHaveBeenCalledTimes(2)
   })
 })

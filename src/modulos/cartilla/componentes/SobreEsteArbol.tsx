@@ -16,7 +16,13 @@ export function SobreEsteArbol({ arbol }: PropsSobreEsteArbol) {
   const idTitulo = useId()
   const explicaciones = explicacionesDelEstado(arbol.capsulas)
   const motivo = arbol.destacado ? arbol.motivo_destacado : null
-  const ficha = arbol.ficha_especie
+  // Una ficha que solo trae su fuente no tiene nada que contar: no se muestra
+  const fichaCompleta = arbol.ficha_especie
+  const ficha =
+    fichaCompleta &&
+    (fichaCompleta.beneficios.length > 0 || fichaCompleta.dato_curioso || fichaCompleta.cuidados)
+      ? fichaCompleta
+      : null
 
   // La nota de ejemplo sola no hace aparecer la sección
   if (explicaciones.length === 0 && !motivo && !ficha) return null

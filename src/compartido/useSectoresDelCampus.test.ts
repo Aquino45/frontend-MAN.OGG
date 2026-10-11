@@ -36,4 +36,14 @@ describe('useSectoresDelCampus', () => {
     await waitFor(() => expect(result.current.estado).toBe('listo'))
     expect(obtenerSectoresFalso).toHaveBeenCalledTimes(2)
   })
+
+  it('si otro uso invalida la caché, el que estaba en error vuelve a pedir solo', async () => {
+    obtenerSectoresFalso.mockRejectedValueOnce(new ErrorApi('/sectores', 503))
+    const enError = renderHook(() => useSectoresDelCampus())
+    await waitFor(() => expect(enError.result.current.estado).toBe('error'))
+    obtenerSectoresFalso.mockResolvedValue(sectoresMock)
+    const otro = renderHook(() => useSectoresDelCampus())
+    act(() => otro.result.current.reintentar())
+    await waitFor(() => expect(enError.result.current.estado).toBe('listo'))
+  })
 })

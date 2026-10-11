@@ -86,6 +86,15 @@ describe('Pie', () => {
     expect(screen.getByRole('link', { name: TEXTOS_ARMAZON.nombreLicencia })).toBeInTheDocument()
   })
 
+  it('si la API falló, un «Reintentar» de otra parte del sitio hace que el pie vuelva a pedir', async () => {
+    obtenerSectoresFalso.mockRejectedValueOnce(new ErrorApi('/sectores', 503))
+    verPie()
+    await waitFor(() => expect(obtenerSectoresFalso).toHaveBeenCalledTimes(1))
+    expect(screen.queryByText(/datos de (campo|ejemplo)/)).not.toBeInTheDocument()
+    invalidarCacheCampus()
+    expect(await screen.findByText(/tiene datos de campo\./)).toBeInTheDocument()
+  })
+
   it('trae el crédito de OpenStreetMap con enlace real a la licencia ODbL', () => {
     verPie()
     const credito = screen.getByText(

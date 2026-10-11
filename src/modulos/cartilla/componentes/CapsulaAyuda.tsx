@@ -2,7 +2,7 @@
 // Se abre con clic o toque y, con cursor fino, también al pasar el cursor; se cierra con Esc,
 // con un clic fuera o al abrir otra. Solo hay una abierta a la vez.
 import '../capsulas.estilos.css'
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState, type FocusEvent } from 'react'
 import {
   CONSULTA_HOVER_FINO,
   MARCADOR_TEXTO,
@@ -88,12 +88,21 @@ export function CapsulaAyuda({ campo }: PropsCapsulaAyuda) {
     if (estaAbierta && !fijada) cerrar()
   }
 
+  // Al tabular fuera de la cápsula, la burbuja se cierra; el foco que se va a la nada no la cierra
+  function alPerderFoco(evento: FocusEvent<HTMLSpanElement>) {
+    const destino = evento.relatedTarget
+    if (estaAbierta && destino instanceof Node && !evento.currentTarget.contains(destino)) {
+      cerrar()
+    }
+  }
+
   return (
     <span
       ref={refContenedor}
       className="capsula"
       onPointerEnter={alEntrar}
       onPointerLeave={alSalir}
+      onBlur={alPerderFoco}
     >
       <button
         ref={refBoton}

@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { cleanup, render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { Arbol } from '@/api/cliente'
 import { TEXTOS_CARTILLA, TEXTOS_SOBRE_ARBOL } from '@/config/constantes'
@@ -100,6 +100,20 @@ describe('SobreEsteArbol', () => {
     expect(screen.queryByText(TEXTOS_SOBRE_ARBOL.datoCurioso)).not.toBeInTheDocument()
     expect(screen.queryByText(TEXTOS_SOBRE_ARBOL.cuidados)).not.toBeInTheDocument()
     expect(screen.getByText('Da sombra')).toBeInTheDocument()
+  })
+
+  it('una ficha que solo trae su fuente no hace aparecer la sección ni se muestra', () => {
+    const soloFuente = { ...FICHA, beneficios: [], dato_curioso: null, cuidados: null }
+    const { container } = ver({ ...SIN_NADA, ficha_especie: soloFuente })
+    expect(container).toBeEmptyDOMElement()
+    cleanup()
+    const conMotivo = ver({
+      ...SIN_NADA,
+      destacado: true,
+      motivo_destacado: 'Por su porte.',
+      ficha_especie: soloFuente,
+    })
+    expect(conMotivo.container.querySelector('.sobre-arbol__fuente')).toBeNull()
   })
 
   it('si es de ejemplo, la nota «Dato de ejemplo» va al inicio de la sección', () => {

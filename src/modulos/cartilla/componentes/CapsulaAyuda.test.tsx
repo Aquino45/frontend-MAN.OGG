@@ -138,6 +138,21 @@ describe('CapsulaAyuda', () => {
     expect(boton).toHaveAttribute('aria-expanded', 'false')
   })
 
+  it('al tabular fuera de la cápsula la cierra; mover el foco dentro de ella no', () => {
+    verAyudas()
+    const boton = botonDap()
+    fireEvent.click(boton)
+    const burbuja = document.getElementById(
+      boton.getAttribute('aria-controls') ?? '',
+    ) as HTMLElement
+    fireEvent.blur(boton, { relatedTarget: burbuja })
+    expect(boton).toHaveAttribute('aria-expanded', 'true')
+    fireEvent.blur(boton, { relatedTarget: null })
+    expect(boton).toHaveAttribute('aria-expanded', 'true')
+    fireEvent.blur(boton, { relatedTarget: screen.getByRole('button', { name: 'Fuera' }) })
+    expect(boton).toHaveAttribute('aria-expanded', 'false')
+  })
+
   it('solo una a la vez: abrir otra cierra la anterior', () => {
     verAyudas()
     fireEvent.click(botonAltura())

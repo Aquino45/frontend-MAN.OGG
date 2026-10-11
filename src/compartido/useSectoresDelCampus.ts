@@ -1,7 +1,7 @@
 // Pide los sectores del campus (con la caché compartida) y expone su estado, con reintento.
 import { useCallback, useEffect, useState } from 'react'
 import type { SectorFeature } from '@/api/cliente'
-import { cargarSectores, invalidarCacheCampus } from './cacheCampus'
+import { cargarSectores, alInvalidarCacheCampus, invalidarCacheCampus } from './cacheCampus'
 
 export type EstadoSectoresDelCampus =
   | { estado: 'cargando' }
@@ -35,10 +35,13 @@ export function useSectoresDelCampus(): EstadoSectoresDelCampus & { reintentar: 
     }
   }, [intento])
 
-  const reintentar = useCallback(() => {
-    invalidarCacheCampus()
-    setIntento((anterior) => anterior + 1)
-  }, [])
+  // Cualquier invalidación (el «Reintentar» de otra parte del sitio) hace que este hook vuelva a pedir.
+  useEffect(
+    () => alInvalidarCacheCampus('sectores', () => setIntento((anterior) => anterior + 1)),
+    [],
+  )
+
+  const reintentar = useCallback(() => invalidarCacheCampus(['sectores']), [])
 
   if (resultado === null || resultado.intento !== intento) return { estado: 'cargando', reintentar }
   return { ...resultado, reintentar }

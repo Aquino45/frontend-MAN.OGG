@@ -1,7 +1,7 @@
 // Pide los árboles de todos los sectores (con la caché compartida) y expone su estado, con reintento.
 import { useCallback, useEffect, useState } from 'react'
 import type { ArbolFeature } from '@/api/cliente'
-import { cargarArbolesDelCampus, invalidarCacheCampus } from './cacheCampus'
+import { cargarArbolesDelCampus, alInvalidarCacheCampus, invalidarCacheCampus } from './cacheCampus'
 
 export type EstadoArbolesDelCampus =
   | { estado: 'inactivo' }
@@ -46,10 +46,13 @@ export function useArbolesDelCampus(
     }
   }, [clave, intento])
 
-  const reintentar = useCallback(() => {
-    invalidarCacheCampus()
-    setIntento((anterior) => anterior + 1)
-  }, [])
+  // Cualquier invalidación (el «Reintentar» de otra parte del sitio) hace que este hook vuelva a pedir.
+  useEffect(
+    () => alInvalidarCacheCampus('arboles', () => setIntento((anterior) => anterior + 1)),
+    [],
+  )
+
+  const reintentar = useCallback(() => invalidarCacheCampus(['arboles']), [])
 
   if (clave === null) return { estado: 'inactivo', reintentar }
   // Un resultado de otros sectores o de un intento anterior ya no vale: se está cargando.
