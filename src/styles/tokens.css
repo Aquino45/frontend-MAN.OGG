@@ -268,4 +268,11 @@
   /* Esqueleto de los estados compartidos: el color del texto de su bloque al 14 % */
   --esqueleto-mezcla: 14%;
   --estado-alto-minimo: 12rem;
+  /* Gráficos de barras de las cifras. Campo y ejemplo se distinguen por relleno liso o rayado
+     (no solo por color); las dos marcas siguen al tema y llevan 7:1 o más sobre la tarjeta. */
+  --grafico-campo: var(--color-texto);
+  --grafico-ejemplo: var(--color-texto);
+  --grafico-pista: var(--color-pista);
+  --grafico-barra-alto: 0.75rem;
+  --grafico-trama-ancho: 4px;
 }

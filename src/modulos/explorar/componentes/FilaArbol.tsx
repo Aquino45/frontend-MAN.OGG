@@ -1,5 +1,6 @@
 // Una fila de la lista: todo el recuadro es un enlace a la cartilla del árbol en el mapa.
 // Solo usa lo que trae el resumen del árbol; el motivo de un destacado va solo en la cartilla.
+import { memo } from 'react'
 import { Link } from 'react-router'
 import type { ArbolResumen } from '@/api/cliente'
 import { GlifoPixelArbol } from '@/compartido/GlifoPixelArbol'
@@ -20,7 +21,7 @@ interface PropsFilaArbol {
   nombreSector: string | null
 }
 
-export function FilaArbol({ arbol, nombreSector }: PropsFilaArbol) {
+function FilaArbolSinMemo({ arbol, nombreSector }: PropsFilaArbol) {
   const destino = {
     pathname: RUTAS.mapa,
     search: escribirSeleccion({ sectorId: arbol.sector, arbolCodigo: arbol.codigo }),
@@ -62,3 +63,6 @@ export function FilaArbol({ arbol, nombreSector }: PropsFilaArbol) {
     </Link>
   )
 }
+
+// Con la búsqueda no se vuelven a dibujar las filas que no cambian
+export const FilaArbol = memo(FilaArbolSinMemo)

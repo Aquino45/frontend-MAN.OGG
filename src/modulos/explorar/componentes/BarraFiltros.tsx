@@ -10,21 +10,42 @@ export interface OpcionSector {
 
 interface PropsBarraFiltros {
   filtros: FiltrosExplorar
+  // Texto del buscador mientras se escribe (puede ir por delante de la URL)
+  busqueda: string
+  onBuscar: (texto: string) => void
   // Sectores según la API
   sectores: readonly OpcionSector[]
   // Valores de estado general que traen los árboles
   estados: readonly string[]
-  // `reemplazar` es para el buscador: no llena el historial
-  onCambiar: (cambios: Partial<FiltrosExplorar>, reemplazar?: boolean) => void
+  onCambiar: (cambios: Partial<FiltrosExplorar>) => void
 }
 
-export function BarraFiltros({ filtros, sectores, estados, onCambiar }: PropsBarraFiltros) {
+export function BarraFiltros({
+  filtros,
+  busqueda,
+  onBuscar,
+  sectores,
+  estados,
+  onCambiar,
+}: PropsBarraFiltros) {
   const id = useId()
   // Un estado que viene en la URL y ya no existe entre los árboles igual se ve en el selector
   const opcionesDeEstado =
     filtros.estadoGeneral !== null && !estados.includes(filtros.estadoGeneral)
       ? [...estados, filtros.estadoGeneral]
       : estados
+
+  // Un sector que viene en la URL y no existe en la API igual se ve en el selector
+  const opcionesDeSector =
+    filtros.sectorId !== null && !sectores.some((sector) => sector.id === filtros.sectorId)
+      ? [
+          ...sectores,
+          {
+            id: filtros.sectorId,
+            nombre: TEXTOS_EXPLORAR.sectorDesconocido.replace('{id}', String(filtros.sectorId)),
+          },
+        ]
+      : sectores
 
   return (
     <form
@@ -41,10 +62,10 @@ export function BarraFiltros({ filtros, sectores, estados, onCambiar }: PropsBar
           id={`${id}-q`}
           className="explorar-control"
           type="search"
-          value={filtros.busqueda}
+          value={busqueda}
           placeholder={TEXTOS_EXPLORAR.ayudaBuscar}
           autoComplete="off"
-          onChange={(evento) => onCambiar({ busqueda: evento.target.value }, true)}
+          onChange={(evento) => onBuscar(evento.target.value)}
         />
       </div>
       <div className="explorar-campo">
@@ -60,7 +81,7 @@ export function BarraFiltros({ filtros, sectores, estados, onCambiar }: PropsBar
           }
         >
           <option value="">{TEXTOS_EXPLORAR.todosSectores}</option>
-          {sectores.map((sector) => (
+          {opcionesDeSector.map((sector) => (
             <option key={sector.id} value={sector.id}>
               {sector.nombre}
             </option>

@@ -1,6 +1,6 @@
 // Página «Árboles»: todos los árboles del campus con buscador y filtros guardados en la URL.
 import '../estilos.css'
-import { useMemo } from 'react'
+import { useDeferredValue, useMemo } from 'react'
 import { EstadoCarga } from '@/compartido/EstadoCarga'
 import { EstadoError } from '@/compartido/EstadoError'
 import { EstadoVacio } from '@/compartido/EstadoVacio'
@@ -9,6 +9,7 @@ import { useSectoresDelCampus } from '@/compartido/useSectoresDelCampus'
 import { REGION_INTERFAZ, TEXTOS_ESTADOS, TEXTOS_EXPLORAR } from '@/config/constantes'
 import { BarraFiltros } from '../componentes/BarraFiltros'
 import { FilaArbol } from '../componentes/FilaArbol'
+import { useBusquedaLocal } from '../hooks/useBusquedaLocal'
 import { useFiltrosEnUrl } from '../hooks/useFiltrosEnUrl'
 import { filtrarArboles, hayFiltros, opcionesDeEstado, ordenarArboles } from '../lib/filtros'
 
@@ -25,6 +26,9 @@ export function VistaExplorar() {
   )
   const arboles = useArbolesDelCampus(idsDeSectores)
   const { filtros, cambiar, limpiar } = useFiltrosEnUrl()
+  // El texto del buscador va por delante de la URL; la lista se filtra con un valor diferido
+  const busqueda = useBusquedaLocal(filtros.busqueda, (texto) => cambiar({ busqueda: texto }, true))
+  const filtrosDiferidos = useDeferredValue(filtros)
 
   const resumenes = useMemo(
     () =>
@@ -41,8 +45,8 @@ export function VistaExplorar() {
   )
   const estados = useMemo(() => opcionesDeEstado(resumenes ?? []), [resumenes])
   const visibles = useMemo(
-    () => (resumenes ? ordenarArboles(filtrarArboles(resumenes, filtros)) : []),
-    [resumenes, filtros],
+    () => (resumenes ? ordenarArboles(filtrarArboles(resumenes, filtrosDiferidos)) : []),
+    [resumenes, filtrosDiferidos],
   )
 
   const hayError = sectores.estado === 'error' || arboles.estado === 'error'
@@ -60,6 +64,8 @@ export function VistaExplorar() {
         <>
           <BarraFiltros
             filtros={filtros}
+            busqueda={busqueda.texto}
+            onBuscar={busqueda.cambiar}
             sectores={opcionesSector}
             estados={estados}
             onCambiar={cambiar}
@@ -80,7 +86,7 @@ export function VistaExplorar() {
                 </li>
               ))}
             </ul>
-          ) : hayFiltros(filtros) ? (
+          ) : hayFiltros(filtrosDiferidos) ? (
             <EstadoVacio
               mensaje={TEXTOS_EXPLORAR.sinResultados}
               accion={{ texto: TEXTOS_ESTADOS.limpiarFiltros, alPulsar: limpiar }}

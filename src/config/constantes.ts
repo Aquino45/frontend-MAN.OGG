@@ -300,6 +300,7 @@ export const TEXTOS_EXPLORAR = {
   ayudaBuscar: 'Código, nombre común o nombre científico',
   sector: 'Sector',
   todosSectores: 'Todos los sectores',
+  sectorDesconocido: 'Sector {id}',
   estado: 'Estado general',
   todosEstados: 'Todos los estados',
   origen: 'Origen del dato',
@@ -328,13 +329,54 @@ export const PARAMETROS_EXPLORAR = {
 // VALORES DEL FILTRO «ORIGEN DEL DATO» EN LA URL (campo = registrado por la brigada; ejemplo = demo)
 export const ORIGENES_DATO = { campo: 'campo', ejemplo: 'ejemplo' } as const
 
+// PAUSA, EN ms, ANTES DE ESCRIBIR EN LA URL LO QUE SE TECLEA EN EL BUSCADOR
+export const DEBOUNCE_BUSQUEDA_MS = 200
+
 // VALOR DEL PARÁMETRO «destacados» CUANDO EL FILTRO ESTÁ ACTIVO
 export const VALOR_FILTRO_ACTIVO = '1'
 
 export const TEXTOS_CIFRAS = {
   titulo: 'Cifras del censo',
-  proximamente: 'Esta sección llega pronto',
+  cargando: 'Cargando las cifras del censo…',
+  error: 'No pudimos cargar las cifras del censo.',
+  sinArboles: 'Aún no hay árboles registrados.',
+  campo: 'Datos de campo',
+  ejemplo: 'Datos de ejemplo',
+  total: 'Total',
+  unidadCampo: 'campo',
+  unidadEjemplo: 'ejemplo',
+  notaSeparados: 'Los datos de campo y los de ejemplo se cuentan siempre por separado.',
+  resumen: 'Resumen',
+  arbolesDeCampo: 'Árboles de campo',
+  arbolesDeEjemplo: 'Árboles de ejemplo',
+  otras: 'Otras',
+  sinEspecie: 'Sin especie identificada',
+  sectorSinNombre: 'Sector {id}',
+  tablaConDesplazamiento: 'Tabla (se desplaza hacia los lados en pantallas angostas)',
+  porSector: {
+    titulo: 'Árboles por sector',
+    columna: 'Sector',
+    descripcion: 'Árboles por sector, separados en datos de campo y datos de ejemplo',
+  },
+  porEstado: {
+    titulo: 'Árboles por estado general',
+    columna: 'Estado general',
+    descripcion: 'Árboles por estado general, separados en datos de campo y datos de ejemplo',
+  },
+  porEspecie: {
+    titulo: 'Árboles por especie',
+    columna: 'Especie (nombre científico)',
+    descripcion: 'Especies más frecuentes, separadas en datos de campo y datos de ejemplo',
+  },
+  destacados: {
+    titulo: 'Árboles destacados por sector',
+    columna: 'Sector',
+    descripcion: 'Árboles destacados por sector, separados en datos de campo y datos de ejemplo',
+  },
 } as const
+
+// CUÁNTAS ESPECIES SE MUESTRAN POR SEPARADO EN LAS CIFRAS (las demás se agrupan en «Otras»)
+export const CANTIDAD_ESPECIES_CIFRAS = 5
 
 // ---------- PÁGINA DE INICIO ----------
 
