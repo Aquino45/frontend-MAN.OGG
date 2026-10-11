@@ -1,14 +1,16 @@
-/* Página provisional de «Árboles»: título grande y el aviso de estado vacío. */
-.pagina-provisional {
+/* Página «Árboles»: buscador, filtros y lista. Una columna a 360 px y grilla en pantallas anchas. */
+
+.explorar {
   max-inline-size: var(--inicio-ancho-maximo);
   margin-inline: auto;
-  padding: var(--espacio-6) var(--espacio-3);
+  padding: var(--espacio-5) var(--espacio-3) var(--espacio-6);
   display: flex;
   flex-direction: column;
   gap: var(--espacio-4);
+  min-inline-size: 0;
 }
 
-.pagina-provisional__titulo {
+.explorar__titulo {
   margin: 0;
   font-family: var(--fuente-display);
   font-weight: 800;
@@ -16,4 +18,195 @@
   line-height: var(--interlinea-titulo);
   letter-spacing: var(--tracking-display);
   overflow-wrap: anywhere;
+}
+
+/* ---------- Filtros ---------- */
+.explorar-filtros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: var(--espacio-3);
+  align-items: end;
+}
+
+.explorar-campo {
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-1);
+}
+
+.explorar-campo--busqueda {
+  grid-column: 1 / -1;
+}
+
+.explorar-campo__etiqueta {
+  font-family: var(--fuente-etiqueta);
+  font-weight: var(--etiqueta-peso);
+  font-size: var(--texto-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--etiqueta-espaciado);
+  color: var(--color-texto-tenue);
+}
+
+.explorar-control {
+  inline-size: 100%;
+  min-inline-size: 0;
+  min-block-size: var(--tamano-control);
+  padding: var(--espacio-2) var(--espacio-12);
+  border: var(--grosor-borde-ui) solid var(--boton-secundario-borde);
+  border-radius: var(--radio-control);
+  background: var(--color-tarjeta);
+  color: var(--color-texto);
+  font: inherit;
+  font-size: var(--texto-md);
+  transition: border-color var(--duracion-hover) var(--curva-hover);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .explorar-control:hover {
+    border-color: var(--color-acento);
+  }
+}
+
+.explorar-casilla {
+  min-block-size: var(--tamano-control);
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  cursor: pointer;
+}
+
+.explorar-casilla__control {
+  flex: none;
+  inline-size: var(--tamano-icono);
+  block-size: var(--tamano-icono);
+  margin: 0;
+}
+
+/* ---------- Resultados ---------- */
+.explorar__contador {
+  margin: 0;
+  font-size: var(--texto-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-texto-tenue);
+}
+
+.explorar__lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  gap: var(--espacio-3);
+}
+
+.explorar__item {
+  min-inline-size: 0;
+}
+
+.fila-arbol {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: var(--espacio-12);
+  min-block-size: var(--tamano-control);
+  block-size: 100%;
+  padding: var(--espacio-3);
+  border: var(--grosor-borde-ui) solid transparent;
+  border-radius: var(--radio-tarjeta);
+  background: var(--color-tarjeta);
+  color: inherit;
+  text-decoration: none;
+  transition:
+    transform var(--duracion-presion) var(--curva-salida),
+    border-color var(--duracion-hover) var(--curva-hover);
+}
+
+.fila-arbol:active {
+  transform: scale(var(--escala-activo));
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .fila-arbol:hover {
+    border-color: var(--color-acento);
+  }
+}
+
+.fila-arbol__miniatura {
+  inline-size: var(--miniatura-lado);
+  block-size: var(--miniatura-lado);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: var(--radio-chip);
+  background: var(--color-superficie);
+}
+
+.fila-arbol__miniatura .glifo-pixel {
+  inline-size: var(--glifo-marca);
+}
+
+.fila-arbol__foto {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.fila-arbol__cuerpo {
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-1);
+}
+
+.fila-arbol__nombre {
+  font-family: var(--fuente-display);
+  font-weight: 800;
+  font-size: var(--texto-cuerpo);
+  line-height: var(--interlinea-titulo);
+  overflow-wrap: anywhere;
+}
+
+.fila-arbol__cientifico {
+  font-size: var(--texto-md);
+  font-style: italic;
+  color: var(--color-texto-suave);
+  overflow-wrap: anywhere;
+}
+
+.fila-arbol__ubicacion {
+  font-size: var(--texto-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-texto-tenue);
+  overflow-wrap: anywhere;
+}
+
+.fila-arbol__marcas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-1) var(--espacio-2);
+  font-size: var(--texto-sm);
+}
+
+.fila-arbol__estado {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.fila-arbol__destacado {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-1);
+  font-weight: 600;
+}
+
+.fila-arbol__estrella {
+  flex: none;
+  inline-size: var(--tamano-icono);
+  block-size: var(--tamano-icono);
+  fill: var(--punto-destacado);
+  stroke: var(--punto-destacado-borde);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
 }

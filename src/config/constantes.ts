@@ -295,8 +295,41 @@ export const ENLACES_NAVEGACION = [
 // TEXTOS DE LAS PÁGINAS DE EXPLORAR Y DE CIFRAS (mientras llegan sus vistas completas)
 export const TEXTOS_EXPLORAR = {
   titulo: 'Explorar árboles',
-  proximamente: 'Esta sección llega pronto',
+  ariaFiltros: 'Buscar y filtrar árboles',
+  buscar: 'Buscar',
+  ayudaBuscar: 'Código, nombre común o nombre científico',
+  sector: 'Sector',
+  todosSectores: 'Todos los sectores',
+  estado: 'Estado general',
+  todosEstados: 'Todos los estados',
+  origen: 'Origen del dato',
+  todosOrigenes: 'Todos los orígenes',
+  origenCampo: 'Datos de campo',
+  origenEjemplo: 'Datos de ejemplo',
+  soloDestacados: 'Solo destacados',
+  resultados: 'Resultados',
+  arbolSingular: 'árbol',
+  arbolPlural: 'árboles',
+  cargando: 'Cargando los árboles…',
+  error: 'No pudimos cargar los árboles.',
+  sinResultados: 'Ningún árbol coincide con la búsqueda y los filtros.',
+  sinArboles: 'Aún no hay árboles registrados.',
 } as const
+
+// NOMBRES DE LOS PARÁMETROS DE LA URL DE EXPLORAR (?q=…&sector=…&estado=…&destacados=1&origen=…)
+export const PARAMETROS_EXPLORAR = {
+  busqueda: 'q',
+  sector: 'sector',
+  estado: 'estado',
+  destacados: 'destacados',
+  origen: 'origen',
+} as const
+
+// VALORES DEL FILTRO «ORIGEN DEL DATO» EN LA URL (campo = registrado por la brigada; ejemplo = demo)
+export const ORIGENES_DATO = { campo: 'campo', ejemplo: 'ejemplo' } as const
+
+// VALOR DEL PARÁMETRO «destacados» CUANDO EL FILTRO ESTÁ ACTIVO
+export const VALOR_FILTRO_ACTIVO = '1'
 
 export const TEXTOS_CIFRAS = {
   titulo: 'Cifras del censo',
