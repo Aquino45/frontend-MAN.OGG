@@ -36,9 +36,5 @@ Sin árboles cargados, los sectores dicen «Aún sin árboles registrados». Si 
 Antes de abrir un PR: `npm test`, `npm run lint`, `npm run formato:verificar`, `npm run tipos`, `npm run verificar:colores` y `npm run build`.
 
 ## Documentación
-- [AGENTS.md](AGENTS.md): reglas del repo (también para Claude Code, vía [CLAUDE.md](CLAUDE.md)).
-- [CONTRIBUTING.md](CONTRIBUTING.md): cómo dejar tu PC lista y el flujo diario.
-- [docs/ESTADO.md](docs/ESTADO.md): estado actual y siguiente ticket.
+- [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md): dónde va cada archivo (módulos, capas y fronteras).
 - [docs/requerimientos.md](docs/requerimientos.md): qué pide el stakeholder.
-- [docs/CANARIOS.md](docs/CANARIOS.md): registro de canarios.
-- [docs/tickets/](docs/tickets/): un archivo por ticket.

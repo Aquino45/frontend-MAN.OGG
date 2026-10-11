@@ -8,6 +8,9 @@ CLAUDE.local.md
 .claude/settings.local.json
 .claude/worktrees/
 
+# Herramientas personales
+.codex/
+
 # Editor
 .vscode/*
 !.vscode/extensions.json
