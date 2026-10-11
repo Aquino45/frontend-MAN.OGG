@@ -30,7 +30,7 @@ describe('estilos de la cartilla', () => {
 })
 
 // Estos tests leen el CSS; la comprobación visual a 360 px de S02-D002 (claro y oscuro)
-// la hace el orquestador con el navegador.
+// se hace aparte, en el navegador.
 describe('cartilla a 360 px: reglas que evitan el desborde', () => {
   it('la franja del código puede pasar a 2 líneas', () => {
     expect(reglaDe('.cartilla__franja')).toMatch(/flex-wrap:\s*wrap/)
