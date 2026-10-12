@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { agruparEspecies, calcularKpis, calcularMapaCalor, especiesPorCantidad } from './tablero'
-import { arbolDePrueba, comoEnLaApiAnterior, sectorDePrueba } from './fabricasDePrueba'
+import { arbolDePrueba, sectorDePrueba } from './fabricasDePrueba'
 
 // Un caso como el real: el mayor DAP de todos es de un árbol de ejemplo, pero el de campo es otro
 const ARBOLES = [
@@ -135,21 +135,5 @@ describe('calcularMapaCalor', () => {
     expect(dap[0].valor).toBe((392 + 75) / 2)
     expect(dap[1].valor).toBeNull()
     expect(dap[2].valor).toBe(422)
-  })
-})
-
-describe('con la API anterior al contrato 0.6.0 (el resumen sin DAP, altura ni origen)', () => {
-  const antiguos = ARBOLES.map(comoEnLaApiAnterior)
-
-  it('el mayor DAP y las nativas dicen que no hay dato, sin romperse', () => {
-    const kpis = calcularKpis(antiguos)
-    expect(kpis.mayorDap).toEqual({ campo: null, ejemplo: null })
-    expect(kpis.nativas.campo).toEqual({ nativas: 0, exoticas: 0, sinDato: 2, total: 2 })
-    expect(kpis.arboles).toEqual({ campo: 2, ejemplo: 3 })
-  })
-
-  it('el mapa de calor por DAP queda sin dato', () => {
-    const mapa = calcularMapaCalor(antiguos, [sectorDePrueba(1), sectorDePrueba(3)], 'dap')
-    expect(mapa.map((sector) => sector.valor)).toEqual([null, null])
   })
 })

@@ -119,7 +119,7 @@ export function GrupoKpis({
   })
   const resaltados = new Set(ORIGENES.map((origen) => kpis.mayorDap[origen]?.codigo))
   const puntosDap = visibles
-    .filter(({ properties }) => typeof properties.dap_cm === 'number')
+    .filter(({ properties }) => properties.dap_cm !== null)
     .map(({ properties }) => ({
       dapCm: properties.dap_cm ?? 0,
       ejemplo: properties.demo,

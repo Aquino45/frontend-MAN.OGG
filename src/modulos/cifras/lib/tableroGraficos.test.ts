@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { arbolDePrueba, comoEnLaApiAnterior, sectorDePrueba } from './fabricasDePrueba'
+import { arbolDePrueba, sectorDePrueba } from './fabricasDePrueba'
 import { calcularDispersion, calcularHistogramaDap, estadoPorSector } from './tableroGraficos'
 
 const ARBOLES = [
@@ -125,16 +125,5 @@ describe('calcularHistogramaDap', () => {
     expect(calcularHistogramaDap([], new Set(), 50).rangos).toEqual([
       { desdeCm: 0, hastaCm: 50, campo: 0, ejemplo: 0 },
     ])
-  })
-})
-
-describe('con la API anterior al contrato 0.6.0', () => {
-  const antiguos = ARBOLES.map(comoEnLaApiAnterior)
-
-  it('la dispersión no dibuja nada y cuenta los que faltan; el histograma también', () => {
-    const dispersion = calcularDispersion(antiguos, TODOS, 4)
-    expect(dispersion.puntos).toEqual([])
-    expect(dispersion.sinMedidas).toBe(ARBOLES.length)
-    expect(calcularHistogramaDap(antiguos, TODOS, 50).sinDap).toBe(ARBOLES.length)
   })
 })

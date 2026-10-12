@@ -6,20 +6,10 @@ export type SectorColeccion = components['schemas']['SectorColeccion']
 export type SectorFeature = components['schemas']['SectorFeature']
 export type SectorPropiedades = components['schemas']['SectorPropiedades']
 
+export type ArbolColeccion = components['schemas']['ArbolResumenColeccion']
+export type ArbolFeature = components['schemas']['ArbolResumenFeature']
+export type ArbolResumen = components['schemas']['ArbolResumen']
 export type Arbol = components['schemas']['Arbol']
-
-// El contrato 0.6.0 suma al resumen del árbol el DAP, la altura y el origen, con la misma definición
-// que en la cartilla. Mientras los tipos generados siguen en la versión anterior, se tomó del tipo
-// de la cartilla; al regenerar `schema.d.ts` con el contrato 0.6.0 esto se borra y los tres tipos de
-// abajo vuelven a salir directo de `components['schemas']`.
-type CamposDelResumenEn060 = Pick<Arbol, 'dap_cm' | 'altura_total_m' | 'origen'>
-export type ArbolResumen = components['schemas']['ArbolResumen'] & CamposDelResumenEn060
-export type ArbolFeature = Omit<components['schemas']['ArbolResumenFeature'], 'properties'> & {
-  properties: ArbolResumen
-}
-export type ArbolColeccion = Omit<components['schemas']['ArbolResumenColeccion'], 'features'> & {
-  features: ArbolFeature[]
-}
 
 // Rutas del contrato (relativas a VITE_API_URL)
 const RUTA_SECTORES = '/sectores'

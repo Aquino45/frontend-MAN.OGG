@@ -106,7 +106,7 @@ export function calcularDispersion(
   let sinMedidas = 0
   for (const { properties } of todos) {
     const visible = visibles.has(properties.codigo)
-    if (typeof properties.dap_cm !== 'number' || typeof properties.altura_total_m !== 'number') {
+    if (properties.dap_cm === null || properties.altura_total_m === null) {
       if (visible) sinMedidas += 1
       continue
     }
@@ -171,7 +171,7 @@ export function calcularHistogramaDap(
   let sinDap = 0
   for (const { properties } of todos) {
     if (!visibles.has(properties.codigo)) continue
-    if (typeof properties.dap_cm !== 'number') {
+    if (properties.dap_cm === null) {
       sinDap += 1
       continue
     }

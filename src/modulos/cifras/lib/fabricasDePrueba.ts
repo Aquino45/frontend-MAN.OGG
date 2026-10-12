@@ -43,13 +43,3 @@ export function sectorDePrueba(id: number): SectorFeature {
     properties: { id, nombre: `Sector ${id}`, color: null, provisional: false, total_arboles: 0 },
   } as unknown as SectorFeature
 }
-
-const CAMPOS_DEL_CONTRATO_060 = ['dap_cm', 'altura_total_m', 'origen']
-
-// El árbol como lo entregaba la API antes del contrato 0.6.0: sin DAP, altura ni origen en el resumen
-export function comoEnLaApiAnterior(arbol: ArbolFeature): ArbolFeature {
-  const propiedades = Object.fromEntries(
-    Object.entries(arbol.properties).filter(([campo]) => !CAMPOS_DEL_CONTRATO_060.includes(campo)),
-  )
-  return { ...arbol, properties: propiedades } as unknown as ArbolFeature
-}
