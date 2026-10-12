@@ -1,6 +1,7 @@
 // Pantalla de la cartilla: pide el árbol, muestra sus estados y devuelve el foco al abrir.
 import '../estilos.css'
 import '../indicadores.estilos.css'
+import '../co2.estilos.css'
 import '../destacado.estilos.css'
 import { useEffect, useRef } from 'react'
 import { EstadoCarga } from '@/compartido/EstadoCarga'

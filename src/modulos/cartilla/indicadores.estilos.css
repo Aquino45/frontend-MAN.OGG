@@ -171,24 +171,6 @@
   color: var(--color-co2-acento);
 }
 
-/* «Simulado»: borde punteado y el color del texto del bloque (su contraste, en ambos temas). */
-.bloque-co2__simulado {
-  align-self: flex-start;
-  padding: var(--espacio-1) var(--espacio-2);
-  border: var(--grosor-borde-ui) dashed currentColor;
-  border-radius: var(--radio-chip);
-  font-family: var(--fuente-etiqueta);
-  font-weight: var(--etiqueta-peso);
-  text-transform: uppercase;
-  letter-spacing: var(--etiqueta-espaciado);
-  font-size: var(--texto-cartilla-etiqueta);
-  color: var(--color-co2-texto);
-}
-
-.bloque-co2__columna--derecha .bloque-co2__simulado {
-  align-self: flex-end;
-}
-
 .estados-arbol {
   margin: 0;
   padding-inline: var(--espacio-3);
