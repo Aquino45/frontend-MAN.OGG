@@ -302,6 +302,31 @@ describe('EntradaAlterna', () => {
       expect(textoEscrito()).toBe(T.frases[0])
     })
 
+    it('con Ctrl, Cmd o Alt no avanza ni se atrapa la tecla (son atajos del navegador)', async () => {
+      montar()
+      await avanzar(E.fraseDesdeMs)
+      for (const modificador of ['ctrlKey', 'metaKey', 'altKey']) {
+        const evento = new KeyboardEvent('keydown', {
+          key: 'z',
+          cancelable: true,
+          [modificador]: true,
+        })
+        window.dispatchEvent(evento)
+        expect(evento.defaultPrevented).toBe(false)
+      }
+      expect(indicador()).toBeNull()
+    })
+
+    it('el clic derecho o el del medio no avanzan', async () => {
+      montar()
+      await avanzar(E.fraseDesdeMs)
+      fireEvent.pointerDown(capa()!, { button: 2 })
+      fireEvent.pointerDown(capa()!, { button: 1 })
+      expect(indicador()).toBeNull()
+      fireEvent.pointerDown(capa()!, { button: 0 })
+      expect(indicador()).not.toBeNull()
+    })
+
     it('otra tecla no avanza', async () => {
       montar()
       await avanzar(E.fraseDesdeMs)

@@ -123,7 +123,7 @@ export function CajaDeDialogo({
               // Elegir con el clic no debe contar también como «avanzar» de la capa
               onPointerDown={(evento) => {
                 evento.stopPropagation()
-                eleccion.alElegir(opcion)
+                if (evento.button === 0) eleccion.alElegir(opcion)
               }}
             >
               <span className="entrada-alterna__corazon-opcion">

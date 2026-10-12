@@ -42,6 +42,13 @@ describe('piezasDeCelebracion', () => {
     })
   })
 
+  it('salen del margen de cada esquina que dicen las constantes', () => {
+    const piezas = piezasDeCelebracion(PANTALLA, azarFijo(4))
+    expect(new Set(piezas.map((pieza) => pieza.origenX))).toEqual(
+      new Set([PANTALLA.anchoPx * C.margenEsquina, PANTALLA.anchoPx * (1 - C.margenEsquina)]),
+    )
+  })
+
   it('terminan cayendo por debajo del borde de abajo y el giro no pasa del máximo', () => {
     piezasDeCelebracion(PANTALLA, azarFijo(9)).forEach((pieza) => {
       expect(pieza.caidaY).toBeGreaterThan(PANTALLA.altoPx)

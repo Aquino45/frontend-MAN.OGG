@@ -76,6 +76,8 @@ export const CELEBRACION_ENTRADA = {
   retrasoMaximoMs: 260,
   // Qué parte de la duración dura la subida (el resto es la caída)
   subidaFraccion: 0.4,
+  // De qué esquina sale (fracción del ancho, desde cada borde de la pantalla)
+  margenEsquina: 0.04,
   // Cuánto sube (fracción del alto de la pantalla), qué tanto se acerca al centro y cuánto se abre al caer
   alcanceMin: 0.35,
   alcanceMax: 0.7,

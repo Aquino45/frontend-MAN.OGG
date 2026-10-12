@@ -30,7 +30,7 @@ export function piezasDeCelebracion(
   const centroX = anchoPx / 2
   return Array.from({ length: C.piezas }, (_, indice) => {
     // Las piezas pares salen de la esquina izquierda y las impares, de la derecha
-    const origenX = indice % 2 === 0 ? anchoPx * 0.04 : anchoPx * 0.96
+    const origenX = indice % 2 === 0 ? anchoPx * C.margenEsquina : anchoPx * (1 - C.margenEsquina)
     const cimaX =
       origenX + (centroX - origenX) * entre(C.haciaElCentroMin, C.haciaElCentroMax, aleatorio())
     const cimaY = altoPx * (1 - entre(C.alcanceMin, C.alcanceMax, aleatorio()))

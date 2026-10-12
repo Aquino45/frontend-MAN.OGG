@@ -121,7 +121,9 @@ export function EntradaAlterna({
         salir(true)
         return
       }
+      // Con Ctrl, Cmd o Alt es un atajo del navegador (p. ej. Ctrl+Z), no un gesto de la secuencia
       if (yaSalio.current || evento.repeat || !refComenzo.current) return
+      if (evento.ctrlKey || evento.metaKey || evento.altKey) return
       const tecla = evento.key.toLowerCase()
       if ((E.teclasAvanzar as readonly string[]).includes(tecla)) {
         // Sin esto, Enter o espacio activarían también lo que tuviera el foco debajo de la capa
@@ -177,8 +179,9 @@ export function EntradaAlterna({
     <div
       className={`entrada-alterna${fase === 'saliendo' ? ' entrada-alterna--saliendo' : ''}${cubierta ? ' entrada-alterna--cubierta' : ''}${conCursorPropio ? ' entrada-alterna--corazon' : ''}`}
       style={{ animationDuration: `${salidaMs}ms` }}
-      onPointerDown={() => {
-        if (refComenzo.current) enviar({ tipo: 'avanzar' })
+      onPointerDown={(evento) => {
+        // Solo el botón principal avanza (no el derecho ni el del medio)
+        if (evento.button === 0 && refComenzo.current) enviar({ tipo: 'avanzar' })
       }}
       aria-hidden="true"
     >
