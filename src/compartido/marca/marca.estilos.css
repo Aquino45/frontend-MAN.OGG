@@ -97,7 +97,7 @@
 
 .logo-upeu__imagen {
   display: none;
-  block-size: calc(var(--marca-alto) * 0.55);
+  block-size: var(--upeu-alto);
   inline-size: auto;
 }
 
@@ -138,10 +138,18 @@
   opacity: 0.5;
 }
 
-/* Bajo 64rem la cabecera no lleva la co-marca: su leyenda no se lee a ese tamaño */
-@media (width < 64rem) {
+/* Área de resguardo de la UPeU en la cabecera: la mitad de su alto a cada lado. Es horizontal;
+   arriba y abajo la cabecera ya deja más aire que eso. */
+.logo-marca__upeu {
+  display: flex;
+  align-items: center;
+  padding-inline: calc(var(--upeu-alto) / 2);
+}
+
+/* Bajo 32rem no entra junto a «Menú» y el tema: va solo el wordmark */
+@media (width < 32rem) {
   .logo-marca__separador,
-  .logo-marca .logo-upeu {
+  .logo-marca__upeu {
     display: none;
   }
 }
@@ -150,6 +158,7 @@
 .co-marca {
   --marca-alto: var(--marca-completa-alto);
   --marca-celda: 2px;
+  --upeu-alto: calc(var(--marca-alto) * 0.55);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -158,5 +167,5 @@
 
 /* Área de resguardo del logo de la UPeU: la mitad de su alto por cada lado (provisional) */
 .co-marca__resguardo {
-  padding: calc(var(--marca-alto) * 0.55 / 2);
+  padding: calc(var(--upeu-alto) / 2);
 }

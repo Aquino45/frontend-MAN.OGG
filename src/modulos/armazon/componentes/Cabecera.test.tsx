@@ -23,20 +23,56 @@ describe('Cabecera', () => {
     expect(screen.queryByRole('heading', { level: 1 })).not.toBeInTheDocument()
   })
 
-  it('el enlace de la marca se llama como el producto y la co-marca de la UPeU va fuera del enlace', () => {
+  it('el enlace de la marca es solo el wordmark en texto, sin el símbolo de baldosas', () => {
+    const { container } = verCabecera(RUTAS.inicio)
+    const marca = screen.getByRole('link', { name: NOMBRE_PRODUCTO })
+    expect(marca).toHaveTextContent(TEXTOS_MARCA.censo)
+    expect(marca).toHaveTextContent(TEXTOS_MARCA.arboreo)
+    expect(container.querySelector('.simbolo-logo')).toBeNull()
+  })
+
+  it('el wordmark mide 32 px de referencia en el celular y 40 px desde 48rem', () => {
+    expect(escalaTokens).toMatch(/--marca-cabecera-alto:\s*2rem/)
+    expect(escalaTokens).toMatch(
+      /@media \(min-width: 48rem\)\s*\{\s*:root\s*\{[^}]*--marca-cabecera-alto:\s*2\.5rem/,
+    )
+  })
+
+  it('la UPeU mide 32 px de alto, va alineada con su área de resguardo y sale desde 32rem', () => {
+    expect(escalaTokens).toMatch(/--upeu-alto:\s*2rem/)
+    expect(marcaCss).toMatch(/\.logo-upeu__imagen\s*\{[^}]*block-size:\s*var\(--upeu-alto\)/)
+    expect(marcaCss).toMatch(
+      /\.co-marca__resguardo\s*\{[^}]*padding:\s*calc\(var\(--upeu-alto\) \/ 2\)/,
+    )
+    // En la cabecera el resguardo es horizontal: arriba y abajo ya sobra aire y no crece de 76 px
+    expect(marcaCss).toMatch(
+      /\.logo-marca__upeu\s*\{[^}]*padding-inline:\s*calc\(var\(--upeu-alto\) \/ 2\)/,
+    )
+    // Debajo de 32rem no entra: va solo el wordmark
+    expect(marcaCss).toMatch(
+      /@media \(width < 32rem\)\s*\{[^}]*\.logo-marca__separador,\s*\.logo-marca__upeu\s*\{\s*display:\s*none/,
+    )
+  })
+
+  it('el logo de la UPeU va fuera del enlace de la marca y en sus dos versiones, tal cual', () => {
     verCabecera(RUTAS.inicio)
     const marca = screen.getByRole('link', { name: NOMBRE_PRODUCTO })
     expect(within(marca).queryByAltText(TEXTOS_MARCA.upeu)).not.toBeInTheDocument()
-    expect(screen.getAllByAltText(TEXTOS_MARCA.upeu).length).toBeGreaterThan(0)
+    expect(screen.getAllByAltText(TEXTOS_MARCA.upeu)).toHaveLength(2)
   })
 
-  it('el logo mide 32 px en el celular y 40 px desde 48rem, y la UPeU solo se ve desde 64rem', () => {
-    expect(escalaTokens).toMatch(/--marca-cabecera-alto:\s*2rem/)
-    expect(escalaTokens).toMatch(
-      /@media \(min-width: 48rem\)\s*\{\s*:root\s*\{\s*--marca-cabecera-alto:\s*2\.5rem/,
+  it('el wordmark entra una vez con transform y opacity, y el hover es sutil y protegido', () => {
+    const inicio = estilosCss.indexOf('@keyframes armazon-marca-entra')
+    expect(inicio).toBeGreaterThanOrEqual(0)
+    // El bloque llega hasta la llave que cierra los dos cuadros (from y to)
+    const cuadros = estilosCss.slice(inicio).split('}\n}')[0]
+    const propiedades = [...cuadros.matchAll(/([a-z-]+):/g)].map(([, nombre]) => nombre)
+    expect(new Set(propiedades)).toEqual(new Set(['opacity', 'transform']))
+    expect(estilosCss).toMatch(
+      /\.armazon-cabecera__marca\s+\.wordmark\s*\{[^}]*animation:\s*armazon-marca-entra\s+var\(--duracion-entrada\)\s+var\(--curva-salida\)/,
     )
-    expect(marcaCss).toMatch(
-      /@media \(width < 64rem\)\s*\{[^}]*\.logo-marca__separador,\s*\.logo-marca \.logo-upeu\s*\{\s*display:\s*none/,
+    expect(estilosCss).toMatch(
+      /@media \(hover: hover\) and \(pointer: fine\)\s*\{[^@]*\.armazon-cabecera__marca:hover \.wordmark\s*\{[^}]*transform:\s*translateX/,
     )
   })
 

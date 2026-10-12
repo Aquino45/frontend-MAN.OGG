@@ -2,12 +2,12 @@ import '../estilos.css'
 import { useId, useRef, useState, type KeyboardEvent } from 'react'
 import { Link, NavLink } from 'react-router'
 import { ENLACES_NAVEGACION, NOMBRE_PRODUCTO, RUTAS, TEXTOS_ARMAZON } from '@/config/constantes'
-import { LogoNuestro } from '@/compartido/marca/LogoMarca'
+import { Wordmark } from '@/compartido/marca/LogoMarca'
 import { LogoUpeu } from '@/compartido/marca/LogoUpeu'
 import { useEnlaceConTransicion } from '@/compartido/useEnlaceConTransicion'
 import { InterruptorTema } from '@/modulos/tema'
 
-// Cabecera única del sitio: el logo lleva a Inicio (con la co-marca de la UPeU desde 64rem), los
+// Cabecera única del sitio: el wordmark lleva a Inicio (con la co-marca de la UPeU desde 32rem), los
 // enlaces de navegación y el tema.
 // En pantallas angostas los enlaces salen tras el botón «Menú» y empujan el contenido.
 // No es un h1: cada página pone el suyo.
@@ -33,10 +33,12 @@ export function Cabecera() {
           aria-label={NOMBRE_PRODUCTO}
           onClick={conTransicion}
         >
-          <LogoNuestro />
+          <Wordmark />
         </Link>
         <span className="logo-marca__separador" aria-hidden="true" />
-        <LogoUpeu />
+        <span className="logo-marca__upeu">
+          <LogoUpeu />
+        </span>
       </div>
       <div className="armazon-cabecera__acciones">
         <button
