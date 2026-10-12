@@ -83,6 +83,7 @@
 }
 
 .entrada-alterna__caja {
+  position: relative;
   padding: var(--espacio-4);
   border: var(--desbloqueo-borde-chapa) solid var(--blanco);
   background: var(--tronco-noche);
@@ -101,6 +102,91 @@
   visibility: hidden;
 }
 
+/* Indicador de «sigue» (▼): abajo a la derecha de la caja, parpadea mientras se espera */
+@keyframes parpadear-indicador {
+  50% {
+    opacity: 0;
+  }
+}
+
+.entrada-alterna__indicador {
+  position: absolute;
+  inset-inline-end: var(--espacio-3);
+  inset-block-end: var(--espacio-3);
+  animation: parpadear-indicador 700ms steps(1, end) infinite;
+}
+
+/* Las dos opciones de la pregunta, debajo del texto; el corazón marca la elegida */
+.entrada-alterna__opciones {
+  display: flex;
+  gap: var(--espacio-6);
+  margin: var(--espacio-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entrada-alterna__opcion {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
+.entrada-alterna__corazon-opcion {
+  display: inline-block;
+  inline-size: 1.5rem;
+  color: var(--copa-carmin);
+}
+
+/* Cursor propio: un corazón que sigue al puntero; el del sistema se oculta solo dentro de la capa */
+.entrada-alterna--corazon,
+.entrada-alterna--corazon * {
+  cursor: none;
+}
+
+.entrada-alterna__cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  color: var(--copa-carmin);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.entrada-alterna__cursor[data-visible='si'] {
+  opacity: 1;
+}
+
+/* Celebración al elegir SÍ: papel picado, cuadritos pixel con los colores de la paleta */
+.entrada-alterna__celebracion {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.entrada-alterna__papel {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.entrada-alterna__papel--0 {
+  background: var(--copa-carmin);
+}
+
+.entrada-alterna__papel--1 {
+  background: var(--copa-magenta);
+}
+
+.entrada-alterna__papel--2 {
+  background: var(--copa-magenta-oscuro);
+}
+
+.entrada-alterna__papel--3 {
+  background: var(--blanco);
+}
+
 @keyframes desvanecer-entrada {
   to {
     opacity: 0;
@@ -113,7 +199,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .entrada--estandar,
-  .entrada-alterna--saliendo {
+  .entrada-alterna--saliendo,
+  .entrada-alterna__indicador {
     animation: none;
   }
 }

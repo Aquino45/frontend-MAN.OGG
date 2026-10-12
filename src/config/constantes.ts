@@ -6,23 +6,22 @@ export const PESOS_ENTRADA = { estandar: 998, alterna: 1 } as const
 export type VarianteEntrada = keyof typeof PESOS_ENTRADA
 
 // ENTRADA ALTERNA: LA SECUENCIA. Todo en ms y desde que empieza. Es una pieza que se ve muy pocas veces,
-// así que puede pasar de los 300 ms de la interfaz de todos los días.
-// Hasta cuándo se ve entera, antes de que empiece a desvanecerse y deje ver la vista pedida
-export const DURACION_ENTRADA_ALTERNA_MS = 11_300
-// Cuánto tarda en desvanecerse al final (y al salir antes con Esc o un clic, bastante menos)
+// así que puede pasar de los 300 ms de la interfaz de todos los días. No dura un tiempo fijo: termina
+// cuando se cierra la última frase (a mano, o sola tras la espera de cada paso).
+// Cuánto tarda en desvanecerse al final (y al salir antes con Esc, bastante menos)
 export const DURACION_SALIDA_ENTRADA_MS = 1_200
 export const DURACION_SALIDA_ANTICIPADA_MS = 200
-// Con «reducir movimiento»: todo quieto y completo este rato, sin sonido, y se sigue
-export const DURACION_ENTRADA_ALTERNA_REDUCIDA_MS = 2_000
 
 export const ENTRADA_ALTERNA = {
   // Después de la cortina de hojas (que dura CORTINA_HOJAS.cubrirMs) aparece el fondo con la ilustración
   ilustracionDesdeMs: 1_000,
   ilustracionDuracionMs: 600,
-  // Hojas grandes en diagonal: la primera y luego una cada tanto, hasta que empieza el final
+  // Hojas grandes en diagonal: la primera y luego una cada tanto, mientras dure la secuencia (hasta
+  // `hojasMaximas`, que cubre de sobra la espera más larga)
   hojaGrandeDesdeMs: 1_600,
   hojaGrandeCadaMs: 1_500,
   hojaGrandeCaidaMs: 2_600,
+  hojasMaximas: 40,
   // Tamaño de la hoja grande: fracción del lado menor de la pantalla; cada una cambia un paso de la
   // anterior y nunca se pasa del tope respecto de la base
   hojaGrandeBase: 0.14,
@@ -34,25 +33,86 @@ export const ENTRADA_ALTERNA = {
   cajaDesdeMs: 2_400,
   cajaDuracionMs: 600,
   cajaDesplazamientoPx: 24,
-  // Las frases se escriben letra por letra y se quedan un rato para leerlas
-  frase1DesdeMs: 3_000,
-  frase2DesdeMs: 6_500,
+  // La primera frase empieza a escribirse cuando la caja ya entró; las frases se escriben letra por letra
+  fraseDesdeMs: 3_000,
   msPorLetra: 70,
+  // Si nadie avanza: cada frase pasa sola a esta espera (desde que se terminó de escribir) y la elección
+  // toma la opción por defecto a la suya
+  esperaFraseMs: 4_000,
+  esperaEleccionMs: 9_000,
+  // Teclas (en minúscula, como las da `evento.key.toLowerCase()`)
+  teclasAvanzar: ['enter', 'z', ' '],
+  teclasIzquierda: ['arrowleft', 'a'],
+  teclasDerecha: ['arrowright', 'd'],
+  // El indicador de «sigue» (▼) y el corazón son dibujos en SVG; el indicador parpadea a este ritmo
+  indicadorParpadeoMs: 700,
+  indicadorLadoPx: 16,
+  corazonLadoPx: 20,
+  // El cursor propio (corazón) solo existe con un puntero fino; en táctil no se muestra
+  cursorLadoPx: 28,
+  consultaPunteroFino: '(pointer: fine)',
   // Hasta cuándo se puede forzar con el gesto previo (el navegador solo deja sonar tras un gesto)
   gestoValidoMs: 1_500,
 } as const
 
+// Las frases en orden; la última es la pregunta, y al escribirse aparecen las opciones debajo.
+// `opcionSi` y `opcionPorDefecto` son posiciones dentro de `opciones`; cada opción tiene su cierre
 export const TEXTOS_ENTRADA_ALTERNA = {
-  frases: ['* Bueno, aquí hay un hombre.', '* Quizás se alegre de verte.'],
+  frases: ['* Bueno, aquí hay un hombre.', '* Quizás se alegre de verte.', '* ¿Y tú qué piensas?'],
+  opciones: ['SÍ', 'NO'],
+  opcionSi: 0,
+  opcionPorDefecto: 1,
+  cierreSi: '* Conseguiste el Huevo.',
+} as const
+
+// CELEBRACIÓN al elegir SÍ: papel picado (cuadritos pixel) que sale de las dos esquinas de abajo, sube
+// hacia el centro y cae girando mientras se desvanece. Con «reducir movimiento» no hay celebración.
+export const CELEBRACION_ENTRADA = {
+  piezas: 44,
+  ladoMinPx: 8,
+  ladoMaxPx: 16,
+  // Todo el recorrido de una pieza y lo que puede tardar en salir (para que no salgan todas juntas)
+  duracionMs: 2_200,
+  retrasoMaximoMs: 260,
+  // Qué parte de la duración dura la subida (el resto es la caída)
+  subidaFraccion: 0.4,
+  // Cuánto sube (fracción del alto de la pantalla), qué tanto se acerca al centro y cuánto se abre al caer
+  alcanceMin: 0.35,
+  alcanceMax: 0.7,
+  haciaElCentroMin: 0.25,
+  haciaElCentroMax: 0.75,
+  dispersionCaida: 0.3,
+  giroMaxGrados: 540,
+  // Colores por posición: mismos tokens de la paleta que las hojas grandes, más el blanco
+  variantesDeColor: 4,
 } as const
 
 // SONIDO DE LA ENTRADA ALTERNA (sintetizado con Web Audio; volumen bajo y fijo)
 export const SONIDO_ENTRADA_ALTERNA = {
-  // Cada letra suena con un blip corto y grave (onda cuadrada, do5 y mi5); alternan dos notas para
-  // que no cansen. Es más corto que el tiempo de cada letra, así entre blip y blip queda una pausa
-  blipFrecuenciasHz: [523.25, 659.25],
-  blipDuracionMs: 60,
-  blipVolumen: 0.05,
+  // Cada letra suena con un pulso corto y grave: onda cuadrada con un poco de triangular debajo. Se
+  // afina de oído. No suena en espacios ni signos, y después de ciertos signos hay una pausa extra
+  tipeo: {
+    frecuenciaHz: 260,
+    mezclaTriangular: 0.35,
+    duracionMs: 40,
+    volumen: 0.05,
+    pausaComaMs: 150,
+    pausaFinMs: 300,
+    caracteresDePausaFin: '.?!',
+  },
+  // Celebración al elegir SÍ: una corneta de fiesta (onda cuadrada que sube de nota) y unos soniditos
+  // brillantes que suben en escalera. Volumen bajo y fijo
+  celebracion: {
+    cornetaDesdeHz: 330,
+    cornetaHastaHz: 660,
+    cornetaDuracionMs: 420,
+    cornetaVolumen: 0.05,
+    soniditosHz: [784, 988, 1_175, 1_568],
+    soniditosDesdeMs: 380,
+    soniditoCadaMs: 90,
+    soniditoDuracionMs: 80,
+    soniditoVolumen: 0.04,
+  },
   // La pista de fondo entra y sale con fundidos
   pistaVolumen: 0.18,
   pistaFundidoEntradaMs: 600,

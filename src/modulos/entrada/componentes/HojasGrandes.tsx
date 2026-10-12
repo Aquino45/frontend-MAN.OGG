@@ -3,7 +3,7 @@
 // Solo `transform` (lineal: es movimiento constante) y se desmontan con la capa.
 import { useEffect, useMemo, useRef } from 'react'
 import { ENTRADA_ALTERNA as E } from '@/config/constantes'
-import { cantidadDeHojasGrandes, factoresDeTamano } from '../lib/hojasGrandes'
+import { factoresDeTamano } from '../lib/hojasGrandes'
 
 const VARIANTES_DE_COLOR = 3
 
@@ -46,7 +46,7 @@ export function HojasGrandes({ salidas, aleatorio }: PropsHojasGrandes) {
   // El reparto se arma una sola vez al montar, con el azar recibido
   const fichas = useMemo<HojaGrandeFicha[]>(() => {
     const ladoBasePx = Math.min(window.innerWidth, window.innerHeight) * E.hojaGrandeBase
-    return factoresDeTamano(cantidadDeHojasGrandes(), aleatorio).map((factor) => ({
+    return factoresDeTamano(E.hojasMaximas, aleatorio).map((factor) => ({
       ladoPx: Math.round(ladoBasePx * factor),
       // Empiezan en la mitad izquierda: la diagonal las lleva hacia la derecha
       izquierdaPx: Math.round(aleatorio() * window.innerWidth * 0.5),
