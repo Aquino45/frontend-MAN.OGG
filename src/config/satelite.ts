@@ -19,13 +19,17 @@ export type VistaMapaTipo = (typeof VISTAS_MAPA)[number]
 
 // Atribución obligatoria de Esri y de los proveedores de cada capa (texto por confirmar con los
 // términos del servicio).
+// El crédito de OpenStreetMap va visible en las dos vistas: son las calles y, en el satélite, los
+// contornos de los sectores.
+export const ATRIBUCION_OSM = '© OpenStreetMap'
+export const ENLACE_ATRIBUCION_OSM = 'https://www.openstreetmap.org/copyright'
 export const ATRIBUCION_POR_BASE: Record<BaseMapaReal, string> = {
   satelite: 'Esri, Maxar, Earthstar Geographics y la comunidad de usuarios de GIS',
-  calles: '© colaboradores de OpenStreetMap',
+  calles: ATRIBUCION_OSM,
 }
 export const ENLACE_ATRIBUCION_POR_BASE: Record<BaseMapaReal, string> = {
   satelite: 'https://www.esri.com/',
-  calles: 'https://www.openstreetmap.org/copyright',
+  calles: ENLACE_ATRIBUCION_OSM,
 }
 
 // Márgenes del encuadre en píxeles (el mapa se acerca a un sector con este aire)
@@ -89,4 +93,5 @@ export const TEXTOS_SATELITE = {
   errorAyuda: 'Vuelve a la vista ilustrada o prueba de nuevo.',
   reintentar: 'Reintentar',
   atribucionEtiqueta: 'Mapa base',
+  contornos: 'Contornos de los sectores:',
 } as const

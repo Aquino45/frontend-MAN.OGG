@@ -16,7 +16,9 @@ import { usePideMenosMovimiento } from '@/compartido/usePideMenosMovimiento'
 import { ATRIBUTO_TEMA } from '@/config/constantes'
 import type { ConfigMapaReal } from '@/config/entorno'
 import {
+  ATRIBUCION_OSM,
   ATRIBUCION_POR_BASE,
+  ENLACE_ATRIBUCION_OSM,
   ENLACE_ATRIBUCION_POR_BASE,
   SATELITE_CAPA_ARBOLES,
   SATELITE_CAPA_RELLENO,
@@ -217,6 +219,16 @@ export default function MapaReal({
         <a href={ENLACE_ATRIBUCION_POR_BASE[base]} target="_blank" rel="noreferrer">
           {ATRIBUCION_POR_BASE[base]}
         </a>
+        {/* En el satélite el crédito de OpenStreetMap es el de los contornos de los sectores */}
+        {base === 'satelite' && (
+          <>
+            {' · '}
+            {TEXTOS_SATELITE.contornos}{' '}
+            <a href={ENLACE_ATRIBUCION_OSM} target="_blank" rel="noreferrer">
+              {ATRIBUCION_OSM}
+            </a>
+          </>
+        )}
       </p>
       <nav aria-label={TEXTOS_SATELITE.listaSectores}>
         <ul className="mapa-satelite__sectores">

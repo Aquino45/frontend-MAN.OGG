@@ -3,7 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { SectorFeature } from '@/api/cliente'
 import type { ConfigMapaReal } from '@/config/entorno'
 import {
+  ATRIBUCION_OSM,
   ATRIBUCION_POR_BASE,
+  ENLACE_ATRIBUCION_OSM,
   ENLACE_ATRIBUCION_POR_BASE,
   SATELITE_CAPA_ARBOLES,
   SATELITE_CAPA_BORDE,
@@ -170,6 +172,19 @@ describe('MapaReal', () => {
       const atribucion = screen.getByRole('link', { name: ATRIBUCION_POR_BASE[base] })
       expect(atribucion).toBeVisible()
       expect(atribucion).toHaveAttribute('href', ENLACE_ATRIBUCION_POR_BASE[base])
+    },
+  )
+
+  it.each(['calles', 'satelite'] as const)(
+    'en «%s» el crédito «© OpenStreetMap» está siempre visible (calles y contornos de los sectores)',
+    (base) => {
+      pintar({ base })
+      const enlaces = screen.getAllByRole('link', { name: ATRIBUCION_OSM })
+      expect(enlaces.length).toBeGreaterThanOrEqual(1)
+      for (const enlace of enlaces) {
+        expect(enlace).toBeVisible()
+        expect(enlace).toHaveAttribute('href', ENLACE_ATRIBUCION_OSM)
+      }
     },
   )
 
