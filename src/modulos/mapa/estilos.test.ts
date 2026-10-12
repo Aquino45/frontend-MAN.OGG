@@ -1,9 +1,17 @@
 import { describe, expect, it } from 'vitest'
-import { CORTE_PANEL_LATERAL_REM } from '@/config/constantes'
+import {
+  CORTE_PANEL_LATERAL_REM,
+  HOJA_ARRASTRE,
+  MAPA_CURVA_ZOOM,
+  MAPA_DURACION_ENTRADA_MS,
+} from '@/config/constantes'
 import estilosBase from './estilos.css?raw'
 import estilosHoja from './hoja.estilos.css?raw'
 import estilosDestacados from './destacados.estilos.css?raw'
 import estilosBotones from '@/styles/botones.estilos.css?raw'
+import tokensMovimiento from '@/styles/movimiento.tokens.css?raw'
+import tokensBase from '@/styles/tokens.css?raw'
+import panelSector from './componentes/PanelSector.tsx?raw'
 
 // Los dos archivos del módulo: el mapa y la lista, y la hoja inferior con la barra de volver
 const estilosCss = `${estilosBase}
@@ -47,7 +55,7 @@ describe('hoja inferior', () => {
 
   it('nunca pasa por encima de la cabecera', () => {
     expect(hoja).toMatch(
-      /max-block-size:\s*min\(\s*var\(--alto-hoja\),\s*calc\(100dvh - var\(--alto-cabecera\)\)\s*\)/,
+      /max-block-size:\s*calc\(\s*min\(var\(--alto-hoja\),\s*calc\(100dvh - var\(--alto-cabecera\)\)\)\s*\+\s*var\(--hoja-extension\)\s*\)/,
     )
   })
 
@@ -97,24 +105,70 @@ describe('barra del botón de volver dentro de la hoja', () => {
   })
 })
 
-describe('panel sin repetir su entrada', () => {
-  it('el panel lateral no se anima: solo la hoja inferior entra, una vez, con transform', () => {
-    expect(estilosCss).not.toContain('entrada-panel')
-    const lateral = estilosCss.slice(
-      estilosCss.indexOf('.vista-mapa__panel {'),
-      estilosCss.indexOf('.panel-sector,'),
+describe('entrada del panel y de la hoja', () => {
+  it('el panel lateral entra una sola vez con opacidad y un corrimiento corto; la hoja, con transform', () => {
+    expect(estilosCss).toMatch(/@keyframes entrada-panel\s*\{\s*from\s*\{[^}]*opacity:\s*0/)
+    expect(estilosCss).toMatch(/entrada-panel[^}]*translateX\(var\(--desplazamiento-panel\)\)/)
+    expect(estilosCss).toMatch(/@keyframes entrada-hoja\s*\{\s*from\s*\{[^}]*translateY\(100%\)/)
+    // Pasar de la lista a la cartilla no vuelve a animar: el panel es el mismo elemento
+    const lateral = estilosBase.slice(
+      estilosBase.indexOf('.vista-mapa__panel {'),
+      estilosBase.indexOf('.panel-sector,'),
     )
     expect(lateral).not.toMatch(/animation/)
-    expect(estilosCss).toMatch(/@keyframes entrada-hoja\s*\{\s*from\s*\{[^}]*translateY\(100%\)/)
+  })
+})
+
+describe('hoja arrastrable', () => {
+  it('el asa es una zona propia solo en el celular, sin desplazamiento del navegador', () => {
+    expect(estilosHoja).toMatch(/\.vista-mapa__asa\s*\{\s*display:\s*none/)
+    expect(estilosHoja).toMatch(/\.vista-mapa__asa\s*\{[^}]*touch-action:\s*none/)
+  })
+
+  it('mientras se arrastra no hay transición; al soltar vuelve con la curva de la hoja y sale más rápido', () => {
+    expect(estilosHoja).toMatch(/\[data-arrastrando='true'\]\s*\{[^}]*transition:\s*none/)
+    expect(estilosHoja).toMatch(
+      /\[data-hoja='suelta'\]\s*\{[^}]*transform var\(--duracion-hoja\) var\(--curva-hoja\)/,
+    )
+    expect(estilosHoja).toMatch(
+      /\[data-hoja='cierra'\]\s*\{[^}]*transform var\(--duracion-salida\) var\(--curva-salida\)/,
+    )
+  })
+
+  it('el elástico de arriba coincide entre el CSS y las constantes', () => {
+    expect(tokensBase).toContain(`--hoja-extension: ${HOJA_ARRASTRE.elasticoPx}px`)
+  })
+
+  it('el zoom del mapa usa la duración y la curva de los tokens', () => {
+    expect(tokensMovimiento).toContain(`--duracion-zoom: ${MAPA_DURACION_ENTRADA_MS}ms`)
+    expect(tokensMovimiento).toContain(
+      `--curva-movimiento: cubic-bezier(${MAPA_CURVA_ZOOM.join(', ')})`,
+    )
+  })
+
+  it('el cierre por velocidad y por distancia son los del ticket', () => {
+    expect(HOJA_ARRASTRE.velocidadCierrePxPorMs).toBe(0.11)
+    expect(HOJA_ARRASTRE.fraccionCierre).toBe(0.25)
+  })
+})
+
+describe('cascada de puntos al entrar a un sector', () => {
+  it('cada punto entra con opacidad y una escala de 0.9 o más, escalonado, solo la primera vez', () => {
+    expect(estilosCss).toMatch(/@keyframes mapa-punto-entra\s*\{\s*from\s*\{[^}]*opacity:\s*0/)
+    expect(estilosCss).toContain("[data-cascada='true']")
+    expect(estilosCss).toContain('var(--retraso-cascada-punto)')
+    expect(estilosCss).not.toMatch(/mapa-punto-entra[^}]*scale\(0(\.[0-8]\d*)?\)/)
+    const retraso = Number(/--retraso-cascada-punto:\s*(\d+)ms/.exec(tokensMovimiento)?.[1])
+    expect(retraso).toBe(30)
   })
 })
 
 describe('fila del sector a 360 px', () => {
   it('no se corta: min-width 0, texto que parte palabras largas y objetivo de 44 px', () => {
-    expect(estilosCss).toMatch(/\.fila-arbol\s*\{[^}]*min-block-size:\s*var\(--tamano-control\)/)
-    expect(estilosCss).toMatch(/\.fila-arbol__texto\s*\{[^}]*min-inline-size:\s*0/)
-    expect(estilosCss).toMatch(/\.fila-arbol__texto\s*\{[^}]*overflow-wrap:\s*anywhere/)
-    expect(estilosCss).toMatch(/\.fila-arbol__datos\s*\{[^}]*flex-wrap:\s*wrap/)
+    expect(estilosCss).toMatch(/\.mapa-fila\s*\{[^}]*min-block-size:\s*var\(--tamano-control\)/)
+    expect(estilosCss).toMatch(/\.mapa-fila__texto\s*\{[^}]*min-inline-size:\s*0/)
+    expect(estilosCss).toMatch(/\.mapa-fila__texto\s*\{[^}]*overflow-wrap:\s*anywhere/)
+    expect(estilosCss).toMatch(/\.mapa-fila__datos\s*\{[^}]*flex-wrap:\s*wrap/)
   })
 })
 
@@ -127,7 +181,7 @@ describe('movimiento del mapa', () => {
   })
 
   it('lo que se presiona escala con --escala-activo', () => {
-    expect(estilosCss).toMatch(/\.fila-arbol:active\s*\{[^}]*scale\(var\(--escala-activo\)\)/)
+    expect(estilosCss).toMatch(/\.mapa-fila:active\s*\{[^}]*scale\(var\(--escala-activo\)\)/)
     expect(estilosCss).toContain('var(--duracion-presion)')
   })
 
@@ -138,5 +192,11 @@ describe('movimiento del mapa', () => {
 
   it('el botón de texto antiguo ya no existe', () => {
     expect(estilosBotones).not.toContain('.boton--texto')
+  })
+})
+
+describe('filas vivas del panel', () => {
+  it('la fila del panel es elevable', () => {
+    expect(panelSector).toContain('elevable')
   })
 })

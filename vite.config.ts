@@ -29,6 +29,8 @@ export default defineConfig(({ mode }) => {
       environment: 'jsdom',
       setupFiles: ['./src/test/setup.ts'],
       globals: false,
+      // Mismo motivo: los tests con jsdom son lentos al arrancar bajo carga
+      testTimeout: 15000,
       // Los tests de tokens y de estilos leen el CSS como texto (?raw); sin esto Vitest lo vacía.
       css: { include: [/tokens\.css/, /estilos\.css/] },
     },

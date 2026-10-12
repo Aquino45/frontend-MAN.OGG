@@ -22,7 +22,7 @@ function hayHoverFino(): boolean {
 }
 
 export function CapsulaAyuda({ campo }: PropsCapsulaAyuda) {
-  const { capsulas, abierta, fijada, cierreInstantaneo, abrir, cerrar } = useCapsulas()
+  const { capsulas, abierta, fijada, sinAnimacion, abrir, cerrar } = useCapsulas()
   const idBurbuja = useId()
   const refContenedor = useRef<HTMLSpanElement>(null)
   const refBoton = useRef<HTMLButtonElement>(null)
@@ -123,7 +123,7 @@ export function CapsulaAyuda({ campo }: PropsCapsulaAyuda) {
         id={idBurbuja}
         className="capsula__burbuja"
         data-abierta={estaAbierta}
-        data-sin-animacion={cierreInstantaneo}
+        data-sin-animacion={sinAnimacion}
         style={{ transformOrigin: `${origenX}px 0` }}
       >
         {propias.map((capsula) => (

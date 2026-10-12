@@ -22,8 +22,14 @@ export function ProveedorCapsulas({ capsulas, children }: PropsProveedorCapsulas
   })
   const indice = useMemo(() => indexarCapsulas(capsulas), [capsulas])
 
+  // Si ya había otra abierta, la nueva aparece sin animación (y la anterior se va igual)
   const abrir = useCallback(
-    (clave: string, fijada: boolean) => setEstado({ clave, fijada, instantaneo: false }),
+    (clave: string, fijada: boolean) =>
+      setEstado((anterior) => ({
+        clave,
+        fijada,
+        instantaneo: anterior.clave !== null && anterior.clave !== clave,
+      })),
     [],
   )
   const cerrar = useCallback(
@@ -36,7 +42,7 @@ export function ProveedorCapsulas({ capsulas, children }: PropsProveedorCapsulas
       capsulas: indice,
       abierta: estado.clave,
       fijada: estado.fijada,
-      cierreInstantaneo: estado.instantaneo,
+      sinAnimacion: estado.instantaneo,
       abrir,
       cerrar,
     }),

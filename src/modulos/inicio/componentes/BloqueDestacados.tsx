@@ -1,7 +1,13 @@
+import type { CSSProperties } from 'react'
 import { EstadoCarga } from '@/compartido/EstadoCarga'
 import { EstadoError } from '@/compartido/EstadoError'
 import { EstadoVacio } from '@/compartido/EstadoVacio'
-import { ID_TITULO_DESTACADOS, TEXTOS_INICIO } from '@/config/constantes'
+import { useVisibleUnaVez } from '@/compartido/useVisibleUnaVez'
+import {
+  DESTACADOS_PASOS_ESCALONADO,
+  ID_TITULO_DESTACADOS,
+  TEXTOS_INICIO,
+} from '@/config/constantes'
 import type { MedidasDestacado } from '../hooks/useMedidasDeDestacados'
 import type { Destacado } from '../lib/destacados'
 import { TarjetaDestacado } from './TarjetaDestacado'
@@ -21,6 +27,7 @@ export function BloqueDestacados({
   medidasDe,
   onReintentar,
 }: PropsBloqueDestacados) {
+  const [anclarLista, listaVisible] = useVisibleUnaVez<HTMLUListElement>()
   return (
     <section className="inicio-destacados" aria-labelledby={ID_TITULO_DESTACADOS}>
       <div className="inicio-destacados__contenido">
@@ -37,9 +44,20 @@ export function BloqueDestacados({
           <EstadoVacio mensaje={TEXTOS_INICIO.sinDestacados} />
         )}
         {estado === 'listo' && destacados.length > 0 && (
-          <ul className="inicio-destacados__lista" role="list">
-            {destacados.map((destacado) => (
-              <li key={destacado.arbol.codigo} className="inicio-destacados__item">
+          <ul
+            ref={anclarLista}
+            className="inicio-destacados__lista"
+            role="list"
+            data-visible={listaVisible}
+          >
+            {destacados.map((destacado, indice) => (
+              <li
+                key={destacado.arbol.codigo}
+                className="inicio-destacados__item"
+                style={
+                  { '--indice': Math.min(indice, DESTACADOS_PASOS_ESCALONADO) } as CSSProperties
+                }
+              >
                 <TarjetaDestacado
                   destacado={destacado}
                   medidas={medidasDe(destacado.arbol.codigo)}

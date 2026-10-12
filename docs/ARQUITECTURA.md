@@ -39,24 +39,24 @@ censo-arboreo-frontend/
 │   ├── api/
 │   │   ├── schema.d.ts        ← generado con openapi-typescript (no se edita)
 │   │   └── cliente.ts         ← obtenerSectores(), obtenerArbolesDeSector(id), obtenerArbol(codigo)
-│   ├── mocks/                 ← datos de los ejemplos del contrato; se eligen con VITE_USAR_MOCKS
-│   ├── compartido/            ← lo que usan 2 módulos o más: SelloDemo, SinDato, GlifoPixelArbol, los estados de carga, vacío y error, y los hooks del campus con su caché (`cacheCampus`, `useSectoresDelCampus`, `useArbolesDelCampus`)
+│   ├── mocks/                 ← datos de los ejemplos del contrato (el resumen del árbol con la forma del contrato 0.6.0: DAP, altura y origen; los sectores 2 a 5 solo traen árboles de ejemplo); se eligen con VITE_USAR_MOCKS
+│   ├── compartido/            ← lo que usan 2 módulos o más: SelloDemo, SinDato, la marca (`marca/`: sprites pixel por especie, símbolo y wordmark del logo y la co-marca con la UPeU), los estados de carga, vacío y error, los hooks del campus con su caché (`cacheCampus`, `useSectoresDelCampus`, `useArbolesDelCampus`) y el movimiento común: `modalidadEntrada` (con el teclado no se anima), `usePideMenosMovimiento`, `transicion` (transiciones del navegador), `ProveedorTransicionDePagina` y `useEnlaceConTransicion` (cambio de página con transición)
 │   ├── lib/                   ← funciones puras que usan 2 módulos o más (formatear unidades, elegirVariante)
 │   ├── test/                  ← setup.ts de Vitest
 │   └── modulos/               ← una carpeta por funcionalidad
 │       ├── mapa/              ← mapa ilustrado, hover y selección de sector
 │       │   ├── componentes/   ← MapaSectores, PanelSector…
-│       │   ├── hooks/         ← useSectores, useArbolesDeSector
+│       │   ├── hooks/         ← useArbolesDeSector
 │       │   ├── vistas/        ← VistaMapa
 │       │   └── index.ts       ← API pública del módulo
 │       ├── tema/              ← modo claro/oscuro: useTema + InterruptorTema
 │       ├── cartilla/          ← cartilla del árbol: componentes/ (incluye las cápsulas «?» y «Sobre este árbol»), hooks/ (useArbol), lib/, vistas/, index.ts
-│       ├── entrada/           ← animación de entrada al mapa, con variantes
+│       ├── entrada/           ← animación de entrada al mapa, con variantes; `hooks/contextoEntrada.ts` dice a quien está debajo si la entrada sigue en curso (lo usa el árbol de Inicio)
 │       ├── armazon/           ← cabecera, navegación, pie y página «no encontrada»: lo común a todas las rutas
-│       ├── inicio/            ← página de Inicio: portada, mapa compacto de sectores, destacados y cifras del censo
+│       ├── inicio/            ← página de Inicio: portada con el árbol animado (`ArbolAnimado`; dibujo en `lib/dibujoArbol.ts` y `lib/piezasArbol.ts`, guion en `lib/guionArbol.ts`, animación con la API de animaciones del navegador), mapa compacto de sectores, destacados y cifras del censo
 │       ├── explorar/          ← `/arboles`: lista de todos los árboles con buscador y filtros guardados en la URL; componentes/, hooks/, lib/ (filtros), vistas/
-│       └── cifras/            ← `/cifras`: cifras del censo por sector, estado y especie y 4 gráficos de CO₂ (almacenado por sector y por especie, captura anual por sector y top 10 de árboles), con campo y ejemplo separados; `lib/cifrasCenso.ts` y `lib/cifrasCo2.ts` son puros
-├── public/                    ← estáticos sin import (favicon). Las ilustraciones NO van aquí: se importan desde su módulo
+│       └── cifras/            ← `/cifras`: el tablero del censo. Filtros (sector y datos de campo o de ejemplo) en la URL; resumen de 6 tarjetas con mini gráfico, mapa de calor de los sectores, dona de especies, estado por sector, nativas y exóticas, dispersión DAP × altura, histograma de DAP y los gráficos de CO₂; cada gráfico con su tabla accesible. Campo y ejemplo siempre por separado. `lib/` es puro y testeado (`filtrosTablero`, `tablero`, `tableroGraficos`, `escalas`, `trazosSvg`, `sectores`) y las medidas de los gráficos están en `lib/medidasGraficos.ts`; sus textos y constantes en `config/tablero.ts`; sin librerías de gráficos
+├── public/                    ← estáticos sin import (favicon.svg). Las ilustraciones NO van aquí: se importan desde su módulo
 ├── scripts/                   ← verificar-colores.mjs, generar-tipos
 └── docs/                      ← ARQUITECTURA (este) y requerimientos
 ```
@@ -76,6 +76,7 @@ Cada módulo usa solo las subcarpetas que necesita (`componentes/`, `hooks/`, `v
 - Un campo sin dato se muestra «Sin dato»; un registro con `demo: true` lleva el sello «Dato de ejemplo».
 - Los tests van junto al archivo (`*.test.ts(x)`). Un archivo de más de ~300 líneas se parte.
 - **Fronteras entre módulos:** un módulo importa de otro **solo** por su `index.ts`, nunca desde `modulos/<otro>/componentes/…`. `compartido/`, `lib/`, `api/` y `config/` nunca importan de `modulos/`. Lo vigila ESLint con `no-restricted-imports`. Un componente pasa a `compartido/` cuando lo usan 2 módulos, no antes.
+- **Marca:** los dibujos pixel (los 5 sprites por especie en 16 y 32, el símbolo del logo y su versión mínima) son datos en `compartido/marca/*.datos.ts`: filas de letras, una letra por color de la paleta (ver `marca.estilos.css`). El sprite de cada árbol se elige por el género de su nombre científico o por un alias de su nombre común (`SPRITES_POR_ESPECIE` en `config/constantes.ts`); sin coincidencia, el genérico. El wordmark es texto en Bricolage (700 para «CENSO», 800 para «Arbóreo»). Los logos oficiales de la UPeU viven en `marca/recursos/` y se usan tal cual (el blanco solo sin su bloque de metadatos; `verificar:colores` no mira los SVG de `recursos/`). La cabecera lleva el logo de 40 px (32 px en el celular) y la co-marca de la UPeU solo desde 64rem; la co-marca completa va en el pie. El área de resguardo del logo de la UPeU (la mitad de su alto por cada lado) es provisional y no se verificó con su manual de marca.
 - **Variantes de adorno:** las frases de carga, las ilustraciones decorativas del mapa y la animación de entrada eligen su variante con `lib/elegirVariante(pesos, aleatorio)` y una tabla de pesos en `config/constantes.ts` (`PESOS_…`). Cada vista se sortea de nuevo; no hay contadores. Las ilustraciones se importan desde su módulo (`recursos/`, con nombre de archivo neutro y hash de Vite) y toda variante que no sea la estándar se carga con `import()` solo cuando sale. El aleatorio se inyecta, así que los tests no dependen de la suerte.
 - **Tema claro y oscuro:** arranca según `prefers-color-scheme` y un interruptor manual lo cambia; la elección se recuerda en el navegador (con `try/catch`, y sin ella la página sigue andando). El tema solo pone un atributo en `<html>`, y `tokens.css` redefine los alias semánticos (`--color-fondo`, `--color-texto`…). Los componentes no saben qué tema hay. El nombre del atributo, los valores de tema y la clave de almacenamiento son constantes de `config/constantes.ts` (por ejemplo `ATRIBUTO_TEMA`, `TEMAS`, `CLAVE_TEMA_GUARDADO`), nunca texto suelto.
 

@@ -1,15 +1,21 @@
 // Página «Árboles»: todos los árboles del campus con buscador y filtros guardados en la URL.
 import '../estilos.css'
-import { useDeferredValue, useMemo } from 'react'
+import { useDeferredValue, useMemo, type CSSProperties } from 'react'
 import { EstadoCarga } from '@/compartido/EstadoCarga'
 import { EstadoError } from '@/compartido/EstadoError'
 import { EstadoVacio } from '@/compartido/EstadoVacio'
 import { useArbolesDelCampus } from '@/compartido/useArbolesDelCampus'
 import { useSectoresDelCampus } from '@/compartido/useSectoresDelCampus'
-import { REGION_INTERFAZ, TEXTOS_ESTADOS, TEXTOS_EXPLORAR } from '@/config/constantes'
+import {
+  EXPLORAR_PASOS_ESCALONADO,
+  REGION_INTERFAZ,
+  TEXTOS_ESTADOS,
+  TEXTOS_EXPLORAR,
+} from '@/config/constantes'
 import { BarraFiltros } from '../componentes/BarraFiltros'
 import { FilaArbol } from '../componentes/FilaArbol'
 import { useBusquedaLocal } from '../hooks/useBusquedaLocal'
+import { useEntradaEscalonada } from '../hooks/useEntradaEscalonada'
 import { useFiltrosEnUrl } from '../hooks/useFiltrosEnUrl'
 import { filtrarArboles, hayFiltros, opcionesDeEstado, ordenarArboles } from '../lib/filtros'
 
@@ -52,6 +58,8 @@ export function VistaExplorar() {
   const hayError = sectores.estado === 'error' || arboles.estado === 'error'
   const reintentar = sectores.estado === 'error' ? sectores.reintentar : arboles.reintentar
   const listo = resumenes !== null
+  // Solo la primera vez que se ve la lista las filas entran una tras otra
+  const entrando = useEntradaEscalonada(visibles.length > 0)
 
   return (
     <section className="explorar">
@@ -77,8 +85,14 @@ export function VistaExplorar() {
           </p>
           {visibles.length > 0 ? (
             <ul className="explorar__lista" role="list">
-              {visibles.map((arbol) => (
-                <li key={arbol.uid} className="explorar__item">
+              {visibles.map((arbol, indice) => (
+                <li
+                  key={arbol.uid}
+                  className={`explorar__item${entrando ? ' explorar__item--entra' : ''}`}
+                  style={
+                    { '--indice': Math.min(indice, EXPLORAR_PASOS_ESCALONADO) } as CSSProperties
+                  }
+                >
                   <FilaArbol
                     arbol={arbol}
                     nombreSector={nombresDeSector.get(arbol.sector) ?? null}

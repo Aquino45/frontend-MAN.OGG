@@ -53,13 +53,14 @@ export function useTema(): { tema: Tema; alternar: () => void } {
     return () => consulta.removeEventListener('change', alCambiarSistema)
   }, [])
 
+  // El atributo de <html> cambia en el acto, para que una transición vea ya el tema nuevo.
   const alternar = useCallback(() => {
-    setTema((anterior) => {
-      const siguiente = temaOpuesto(anterior)
-      guardarTema(siguiente)
-      return siguiente
-    })
-  }, [])
+    const enElDocumento = document.documentElement.getAttribute(ATRIBUTO_TEMA)
+    const siguiente = temaOpuesto(esTema(enElDocumento) ? enElDocumento : tema)
+    guardarTema(siguiente)
+    aplicarTema(siguiente)
+    setTema(siguiente)
+  }, [tema])
 
   return { tema, alternar }
 }

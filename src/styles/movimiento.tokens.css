@@ -2,20 +2,45 @@
 :root {
   /* Duraciones y curvas */
   --duracion-rapida: 150ms;
-  --duracion-media: 300ms;
+  --duracion-media: 240ms;
   --curva-salida: cubic-bezier(0.23, 1, 0.32, 1);
-  --escala-presion: 0.96;
-  /* Movimiento del sitio: presionar 120 · hover 160 · entrada 200 · hoja 240 · zoom del mapa 320 ·
+  /* Movimiento del sitio: presionar 120 · hover 160 · entrada 200 · hoja 240 · zoom del mapa 280 ·
      salidas 150. Nada pasa de 300 ms fuera del zoom. */
   --duracion-presion: 120ms;
   --duracion-hover: 160ms;
   --duracion-entrada: 200ms;
   --duracion-hoja: 240ms;
-  --duracion-zoom: 320ms;
+  --duracion-zoom: 280ms;
   --duracion-salida: 150ms;
+  /* Menú del celular (entra en 160, sale en --duracion-salida) · fundidos de cartilla y de estados ·
+     cambio de página y de tema · barras de los gráficos y su escalonado (tope de pasos en constantes) */
+  --duracion-menu: 160ms;
+  --duracion-fundido: 150ms;
+  --duracion-pagina: 200ms;
+  --duracion-grafico: 360ms;
+  /* Los gráficos del tablero al cambiar un filtro: entre 200 y 300 ms */
+  --duracion-filtro: 260ms;
+  --retraso-escalonado-grafico: 30ms;
+  /* Inicio con presencia: entrada de las tarjetas destacadas y dibujo del mapa chico (una vez) */
+  --retraso-escalonado-destacado: 50ms;
+  --duracion-dibujo-mapa: 280ms;
+  --retraso-dibujo-mapa: 90ms;
+  /* Cascada de los puntos de los árboles al entrar a un sector por primera vez */
+  --retraso-cascada-punto: 30ms;
+  /* Cuánto suben las tarjetas al entrar */
+  --desplazamiento-entrada: 8px;
+  /* Cuánto sube el menú del celular al abrirse */
+  --desplazamiento-menu: 4px;
+  /* Cuánto viene de la derecha el panel lateral del sector al abrirse */
+  --desplazamiento-panel: 8px;
   --curva-movimiento: cubic-bezier(0.77, 0, 0.175, 1);
   --curva-hoja: cubic-bezier(0.32, 0.72, 0, 1);
   --curva-hover: ease;
-  --escala-activo: 0.97;
+  /* Presión de botones, filas y tarjetas: se hunden un poco más que antes (0.96) */
+  --escala-activo: 0.96;
+  /* Tarjetas y filas vivas: cuánto suben con el cursor (la sombra aparece con opacidad, no se anima) */
+  --elevacion-hover: -3px;
+  /* Destello de la estrella de un destacado al aparecer */
+  --duracion-destello: 280ms;
   --alto-hoja: 85dvh;
 }

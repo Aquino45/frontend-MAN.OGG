@@ -1,6 +1,6 @@
 // Mapa ilustrado: un trazado por sector, con su nombre y glifos decorativos.
 // No pide datos: recibe los sectores y el estado de la interacción por props.
-import { useMemo, useRef, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react'
+import { useMemo, useRef, type KeyboardEvent, type PointerEvent } from 'react'
 import type { ArbolFeature, SectorFeature } from '@/api/cliente'
 import {
   MAPA_DURACION_ENTRADA_MS,
@@ -55,9 +55,10 @@ export function MapaSectores({
   )
   const recuadroObjetivo =
     proyeccion.sectores.find((sector) => sector.id === sectorSeleccionado)?.recuadro ?? mapaCompleto
-  const recuadro = useRecuadroAnimado(recuadroObjetivo, MAPA_DURACION_ENTRADA_MS)
-  // Cuánto se acercó el mapa: los trazos de texto y los puntos se achican en la misma medida.
-  const escalaZoom = recuadro.ancho / proyeccion.ancho
+  // El zoom escribe el viewBox y --escala-zoom (cuánto se acercó el mapa) directo en el SVG:
+  // las etiquetas y los puntos se achican en la misma medida por CSS.
+  const refSvg = useRef<SVGSVGElement>(null)
+  useRecuadroAnimado(refSvg, recuadroObjetivo, proyeccion.ancho, MAPA_DURACION_ENTRADA_MS)
   // Tipo del puntero que está presionando un sector; null si la interacción es por teclado.
   const punteroEnCurso = useRef<string | null>(null)
   const sectorActivo = sectorResaltado ?? sectorSeleccionado
@@ -99,6 +100,7 @@ export function MapaSectores({
   return (
     <figure className="mapa-sectores">
       <svg
+        ref={refSvg}
         className={[
           'mapa-sectores__svg',
           sectorActivo !== null && 'mapa-sectores__svg--con-activo',
@@ -106,13 +108,7 @@ export function MapaSectores({
         ]
           .filter(Boolean)
           .join(' ')}
-        viewBox={`${recuadro.x} ${recuadro.y} ${recuadro.ancho} ${recuadro.alto}`}
-        style={
-          {
-            aspectRatio: `${proyeccion.ancho} / ${proyeccion.alto}`,
-            '--escala-zoom': escalaZoom,
-          } as CSSProperties
-        }
+        style={{ aspectRatio: `${proyeccion.ancho} / ${proyeccion.alto}` }}
         role="group"
         aria-label={TEXTOS_MAPA.tituloRegion}
       >
@@ -166,9 +162,11 @@ export function MapaSectores({
         })}
         {sectorSeleccionado !== null && arboles.length > 0 && (
           <PuntosArboles
+            key={sectorSeleccionado}
+            sectorId={sectorSeleccionado}
             arboles={arboles}
             proyectarPosicion={proyeccion.proyectarPosicion}
-            radio={MAPA_RADIO_PUNTO * escalaZoom}
+            radio={MAPA_RADIO_PUNTO}
             codigoResaltado={arbolResaltado}
             onResaltar={onResaltarArbol}
             onAbrir={onAbrirArbol}

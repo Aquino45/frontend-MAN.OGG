@@ -1,7 +1,8 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
 import { describe, expect, it } from 'vitest'
-import { NOMBRE_PRODUCTO, RUTAS, TEXTOS_ARMAZON } from '@/config/constantes'
+import { NOMBRE_PRODUCTO, RUTAS, TEXTOS_ARMAZON, TEXTOS_MARCA } from '@/config/constantes'
+import marcaCss from '@/compartido/marca/marca.estilos.css?raw'
 import escalaTokens from '@/styles/escala.tokens.css?raw'
 import estilosCss from '../estilos.css?raw'
 import { Cabecera } from './Cabecera'
@@ -20,6 +21,23 @@ describe('Cabecera', () => {
     const marca = screen.getByRole('link', { name: NOMBRE_PRODUCTO })
     expect(marca).toHaveAttribute('href', RUTAS.inicio)
     expect(screen.queryByRole('heading', { level: 1 })).not.toBeInTheDocument()
+  })
+
+  it('el enlace de la marca se llama como el producto y la co-marca de la UPeU va fuera del enlace', () => {
+    verCabecera(RUTAS.inicio)
+    const marca = screen.getByRole('link', { name: NOMBRE_PRODUCTO })
+    expect(within(marca).queryByAltText(TEXTOS_MARCA.upeu)).not.toBeInTheDocument()
+    expect(screen.getAllByAltText(TEXTOS_MARCA.upeu).length).toBeGreaterThan(0)
+  })
+
+  it('el logo mide 32 px en el celular y 40 px desde 48rem, y la UPeU solo se ve desde 64rem', () => {
+    expect(escalaTokens).toMatch(/--marca-cabecera-alto:\s*2rem/)
+    expect(escalaTokens).toMatch(
+      /@media \(min-width: 48rem\)\s*\{\s*:root\s*\{\s*--marca-cabecera-alto:\s*2\.5rem/,
+    )
+    expect(marcaCss).toMatch(
+      /@media \(width < 64rem\)\s*\{[^}]*\.logo-marca__separador,\s*\.logo-marca \.logo-upeu\s*\{\s*display:\s*none/,
+    )
   })
 
   it('la navegación trae Inicio y Mapa como enlaces reales', () => {
@@ -172,16 +190,11 @@ describe('Cabecera: estilos', () => {
     expect(estilosCss).toMatch(/\.armazon-cabecera__menu\s*\{[^}]*display:\s*none/)
   })
 
-  it('a 360 px la cabecera es de una sola fila: la marca encoge y el nombre pasa a 2 líneas', () => {
-    expect(estilosCss).toMatch(/\.armazon-cabecera__marca\s*\{[^}]*flex:\s*1 1 0/)
-    expect(estilosCss).toMatch(/\.armazon-cabecera__marca\s*\{[^}]*min-inline-size:\s*0/)
+  it('a 360 px la cabecera es de una sola fila: el logo encoge y las acciones no', () => {
+    expect(estilosCss).toMatch(/\.armazon-cabecera__identidad\s*\{[^}]*flex:\s*1 1 0/)
+    expect(estilosCss).toMatch(/\.armazon-cabecera__identidad\s*\{[^}]*min-inline-size:\s*0/)
     expect(estilosCss).not.toMatch(/text-overflow:\s*ellipsis/)
     expect(estilosCss).not.toMatch(/white-space:\s*nowrap/)
-    expect(estilosCss).toMatch(/\.armazon-cabecera__nombre\s*\{[^}]*font-size:\s*var\(--texto-sm\)/)
-    expect(estilosCss).toMatch(
-      /\.armazon-cabecera__nombre\s*\{[^}]*line-height:\s*var\(--interlinea-titulo\)/,
-    )
-    expect(estilosCss).toMatch(/\.armazon-cabecera__nombre\s*\{[^}]*overflow-wrap:\s*anywhere/)
     expect(estilosCss).toMatch(/\.armazon-cabecera__acciones\s*\{[^}]*flex:\s*none/)
     expect(estilosCss).toMatch(
       /\.armazon-cabecera\s*\{[^}]*min-block-size:\s*var\(--alto-cabecera\)/,

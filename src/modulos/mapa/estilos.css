@@ -24,6 +24,9 @@
   cursor: pointer;
   transform-box: fill-box;
   transform-origin: center;
+  /* El zoom lo achica con la propiedad `scale` (sin transición: el mapa la escribe cuadro a
+     cuadro) y el resaltado con `transform`, que sí transiciona. */
+  scale: var(--escala-zoom, 1);
   transition:
     transform var(--duracion-hover) var(--curva-salida),
     fill var(--duracion-hover) var(--curva-hover);
@@ -48,6 +51,11 @@
 
 .punto-arbol:focus {
   outline: none;
+}
+
+/* Al presionar, el punto se hunde un poco desde su centro */
+.punto-arbol:active {
+  transform: scale(calc(var(--punto-escala-resaltado) * var(--escala-activo)));
 }
 
 .vista-mapa__panel {
@@ -104,7 +112,7 @@
   min-inline-size: 0;
 }
 
-.fila-arbol {
+.mapa-fila {
   inline-size: 100%;
   min-inline-size: 0;
   min-block-size: var(--tamano-control);
@@ -124,22 +132,22 @@
     border-color var(--duracion-hover) var(--curva-hover);
 }
 
-.fila-arbol:active {
+.mapa-fila:active {
   transform: scale(var(--escala-activo));
 }
 
-.fila-arbol--resaltada,
-.fila-arbol:focus-visible {
+.mapa-fila--resaltada,
+.mapa-fila:focus-visible {
   border-color: var(--color-acento);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .fila-arbol:hover {
+  .mapa-fila:hover {
     border-color: var(--color-acento);
   }
 }
 
-.fila-arbol__miniatura {
+.mapa-fila__miniatura {
   flex: none;
   inline-size: var(--miniatura-lado);
   block-size: var(--miniatura-lado);
@@ -150,17 +158,17 @@
   background: var(--color-superficie);
 }
 
-.fila-arbol__miniatura img {
+.mapa-fila__miniatura img {
   inline-size: 100%;
   block-size: 100%;
   object-fit: cover;
 }
 
-.fila-arbol__miniatura .glifo-pixel {
+.mapa-fila__miniatura .sprite-arbol {
   inline-size: 60%;
 }
 
-.fila-arbol__texto {
+.mapa-fila__texto {
   flex: 1;
   min-inline-size: 0;
   display: flex;
@@ -168,18 +176,18 @@
   overflow-wrap: anywhere;
 }
 
-.fila-arbol__nombre {
+.mapa-fila__nombre {
   font-family: var(--fuente-display);
   font-weight: 600;
 }
 
-.fila-arbol__cientifico {
+.mapa-fila__cientifico {
   font-size: var(--texto-pequeno);
   font-style: italic;
   color: var(--color-texto-suave);
 }
 
-.fila-arbol__datos {
+.mapa-fila__datos {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -188,7 +196,7 @@
   color: var(--color-texto-tenue);
 }
 
-.fila-arbol__codigo {
+.mapa-fila__codigo {
   font-family: var(--fuente-etiqueta);
   font-weight: var(--etiqueta-peso);
   text-transform: uppercase;
@@ -199,13 +207,27 @@
 @media (prefers-reduced-motion: reduce) {
   .sector__etiqueta,
   .punto-arbol,
-  .fila-arbol {
+  .mapa-fila {
     transition: none;
   }
 
   .punto-arbol--resaltado,
   .punto-arbol:focus-visible,
-  .fila-arbol:active {
+  .mapa-fila:active {
     transform: none;
   }
+}
+
+/* Al entrar a un sector por primera vez, los puntos de los árboles aparecen en cascada (30 ms por
+   punto, hasta 8 pasos); las veces siguientes ya están ahí. */
+@keyframes mapa-punto-entra {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+.puntos-arboles[data-cascada='true'] .punto-arbol {
+  animation: mapa-punto-entra var(--duracion-entrada) var(--curva-salida) backwards;
+  animation-delay: calc(var(--indice) * var(--retraso-cascada-punto));
 }

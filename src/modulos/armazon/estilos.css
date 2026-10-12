@@ -12,6 +12,7 @@
   /* Por encima de la hoja inferior del mapa (fija): así el menú abierto se ve completo */
   position: relative;
   z-index: var(--capa-cabecera);
+  view-transition-name: cabecera;
   background: var(--color-fondo);
   padding: var(--espacio-3);
   display: flex;
@@ -21,37 +22,24 @@
   gap: var(--espacio-3);
 }
 
+/* El logo y, desde 64rem, la co-marca de la UPeU: en el celular ocupan el ancho que dejan las acciones */
+.armazon-cabecera__identidad {
+  flex: 1 1 0;
+  min-inline-size: 0;
+}
+
 .armazon-cabecera__marca {
   display: flex;
   align-items: center;
-  flex: 1 1 0;
-  gap: var(--espacio-12);
   min-inline-size: 0;
   min-block-size: var(--tamano-control);
   color: var(--color-texto);
   text-decoration: none;
+  transition: transform var(--duracion-presion) var(--curva-salida);
 }
 
-.armazon-cabecera__glifo {
-  flex: none;
-  display: block;
-}
-
-.armazon-cabecera__glifo .glifo-pixel {
-  inline-size: var(--glifo-marca);
-}
-
-/* El tronco del glifo se aclara para que se vea sobre el fondo del sitio. */
-.armazon-cabecera__glifo .glifo-pixel__tronco {
-  fill: var(--color-texto-tenue);
-}
-
-.armazon-cabecera__nombre {
-  min-inline-size: 0;
-  font-weight: 600;
-  font-size: var(--texto-sm);
-  line-height: var(--interlinea-titulo);
-  overflow-wrap: anywhere;
+.armazon-cabecera__marca:active {
+  transform: scale(var(--escala-activo));
 }
 
 .armazon-cabecera__acciones {
@@ -111,13 +99,9 @@
     display: none;
   }
 
-  .armazon-cabecera__marca {
+  .armazon-cabecera__identidad {
     flex: 0 1 auto;
     margin-inline-end: auto;
-  }
-
-  .armazon-cabecera__nombre {
-    font-size: var(--texto-base);
   }
 }
 
@@ -131,8 +115,27 @@
     flex-basis: 100%;
   }
 
+  /* El menú entra con un fundido y una subida corta, y sale más rápido. El teclado y «reducir
+     movimiento» lo abren y cierran al instante (ver base.estilos.css). */
+  .armazon-cabecera__nav {
+    transition:
+      opacity var(--duracion-menu) var(--curva-salida),
+      transform var(--duracion-menu) var(--curva-salida),
+      display var(--duracion-menu) allow-discrete;
+  }
+
   .armazon-cabecera__nav[data-abierto='false'] {
     display: none;
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--desplazamiento-menu)));
+    transition-duration: var(--duracion-salida);
+  }
+
+  @starting-style {
+    .armazon-cabecera__nav {
+      opacity: 0;
+      transform: translateY(calc(-1 * var(--desplazamiento-menu)));
+    }
   }
 
   /* En la lista del menú móvil el texto sube a 1rem; el objetivo sigue en 44 px */

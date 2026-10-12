@@ -1,4 +1,6 @@
-import { TEMAS, TEXTOS_TEMA } from '@/config/constantes'
+import { flushSync } from 'react-dom'
+import { transicionar } from '@/compartido/transicion'
+import { TEMAS, TEXTOS_TEMA, TRANSICIONES } from '@/config/constantes'
 import { useTema } from '../hooks/useTema'
 
 // Botón que alterna entre el tema claro y el oscuro. El ícono muestra el tema al que se cambia.
@@ -11,7 +13,7 @@ export function InterruptorTema() {
     <button
       type="button"
       className="boton boton--icono"
-      onClick={alternar}
+      onClick={() => transicionar(() => flushSync(alternar), TRANSICIONES.tema)}
       aria-label={nombre}
       title={nombre}
     >

@@ -5,7 +5,6 @@ import { EstadoCarga } from './EstadoCarga'
 import { EstadoError } from './EstadoError'
 import { EstadoVacio } from './EstadoVacio'
 import estadosCss from './estados.estilos.css?raw'
-import { GlifoPixelArbol } from './GlifoPixelArbol'
 import { SelloDemo } from './SelloDemo'
 import { SinDato } from './SinDato'
 
@@ -18,13 +17,6 @@ describe('componentes compartidos', () => {
   it('SinDato dice «Sin dato»', () => {
     render(<SinDato />)
     expect(screen.getByText(TEXTOS_CARTILLA.sinDato)).toBeInTheDocument()
-  })
-
-  it('GlifoPixelArbol es decorativo y no tiene texto', () => {
-    const { container } = render(<GlifoPixelArbol />)
-    const dibujo = container.querySelector('svg')
-    expect(dibujo).toHaveAttribute('aria-hidden', 'true')
-    expect(dibujo?.textContent).toBe('')
   })
 })
 

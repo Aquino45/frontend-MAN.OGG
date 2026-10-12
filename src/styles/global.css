@@ -2,9 +2,13 @@
 @import './movimiento.tokens.css';
 @import '@fontsource/bricolage-grotesque/400.css';
 @import '@fontsource/bricolage-grotesque/600.css';
+@import '@fontsource/bricolage-grotesque/700.css';
 @import '@fontsource/bricolage-grotesque/800.css';
 @import './botones.estilos.css';
+@import './elevable.estilos.css';
+@import './motivos.estilos.css';
 @import './base.estilos.css';
+@import './transicion.estilos.css';
 
 *,
 *::before,
@@ -25,9 +29,6 @@ body {
   font-family: var(--fuente-base);
   font-size: var(--texto-base);
   line-height: var(--interlinea-cuerpo);
-  transition:
-    background-color var(--duracion-hover) var(--curva-hover),
-    color var(--duracion-hover) var(--curva-hover);
 }
 
 /* ---------- Estructura de la página ---------- */
@@ -107,7 +108,8 @@ body {
   cursor: pointer;
   transition:
     fill var(--duracion-hover) var(--curva-hover),
-    stroke var(--duracion-hover) var(--curva-hover);
+    stroke var(--duracion-hover) var(--curva-hover),
+    opacity var(--duracion-presion) var(--curva-salida);
 }
 
 .sector--provisional .sector__forma {
@@ -116,6 +118,10 @@ body {
 
 .sector--activo .sector__forma {
   fill: var(--mapa-relleno-resaltado);
+}
+
+.sector__forma:active {
+  opacity: var(--mapa-opacidad-presion);
 }
 
 /* El foco del sector se marca con su borde, no con el recuadro del navegador. */
@@ -205,26 +211,4 @@ body {
   color: var(--color-texto-tenue);
   font-style: italic;
   font-weight: 400;
-}
-
-.glifo-pixel {
-  inline-size: var(--foto-glifo);
-  block-size: auto;
-  shape-rendering: crispEdges;
-}
-
-.glifo-pixel__copa-alta {
-  fill: var(--copa-carmin);
-}
-
-.glifo-pixel__copa-media {
-  fill: var(--copa-magenta);
-}
-
-.glifo-pixel__copa-baja {
-  fill: var(--copa-magenta-oscuro);
-}
-
-.glifo-pixel__tronco {
-  fill: var(--tronco-noche);
 }

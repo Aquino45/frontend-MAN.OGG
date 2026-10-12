@@ -26,6 +26,9 @@ function arbol(
       co2_almacenado_kg: null,
       co2_captura_anual_kg: null,
       co2_simulado: false,
+      dap_cm: null,
+      altura_total_m: null,
+      origen: null,
     },
   }
 }

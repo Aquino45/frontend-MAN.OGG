@@ -66,8 +66,8 @@ export async function obtenerArbolesDeSector(
   const entorno = opciones.entorno ?? obtenerEntorno()
   const ruta = PLANTILLA_RUTA_ARBOLES_DE_SECTOR(sectorId)
   if (entorno.usarMocks) {
-    const { arbolesMockPorSector } = await import('@/mocks')
-    return arbolesMockPorSector[sectorId] ?? { type: 'FeatureCollection', features: [] }
+    const { arbolesMockDelCampus } = await import('@/mocks')
+    return arbolesMockDelCampus[sectorId] ?? { type: 'FeatureCollection', features: [] }
   }
   return pedirJson<ArbolColeccion>(ruta, { ...opciones, entorno })
 }

@@ -1,5 +1,6 @@
 import '../estilos.css'
 import { useMemo } from 'react'
+import { CoMarca } from '@/compartido/marca/CoMarca'
 import { useArbolesDelCampus } from '@/compartido/useArbolesDelCampus'
 import { useSectoresDelCampus } from '@/compartido/useSectoresDelCampus'
 import { TEXTOS_ARMAZON, URL_LICENCIA_ODBL } from '@/config/constantes'
@@ -24,6 +25,7 @@ export function Pie() {
   return (
     <footer className="armazon-pie">
       <div className="armazon-pie__contenido">
+        <CoMarca />
         {nota !== null && <p className="armazon-pie__texto">{nota}</p>}
         <p className="armazon-pie__texto">
           {TEXTOS_ARMAZON.creditoContorno} (

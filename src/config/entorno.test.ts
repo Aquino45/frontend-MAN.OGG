@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { leerEntorno, obtenerEntorno } from './entorno'
+import { leerEntorno, leerUrlPanel, obtenerEntorno, obtenerUrlPanel } from './entorno'
 
 const URL_PRUEBA = 'http://api.prueba.invalid/v1'
 
@@ -39,5 +39,35 @@ describe('obtenerEntorno', () => {
     vi.stubEnv('VITE_API_URL', URL_PRUEBA)
     vi.stubEnv('VITE_USAR_MOCKS', 'false')
     expect(obtenerEntorno()).toEqual({ urlApi: URL_PRUEBA, usarMocks: false })
+  })
+})
+
+describe('leerUrlPanel', () => {
+  afterEach(() => vi.unstubAllEnvs())
+
+  it('devuelve la dirección si es http o https', () => {
+    expect(leerUrlPanel({ VITE_URL_PANEL: 'https://panel.prueba.invalid/admin/' })).toBe(
+      'https://panel.prueba.invalid/admin/',
+    )
+    expect(leerUrlPanel({ VITE_URL_PANEL: ' http://panel.prueba.invalid/admin/ ' })).toBe(
+      'http://panel.prueba.invalid/admin/',
+    )
+  })
+
+  it('sin variable, vacía o con otro formato no hay panel', () => {
+    expect(leerUrlPanel({})).toBeNull()
+    expect(leerUrlPanel({ VITE_URL_PANEL: '  ' })).toBeNull()
+    expect(leerUrlPanel({ VITE_URL_PANEL: '/admin/' })).toBeNull()
+    expect(leerUrlPanel({ VITE_URL_PANEL: 'texto suelto' })).toBeNull()
+  })
+
+  it('rechaza esquemas que no son de una página web', () => {
+    expect(leerUrlPanel({ VITE_URL_PANEL: 'javascript:alert(1)' })).toBeNull()
+    expect(leerUrlPanel({ VITE_URL_PANEL: 'data:text/html,hola' })).toBeNull()
+  })
+
+  it('lee import.meta.env', () => {
+    vi.stubEnv('VITE_URL_PANEL', 'https://panel.prueba.invalid/admin/')
+    expect(obtenerUrlPanel()).toBe('https://panel.prueba.invalid/admin/')
   })
 })

@@ -9,7 +9,9 @@ export type VarianteEntrada = keyof typeof PESOS_ENTRADA
 export const DURACION_ENTRADA_ALTERNA_MS = 3000
 
 // CUÁNTO TARDA EN DESVANECERSE LA ILUSTRACIÓN DE LA ENTRADA ALTERNA, EN ms
-export const DURACION_SALIDA_ENTRADA_MS = 300
+export const DURACION_SALIDA_ENTRADA_MS = 200
+// Lo que dura el fundido de la entrada estándar (lo que Inicio espera antes de animar su árbol)
+export const DURACION_APARICION_ENTRADA_MS = 200
 
 // ---------- TEMA CLARO Y OSCURO ----------
 
@@ -92,6 +94,24 @@ export const TEXTOS_ESTADOS = {
 // NOMBRE PÚBLICO DEL PRODUCTO (título de la página y de la cabecera)
 export const NOMBRE_PRODUCTO = 'Censo arbóreo UPeU Lima'
 
+// MARCA: LOS TEXTOS DEL LOGO (EL WORDMARK ES «CENSO» EN MAYÚSCULAS ESPACIADAS Y «ARBÓREO» GRANDE)
+export const TEXTOS_MARCA = {
+  censo: 'Censo',
+  arboreo: 'Arbóreo',
+  upeu: 'Universidad Peruana Unión',
+} as const
+
+// SPRITE PIXEL DE CADA ESPECIE: SE ELIGE POR EL GÉNERO DEL NOMBRE CIENTÍFICO O POR UN ALIAS DEL
+// NOMBRE COMÚN (SIN TILDES NI MAYÚSCULAS). SI NO HAY COINCIDENCIA SE USA EL GENÉRICO.
+export const SPRITES_POR_ESPECIE = {
+  palma: { generos: ['roystonea'], alias: ['palma real', 'palmera real'] },
+  huarango: { generos: ['prosopis'], alias: ['huarango', 'algarrobo'] },
+  molle: { generos: ['schinus'], alias: ['molle', 'molle serrano', 'pimentero'] },
+  ficus: { generos: ['ficus'], alias: ['ficus', 'higuera', 'matapalo'] },
+} as const
+export const SPRITE_GENERICO = 'generico'
+export type ClaveSprite = keyof typeof SPRITES_POR_ESPECIE | typeof SPRITE_GENERICO
+
 // NOMBRE DEL CAMPUS DONDE SE HACE EL CENSO
 export const NOMBRE_CAMPUS = 'UPeU Ñaña'
 
@@ -105,8 +125,21 @@ export const PARAMETROS_URL = { sector: 'sector', arbol: 'arbol' } as const
 // MARGEN, EN UNIDADES SVG, ENTRE EL BORDE DE UN SECTOR Y EL DEL RECUADRO AL ENTRAR EN ÉL
 export const MAPA_MARGEN_ENTRADA = 28
 
-// DURACIÓN DE LA TRANSICIÓN DEL RECUADRO AL ENTRAR O SALIR DE UN SECTOR (ms)
-export const MAPA_DURACION_ENTRADA_MS = 320
+// DURACIÓN DE LA TRANSICIÓN DEL RECUADRO AL ENTRAR O SALIR DE UN SECTOR (ms) Y SU CURVA.
+// Son los valores de --duracion-zoom y --curva-movimiento (un test comprueba que coinciden).
+export const MAPA_DURACION_ENTRADA_MS = 280
+export const MAPA_CURVA_ZOOM = [0.77, 0, 0.175, 1] as const
+
+// HOJA INFERIOR DEL CELULAR: LO QUE LEE EL GESTO DE ARRASTRE (el resto del movimiento vive en CSS).
+// Cierra por velocidad (px/ms) o por la fracción del alto que se bajó; por debajo de la holgura
+// (px) el toque no cuenta como arrastre. El elástico (px) es lo más que sube al jalar hacia
+// arriba y es igual a --hoja-extension.
+export const HOJA_ARRASTRE = {
+  velocidadCierrePxPorMs: 0.11,
+  fraccionCierre: 0.25,
+  holguraInicioPx: 8,
+  elasticoPx: 24,
+} as const
 
 // RADIO DE UN PUNTO DE ÁRBOL, EN UNIDADES SVG DEL MAPA COMPLETO (se reduce al acercar)
 export const MAPA_RADIO_PUNTO = 9
@@ -222,6 +255,12 @@ export const MARCADOR_FUENTE = '{fuente}'
 // CONSULTA DE MEDIOS: SOLO ASÍ UNA CÁPSULA SE ABRE AL PASAR EL CURSOR (en pantallas táctiles, con toque)
 export const CONSULTA_HOVER_FINO = '(hover: hover) and (pointer: fine)'
 
+// ---------- ATAJO AL PANEL ----------
+// Cuánto hay que mantener presionado el árbol de la portada para ir al panel, en ms
+export const ACCESO_PANEL_RETENCION_MS = 10_000
+// Cuántas celdas del árbol puede moverse el puntero sin que se cancele la pulsación
+export const ACCESO_PANEL_TOLERANCIA_CELDAS = 3
+
 // TEXTOS DE LAS CÁPSULAS «?» (la explicación de cada dato sale solo de la API)
 export const TEXTOS_CAPSULA = {
   etiquetaBoton: 'Qué significa {titulo}',
@@ -241,6 +280,12 @@ export const TEXTOS_SOBRE_ARBOL = {
 
 // CONSULTA DE MEDIOS DE QUIEN PIDE MENOS MOVIMIENTO
 export const CONSULTA_MOVIMIENTO_REDUCIDO = '(prefers-reduced-motion: reduce)'
+
+// CÓMO SE ESTÁ USANDO EL SITIO: con el teclado no se anima nada (lo lee el CSS en <html>)
+export const ATRIBUTO_MODALIDAD_ENTRADA = 'data-entrada'
+export const MODALIDADES_ENTRADA = { teclado: 'teclado', puntero: 'puntero' } as const
+// Teclas que por sí solas no son una acción de teclado
+export const TECLAS_MODIFICADORAS = ['Shift', 'Control', 'Alt', 'Meta'] as const
 
 // MARCA QUE LA APP DEJA EN EL ESTADO DEL HISTORIAL DE LAS ENTRADAS QUE ELLA AGREGA
 export const MARCA_HISTORIAL = 'censoArboreoEntrada'
@@ -492,3 +537,61 @@ export const MAPA_INICIO_INTERLINEA_EM = 1.25
 
 // CUÁNTO SUBE EL NOMBRE DEL SECTOR POR CADA LÍNEA DE CONTEO, EN em (así el bloque queda centrado)
 export const MAPA_INICIO_SUBIDA_POR_LINEA_EM = 0.5
+
+// CUÁNTOS PASOS DE ESCALONADO TIENE LA CASCADA DE PUNTOS DE UN SECTOR (el resto entra con el último)
+export const MAPA_PASOS_CASCADA = 8
+
+// FRASE PARA LECTORES DE PANTALLA MIENTRAS SE TRAE EL CÓDIGO DE UNA PÁGINA
+export const TEXTO_CARGANDO_PAGINA = 'Cargando la página'
+
+// ---------- MOTIVOS PIXEL DEL SITIO ----------
+// Lado de una celda del horizonte de copa entre secciones, en px enteros (más fina que la del árbol)
+export const HORIZONTE_CELDA_PX = 4
+
+// ---------- CONTEO DE CIFRAS AL ENTRAR EN PANTALLA ----------
+export const CONTEO_ANIMADO = {
+  // Lo que tarda un número en contar de 0 a su valor
+  duracionMs: 900,
+} as const
+
+// Cuántas tarjetas destacadas escalonan su entrada; las demás entran con la última
+export const DESTACADOS_PASOS_ESCALONADO = 6
+
+// ---------- ÁRBOL ANIMADO DE LA PORTADA ----------
+// Todo va en cuadros enteros, como pixel art: nada gira ni se escala, y lo que se mueve se mueve
+// de a una celda de la rejilla del árbol (ver inicio/lib/dibujoArbol.ts). Tiempos en milisegundos.
+export const ARBOL_ANIMADO = {
+  // Espera tras terminar la entrada del sitio
+  retrasoInicioMs: 120,
+  // Reposo: cada cuadro de la copa dura esto; entre ciclos, el cuadro base descansa
+  cuadroMs: 220,
+  pausaBaseMs: 3800,
+  // Hojas que caen solas (de a una celda por paso) y ráfaga al presionar
+  hojaPasoMs: 150,
+  hojaPasosMax: 16,
+  hojaIntervaloMinMs: 7000,
+  hojaIntervaloMaxMs: 11000,
+  hojasSimultaneas: 2,
+  abanicoHojas: 5,
+  abanicoEscalonMs: 70,
+  abanicoDerivaPorPaso: 0.5,
+  // Respuesta al puntero: los lóbulos de arriba se corren una celda hacia el cursor
+  punteroZonaMuertaAnchos: 0.12,
+  punteroAlcanceAnchos: 1.5,
+  sacudidaPasoMs: 60,
+  enfriamientoPulsacionMs: 600,
+} as const
+
+// ---------- TRANSICIONES ENTRE PÁGINAS Y DE TEMA ----------
+// Atributo en <html> que dice qué transición está en curso (el CSS elige su animación)
+export const ATRIBUTO_TRANSICION = 'data-transicion'
+export const TRANSICIONES = { pagina: 'pagina', tema: 'tema' } as const
+// Si la página nueva tarda más que esto en dibujarse, la transición sigue sin esperarla
+export const TIEMPO_MAXIMO_TRANSICION_MS = 1000
+
+// ---------- ENTRADA DE LA LISTA DE EXPLORAR ----------
+// Cuántos pasos de escalonado tiene la entrada de las filas (el resto entra con el último)
+export const EXPLORAR_PASOS_ESCALONADO = 8
+// Cuánto dura toda la entrada, en ms: pasa a ser normal la lista (sin animación) para las filas que
+// aparecen después. Cubre los pasos con su retraso (30 ms) y la duración de la entrada (200 ms).
+export const EXPLORAR_FIN_ENTRADA_MS = 700

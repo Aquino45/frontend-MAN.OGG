@@ -3,6 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { arbolesSector1Mock } from '@/mocks'
 import { useArbolesDeSector } from './useArbolesDeSector'
 
+// Un sector que no está en los mocks
+const SECTOR_SIN_MOCK = 99
+
 describe('useArbolesDeSector', () => {
   beforeEach(() => {
     vi.stubEnv('VITE_API_URL', 'http://api.prueba.invalid/v1')
@@ -27,7 +30,7 @@ describe('useArbolesDeSector', () => {
   })
 
   it('un sector sin árboles termina en una lista vacía', async () => {
-    const { result } = renderHook(() => useArbolesDeSector(2))
+    const { result } = renderHook(() => useArbolesDeSector(SECTOR_SIN_MOCK))
     await waitFor(() => expect(result.current.estado).toBe('listo'))
     if (result.current.estado !== 'listo') throw new Error('no cargó')
     expect(result.current.arboles).toEqual([])

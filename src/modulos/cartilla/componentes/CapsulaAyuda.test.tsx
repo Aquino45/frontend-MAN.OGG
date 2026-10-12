@@ -153,6 +153,20 @@ describe('CapsulaAyuda', () => {
     expect(boton).toHaveAttribute('aria-expanded', 'false')
   })
 
+  it('pasar a la cápsula de al lado no se anima: ni la que entra ni la que sale', () => {
+    verAyudas()
+    const burbujaDe = (boton: HTMLElement) =>
+      document.getElementById(boton.getAttribute('aria-controls') ?? '') as HTMLElement
+    fireEvent.click(botonAltura())
+    expect(burbujaDe(botonAltura())).toHaveAttribute('data-sin-animacion', 'false')
+    fireEvent.click(botonDap())
+    expect(burbujaDe(botonDap())).toHaveAttribute('data-sin-animacion', 'true')
+    expect(burbujaDe(botonAltura())).toHaveAttribute('data-sin-animacion', 'true')
+    // Cerrar la última sí vuelve a animar
+    fireEvent.click(botonDap())
+    expect(burbujaDe(botonDap())).toHaveAttribute('data-sin-animacion', 'false')
+  })
+
   it('solo una a la vez: abrir otra cierra la anterior', () => {
     verAyudas()
     fireEvent.click(botonAltura())

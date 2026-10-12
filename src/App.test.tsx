@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { configure, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   NOMBRE_PRODUCTO,
@@ -19,6 +19,9 @@ function abrir(url: string, aleatorioEntrada: () => number = SIEMPRE_ESTANDAR) {
   window.history.replaceState(null, '', url)
   return render(<App aleatorioEntrada={aleatorioEntrada} />)
 }
+
+// Mapa, Árboles y Cifras son chunks aparte: la primera vez tardan en llegar
+configure({ asyncUtilTimeout: 8000 })
 
 describe('App: rutas', () => {
   beforeEach(() => {
@@ -110,17 +113,22 @@ describe('App: rutas', () => {
   it.each([
     [RUTAS.arboles, TEXTOS_ARMAZON.arboles, TEXTOS_EXPLORAR.titulo],
     [RUTAS.cifras, TEXTOS_ARMAZON.cifras, TEXTOS_CIFRAS.titulo],
-  ])('«%s» muestra su página, un solo h1 y «%s» activo, sin entrada', (url, enlace, titulo) => {
-    const { container } = abrir(url, SORTEO_ALTO)
-    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
-    expect(screen.getByRole('heading', { level: 1, name: titulo })).toBeInTheDocument()
-    const navegacion = screen.getByRole('navigation', { name: TEXTOS_ARMAZON.navegacionPrincipal })
-    expect(within(navegacion).getByRole('link', { name: enlace })).toHaveAttribute(
-      'aria-current',
-      'page',
-    )
-    expect(container.querySelector('.entrada')).toBeNull()
-  })
+  ])(
+    '«%s» muestra su página, un solo h1 y «%s» activo, sin entrada',
+    async (url, enlace, titulo) => {
+      const { container } = abrir(url, SORTEO_ALTO)
+      expect(await screen.findByRole('heading', { level: 1, name: titulo })).toBeInTheDocument()
+      expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
+      const navegacion = screen.getByRole('navigation', {
+        name: TEXTOS_ARMAZON.navegacionPrincipal,
+      })
+      expect(within(navegacion).getByRole('link', { name: enlace })).toHaveAttribute(
+        'aria-current',
+        'page',
+      )
+      expect(container.querySelector('.entrada')).toBeNull()
+    },
+  )
 
   it('desde Inicio, «Árboles» y «Cifras» de la navegación llevan a sus rutas', async () => {
     abrir('/')

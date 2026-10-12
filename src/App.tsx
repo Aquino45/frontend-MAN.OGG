@@ -1,12 +1,14 @@
-import { useState, type ReactNode } from 'react'
+import { Suspense, useEffect, useState, type ReactNode } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router'
-import { RUTAS, TEXTOS_MAPA } from '@/config/constantes'
+import { RUTAS, TEXTO_CARGANDO_PAGINA, TEXTOS_MAPA } from '@/config/constantes'
+import { EstadoCarga } from '@/compartido/EstadoCarga'
+import { ProveedorTransicionDePagina } from '@/compartido/ProveedorTransicionDePagina'
 import { Cabecera, Pie, VistaNoEncontrada } from '@/modulos/armazon'
-import { VistaCifras } from '@/modulos/cifras'
+import { precargarVistaCifras, VistaCifras } from '@/modulos/cifras'
 import { VistaEntrada } from '@/modulos/entrada'
-import { VistaExplorar } from '@/modulos/explorar'
+import { precargarVistaExplorar, VistaExplorar } from '@/modulos/explorar'
 import { VistaInicio } from '@/modulos/inicio'
-import { tieneSeleccion, VistaMapa } from '@/modulos/mapa'
+import { precargarVistaMapa, PROPORCION_MAPA, tieneSeleccion, VistaMapa } from '@/modulos/mapa'
 
 interface PropsApp {
   // Fuente de azar del sorteo de la entrada; se inyecta en los tests.
@@ -22,17 +24,48 @@ function RutaInicio() {
   return <VistaInicio />
 }
 
+// Mientras llega el código del mapa se ve ya el bloque con su proporción, el mismo de su carga
 function RutaMapa() {
   return (
     <>
       <h1 className="solo-lectores">{TEXTOS_MAPA.tituloRegion}</h1>
-      <VistaMapa />
+      <Suspense
+        fallback={
+          <section className="vista-mapa">
+            <EstadoCarga
+              etiqueta={TEXTO_CARGANDO_PAGINA}
+              forma="bloque"
+              proporcion={PROPORCION_MAPA}
+            />
+          </section>
+        }
+      >
+        <VistaMapa />
+      </Suspense>
     </>
   )
 }
 
+// Cuando el navegador queda libre, trae el código de las demás páginas: al navegar ya está.
+function usePrecargaDePaginas() {
+  useEffect(() => {
+    const precargar = () => {
+      void precargarVistaMapa()
+      void precargarVistaExplorar()
+      void precargarVistaCifras()
+    }
+    if (typeof window.requestIdleCallback === 'function') {
+      const id = window.requestIdleCallback(precargar)
+      return () => window.cancelIdleCallback(id)
+    }
+    const id = window.setTimeout(precargar, 0)
+    return () => window.clearTimeout(id)
+  }, [])
+}
+
 function Armazon({ aleatorioEntrada }: PropsApp) {
   const ubicacion = useLocation()
+  usePrecargaDePaginas()
   // La entrada animada sale solo si la página se abre en Inicio; no cambia al navegar después.
   const [entraPorInicio] = useState(
     () => ubicacion.pathname === RUTAS.inicio && !tieneSeleccion(ubicacion.search),
@@ -42,13 +75,15 @@ function Armazon({ aleatorioEntrada }: PropsApp) {
     <div className="app">
       <Cabecera />
       <main>
-        <Routes>
-          <Route path={RUTAS.inicio} element={<RutaInicio />} />
-          <Route path={RUTAS.mapa} element={<RutaMapa />} />
-          <Route path={RUTAS.arboles} element={<VistaExplorar />} />
-          <Route path={RUTAS.cifras} element={<VistaCifras />} />
-          <Route path="*" element={<VistaNoEncontrada />} />
-        </Routes>
+        <Suspense fallback={<EstadoCarga etiqueta={TEXTO_CARGANDO_PAGINA} />}>
+          <Routes>
+            <Route path={RUTAS.inicio} element={<RutaInicio />} />
+            <Route path={RUTAS.mapa} element={<RutaMapa />} />
+            <Route path={RUTAS.arboles} element={<VistaExplorar />} />
+            <Route path={RUTAS.cifras} element={<VistaCifras />} />
+            <Route path="*" element={<VistaNoEncontrada />} />
+          </Routes>
+        </Suspense>
       </main>
       <Pie />
     </div>
@@ -64,7 +99,9 @@ function Armazon({ aleatorioEntrada }: PropsApp) {
 export default function App({ aleatorioEntrada }: PropsApp) {
   return (
     <BrowserRouter>
-      <Armazon aleatorioEntrada={aleatorioEntrada} />
+      <ProveedorTransicionDePagina>
+        <Armazon aleatorioEntrada={aleatorioEntrada} />
+      </ProveedorTransicionDePagina>
     </BrowserRouter>
   )
 }

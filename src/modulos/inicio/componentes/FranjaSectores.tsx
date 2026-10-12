@@ -3,6 +3,7 @@ import type { SectorFeature } from '@/api/cliente'
 import { EstadoCarga } from '@/compartido/EstadoCarga'
 import { EstadoError } from '@/compartido/EstadoError'
 import { TEXTOS_INICIO } from '@/config/constantes'
+import { useAparicion } from '../hooks/useAparicion'
 import type { ConteoDeSector } from '../lib/cifras'
 import { EnlaceMapa } from './EnlaceMapa'
 import { LeyendaInicio } from './LeyendaInicio'
@@ -19,9 +20,11 @@ interface PropsFranjaSectores {
 // Franja de contraste a todo el ancho con el mapa compacto de los sectores.
 export function FranjaSectores({ estado, sectores, conteos, onReintentar }: PropsFranjaSectores) {
   const idTitulo = useId()
+  const [anclarAparicion, claseAparicion] = useAparicion('alEntrar')
   return (
     <section
-      className="inicio-franja inicio-aparece inicio-aparece--tarde"
+      ref={anclarAparicion}
+      className={`inicio-franja ${claseAparicion}`}
       aria-labelledby={idTitulo}
     >
       <div className="inicio-franja__contenido">

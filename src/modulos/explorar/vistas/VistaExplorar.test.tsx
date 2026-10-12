@@ -99,13 +99,13 @@ describe('VistaExplorar', () => {
     await esperarLista()
     const fila = filas()[2]
     expect(within(fila).getByText(TEXTOS_DESTACADO.etiqueta)).toBeVisible()
-    expect(fila.querySelector('.fila-arbol__estrella')).toHaveAttribute('aria-hidden', 'true')
+    expect(fila.querySelector('.explorar-fila__estrella')).toHaveAttribute('aria-hidden', 'true')
     expect(within(fila).getByText(TEXTOS_CARTILLA.selloDemo)).toBeVisible()
     expect(fila.querySelector('img')).toHaveAttribute('src', 'https://fotos.invalid/h.jpg')
     expect(screen.queryByText(MOTIVO)).not.toBeInTheDocument()
     // Los de campo sin destacar no llevan ninguna de las dos marcas
     expect(within(filas()[0]).queryByText(TEXTOS_DESTACADO.etiqueta)).not.toBeInTheDocument()
     expect(within(filas()[0]).queryByText(TEXTOS_CARTILLA.selloDemo)).not.toBeInTheDocument()
-    expect(filas()[0].querySelector('.glifo-pixel')).not.toBeNull()
+    expect(filas()[0].querySelector('.sprite-arbol')).not.toBeNull()
   })
 })

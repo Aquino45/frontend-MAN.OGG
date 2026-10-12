@@ -77,6 +77,7 @@
   --mapa-grosor-glifo: 1.5;
   --mapa-trazo-provisional: 8 6;
   --mapa-opacidad-atenuada: 0.35;
+  --mapa-opacidad-presion: 0.85;
   --mapa-elevacion: -4px;
   --mapa-sombra: drop-shadow(0 6px 10px var(--color-sombra));
   /* Unidades del viewBox (1000 de ancho): el texto escala con el mapa */
@@ -91,6 +92,11 @@
   --panel-ancho: 28rem;
   --hoja-asa-ancho: 2.5rem;
   --hoja-asa-alto: 0.3125rem;
+  /* Zona del asa donde se agarra la hoja del celular (44 px de alto menos el relleno) y lo que la
+     hoja se extiende bajo el borde de la pantalla para poder jalarla hacia arriba con elástico
+     (igual a HOJA_ARRASTRE.elasticoPx) */
+  --hoja-asa-zona: 1.75rem;
+  --hoja-extension: 24px;
   --foto-proporcion: 11 / 5;
   --foto-glifo: 5.25rem;
   --foto-glifo-pendiente: 4rem;
@@ -203,13 +209,12 @@
   --boton-secundario-borde: var(--color-texto-tenue);
 
   /* Tamaños de Inicio. En 360 px: portada ≈ 45 px, título de franja ≈ 36 px, cifra ≈ 44 px. */
-  --texto-portada: var(--texto-display);
+  --texto-portada: var(--texto-portada-grande);
   --texto-franja-titulo: clamp(2.25rem, 0.75rem + 5.4vw, 5rem);
   --texto-cifra: clamp(2.75rem, 1.5rem + 3.5vw, 4rem);
   --texto-antetitulo: var(--texto-xs);
   --texto-frase: var(--texto-cuerpo);
   --inicio-ancho-maximo: 77.5rem;
-  --glifo-portada: min(26rem, 100%);
   --glifo-marca: 2rem;
   --alto-boton-grande: 3.25rem;
   --radio-pildora: 999px;

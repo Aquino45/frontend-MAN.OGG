@@ -18,7 +18,11 @@
   stroke-width: var(--mapa-inicio-grosor-borde);
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
-  transition: stroke-width var(--duracion-hover) var(--curva-hover);
+  transition: opacity var(--duracion-presion) var(--curva-salida);
+}
+
+.inicio-sector:active .inicio-sector__forma {
+  opacity: var(--mapa-opacidad-presion);
 }
 
 .inicio-sector--campo .inicio-sector__forma {
@@ -103,4 +107,36 @@
   .inicio-sector__forma {
     transition: none;
   }
+}
+
+/* El mapa dibuja sus sectores de izquierda a derecha, uno tras otro, la primera vez que se ve.
+   Es un recorte (clip-path): al terminar no queda recorte, así el trazo se ve entero. */
+@keyframes inicio-dibujar-sector {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+}
+
+@keyframes inicio-mostrar-textos {
+  from {
+    opacity: 0;
+  }
+}
+
+.inicio-mapa[data-dibujado='false'] .inicio-sector {
+  clip-path: inset(0 100% 0 0);
+}
+
+.inicio-mapa[data-dibujado='false'] .inicio-mapa__textos {
+  opacity: 0;
+}
+
+.inicio-mapa[data-dibujado='true'] .inicio-sector {
+  animation: inicio-dibujar-sector var(--duracion-dibujo-mapa) var(--curva-salida) backwards;
+  animation-delay: calc(var(--indice) * var(--retraso-dibujo-mapa));
+}
+
+.inicio-mapa[data-dibujado='true'] .inicio-mapa__textos {
+  animation: inicio-mostrar-textos var(--duracion-entrada) var(--curva-salida) backwards;
+  animation-delay: calc(5 * var(--retraso-dibujo-mapa));
 }

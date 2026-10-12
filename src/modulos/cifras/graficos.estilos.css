@@ -1,0 +1,149 @@
+/* Gráficos del tablero de Cifras (SVG y barras). Solo `opacity`, `transform` y `clip-path` se
+   animan. Vectoriales: nada pixelado. El color sale de tokens y nunca va solo (hay leyenda). */
+
+/* ---------- Mini gráficos del resumen ---------- */
+.mini-grafico {
+  display: block;
+  inline-size: 100%;
+  block-size: 2rem;
+}
+
+.mini-campo,
+.mini-punto {
+  fill: var(--copa-carmin);
+}
+
+.mini-ejemplo,
+.mini-punto-ejemplo {
+  fill: color-mix(in srgb, var(--copa-carmin) 18%, transparent);
+  stroke: var(--copa-carmin);
+  stroke-width: 1;
+  stroke-dasharray: 2 2;
+}
+
+.mini-punto {
+  fill: var(--color-texto);
+}
+
+.mini-punto-ejemplo {
+  fill: none;
+  stroke: var(--color-texto);
+  stroke-dasharray: 1.5 1.5;
+}
+
+.mini-resalte {
+  fill: var(--punto-destacado);
+  stroke: var(--tronco-noche);
+}
+
+.mini-eje {
+  stroke: var(--color-texto-tenue);
+}
+
+.mini-serie {
+  fill: var(--serie);
+}
+
+.mini-nativa {
+  fill: var(--copa-carmin);
+}
+
+.mini-exotica {
+  fill: var(--color-pista);
+}
+
+.mini-sin-dato {
+  fill: none;
+  stroke: var(--color-texto-tenue);
+  stroke-dasharray: 2 2;
+}
+
+/* ---------- Mapa de calor ---------- */
+.tablero-mapa {
+  min-inline-size: 0;
+}
+
+.tablero-mapa__svg {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  max-block-size: 28rem;
+  margin-inline: auto;
+}
+
+.tablero-mapa__sector {
+  cursor: pointer;
+}
+
+.tablero-mapa__forma {
+  fill: color-mix(in srgb, var(--color-texto) 8%, var(--color-superficie));
+  stroke: var(--color-fondo);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  transition: opacity var(--duracion-filtro) var(--curva-salida);
+}
+
+.tablero-mapa__forma[data-sin-dato='si'] {
+  stroke-dasharray: 6 4;
+  stroke: var(--color-texto-tenue);
+}
+
+.tablero-mapa__sector[data-apagado='si'] .tablero-mapa__forma {
+  opacity: 0.4;
+}
+
+.tablero-mapa__sector[data-elegido='si'] .tablero-mapa__forma {
+  stroke: var(--color-texto);
+  stroke-width: 4;
+}
+
+.tablero-mapa__sector:focus-visible {
+  outline: none;
+}
+
+.tablero-mapa__sector:focus-visible .tablero-mapa__forma {
+  stroke: var(--color-texto);
+  stroke-width: 5;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tablero-mapa__sector:hover .tablero-mapa__forma {
+    stroke: var(--color-texto);
+    stroke-width: 3;
+  }
+}
+
+.tablero-mapa__texto {
+  fill: var(--color-texto);
+  text-anchor: middle;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.tablero-mapa__valor {
+  font-weight: 500;
+}
+
+/* Sobre un relleno oscuro la etiqueta va en blanco */
+.tablero-mapa__texto--claro {
+  fill: var(--blanco);
+}
+
+.tablero-rampa {
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  margin-block-start: var(--espacio-2);
+  font-size: var(--texto-xs);
+  color: var(--color-texto-tenue);
+}
+
+.tablero-rampa__pasos {
+  display: flex;
+  flex: 0 1 12rem;
+}
+
+.tablero-rampa__pasos span {
+  flex: 1;
+  block-size: 0.625rem;
+}

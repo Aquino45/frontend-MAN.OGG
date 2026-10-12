@@ -5,6 +5,7 @@ import '../hoja.estilos.css'
 import '../destacados.estilos.css'
 import { useEffect, useMemo, useState } from 'react'
 import { EstadoCarga } from '@/compartido/EstadoCarga'
+import { useSectoresDelCampus } from '@/compartido/useSectoresDelCampus'
 import { EstadoError } from '@/compartido/EstadoError'
 import { VistaCartilla } from '@/modulos/cartilla'
 import {
@@ -20,13 +21,13 @@ import type { FormaGlifo } from '../componentes/GlifoArbol'
 import { MapaSectores } from '../componentes/MapaSectores'
 import { PanelSector } from '../componentes/PanelSector'
 import { useArbolesDeSector } from '../hooks/useArbolesDeSector'
-import { useSectores } from '../hooks/useSectores'
 import { useRetornoDeFoco } from '../hooks/useRetornoDeFoco'
+import { useHojaArrastrable } from '../hooks/useHojaArrastrable'
 import { useSeleccionEnUrl } from '../hooks/useSeleccionEnUrl'
 
 const TECLA_ESCAPE = 'Escape'
 // Proporción del esqueleto del mapa mientras carga (la misma del mapa compacto de Inicio)
-const PROPORCION_MAPA = 'var(--mapa-inicio-proporcion)'
+import { PROPORCION_MAPA } from './proporcionMapa'
 
 interface PropsVistaMapa {
   // Fuente de azar para las variantes de adorno; se inyecta en los tests.
@@ -34,7 +35,7 @@ interface PropsVistaMapa {
 }
 
 export function VistaMapa({ aleatorio = Math.random }: PropsVistaMapa) {
-  const sectores = useSectores()
+  const sectores = useSectoresDelCampus()
   const seleccion = useSeleccionEnUrl()
   const recordarOrigen = useRetornoDeFoco(seleccion.arbolCodigo)
   const [sectorResaltado, setSectorResaltado] = useState<number | null>(null)
@@ -55,6 +56,11 @@ export function VistaMapa({ aleatorio = Math.random }: PropsVistaMapa) {
       : undefined
   const arboles = useArbolesDeSector(sectorAbierto?.id ?? null)
   const { arbolCodigo, cerrarArbol, cerrarSector } = seleccion
+  // Bajar la hoja del celular cierra un nivel, como Esc: con la cartilla abierta vuelve a la lista.
+  const { refHoja, propsAsa } = useHojaArrastrable({
+    onCerrar: arbolCodigo === null ? cerrarSector : cerrarArbol,
+    salePorAbajo: arbolCodigo === null,
+  })
 
   // Esc cierra primero la cartilla y después el sector.
   useEffect(() => {
@@ -108,11 +114,13 @@ export function VistaMapa({ aleatorio = Math.random }: PropsVistaMapa) {
       />
       {sectorAbierto && (
         <aside
+          ref={refHoja}
           className="vista-mapa__panel"
           aria-label={
             arbolCodigo ?? `${TEXTOS_PANEL.hojaInferior}: ${sectorAbierto.properties.nombre}`
           }
         >
+          <div className="vista-mapa__asa" aria-hidden="true" {...propsAsa} />
           {arbolCodigo === null ? (
             <PanelSector
               sector={sectorAbierto.properties}

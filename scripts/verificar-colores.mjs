@@ -17,6 +17,8 @@ function* listarArchivos(directorio) {
 const infracciones = []
 for (const ruta of listarArchivos(RAIZ_SRC)) {
   if (ruta === ARCHIVO_PERMITIDO) continue
+  // Los logos oficiales de terceros (carpetas `recursos/`) se usan tal cual, con sus colores
+  if (/.svg$/.test(ruta) && ruta.split(sep).includes('recursos')) continue
   readFileSync(ruta, 'utf8')
     .split(/\r?\n/)
     .forEach((linea, indice) => {

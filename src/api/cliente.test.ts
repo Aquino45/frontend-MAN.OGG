@@ -67,12 +67,23 @@ describe('obtenerSectores', () => {
 describe('obtenerArbolesDeSector', () => {
   afterEach(() => vi.unstubAllGlobals())
 
-  it('con mocks devuelve la colección del sector 1 y vacía en los demás', async () => {
+  it('con mocks devuelve la colección de cada sector del campus y vacía en un sector sin mock', async () => {
     const fetchFalso = simularFetch(200, {})
     await expect(obtenerArbolesDeSector(1, { entorno: CON_MOCKS })).resolves.toEqual(
       arbolesSector1Mock,
     )
-    const vacia = await obtenerArbolesDeSector(2, { entorno: CON_MOCKS })
+    // Los sectores 2 a 5 traen árboles de ejemplo con la forma del contrato 0.6.0
+    for (const sector of [2, 3, 4, 5]) {
+      const coleccion = await obtenerArbolesDeSector(sector, { entorno: CON_MOCKS })
+      expect(coleccion.features.length).toBeGreaterThan(0)
+      for (const { properties } of coleccion.features) {
+        expect(properties.demo).toBe(true)
+        expect(properties).toHaveProperty('dap_cm')
+        expect(properties).toHaveProperty('altura_total_m')
+        expect(properties).toHaveProperty('origen')
+      }
+    }
+    const vacia = await obtenerArbolesDeSector(99, { entorno: CON_MOCKS })
     expect(vacia.features).toEqual([])
     expect(fetchFalso).not.toHaveBeenCalled()
   })

@@ -2,16 +2,20 @@ import '../estilos.css'
 import { useId, useRef, useState, type KeyboardEvent } from 'react'
 import { Link, NavLink } from 'react-router'
 import { ENLACES_NAVEGACION, NOMBRE_PRODUCTO, RUTAS, TEXTOS_ARMAZON } from '@/config/constantes'
-import { GlifoPixelArbol } from '@/compartido/GlifoPixelArbol'
+import { LogoNuestro } from '@/compartido/marca/LogoMarca'
+import { LogoUpeu } from '@/compartido/marca/LogoUpeu'
+import { useEnlaceConTransicion } from '@/compartido/useEnlaceConTransicion'
 import { InterruptorTema } from '@/modulos/tema'
 
-// Cabecera única del sitio: la marca lleva a Inicio, los enlaces de navegación y el tema.
+// Cabecera única del sitio: el logo lleva a Inicio (con la co-marca de la UPeU desde 64rem), los
+// enlaces de navegación y el tema.
 // En pantallas angostas los enlaces salen tras el botón «Menú» y empujan el contenido.
 // No es un h1: cada página pone el suyo.
 export function Cabecera() {
   const idNavegacion = useId()
   const [abierto, setAbierto] = useState(false)
   const refBoton = useRef<HTMLButtonElement>(null)
+  const conTransicion = useEnlaceConTransicion()
 
   function alPulsarTecla(evento: KeyboardEvent) {
     if (evento.key === 'Escape' && abierto) {
@@ -22,12 +26,18 @@ export function Cabecera() {
 
   return (
     <header className="armazon-cabecera" onKeyDown={alPulsarTecla}>
-      <Link className="armazon-cabecera__marca" to={RUTAS.inicio}>
-        <span className="armazon-cabecera__glifo">
-          <GlifoPixelArbol />
-        </span>
-        <span className="armazon-cabecera__nombre">{NOMBRE_PRODUCTO}</span>
-      </Link>
+      <div className="armazon-cabecera__identidad logo-marca">
+        <Link
+          className="armazon-cabecera__marca"
+          to={RUTAS.inicio}
+          aria-label={NOMBRE_PRODUCTO}
+          onClick={conTransicion}
+        >
+          <LogoNuestro />
+        </Link>
+        <span className="logo-marca__separador" aria-hidden="true" />
+        <LogoUpeu />
+      </div>
       <div className="armazon-cabecera__acciones">
         <button
           ref={refBoton}
@@ -54,7 +64,10 @@ export function Cabecera() {
                 className="armazon-cabecera__enlace"
                 to={enlace.ruta}
                 end={enlace.exacta}
-                onClick={() => setAbierto(false)}
+                onClick={(evento) => {
+                  setAbierto(false)
+                  conTransicion(evento)
+                }}
               >
                 {enlace.texto}
               </NavLink>

@@ -229,33 +229,16 @@
   letter-spacing: var(--etiqueta-espaciado);
 }
 
-/* Los bloques de la cartilla entran uno tras otro (200 ms, desde scale 0.98 y opacidad 0).
-   Escalonado de 40 ms en 5 pasos como máximo. */
-@keyframes entrada-bloque {
+/* La cartilla entra con un solo fundido de 150 ms, sin escalonado: abrir árboles es algo que se
+   hace muchas veces. Con el teclado no se anima nada (lo apaga la capa global). */
+@keyframes entrada-cartilla {
   from {
     opacity: 0;
-    transform: scale(var(--entrada-escala-inicial));
   }
 }
 
-.cartilla > * {
-  animation: entrada-bloque var(--duracion-entrada) var(--curva-salida) backwards;
-}
-
-.cartilla > :nth-child(2) {
-  animation-delay: calc(1 * var(--retraso-escalonado));
-}
-
-.cartilla > :nth-child(3) {
-  animation-delay: calc(2 * var(--retraso-escalonado));
-}
-
-.cartilla > :nth-child(4) {
-  animation-delay: calc(3 * var(--retraso-escalonado));
-}
-
-.cartilla > :nth-child(n + 5) {
-  animation-delay: calc(4 * var(--retraso-escalonado));
+.cartilla {
+  animation: entrada-cartilla var(--duracion-fundido) var(--curva-salida) backwards;
 }
 
 /* En un panel angosto (celular) los indicadores van uno debajo del otro. */
@@ -275,7 +258,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cartilla > * {
+  .cartilla {
     animation: none;
   }
 }

@@ -1,0 +1,121 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "S02-D001",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.843434,
+          -11.991552
+        ]
+      },
+      "properties": {
+        "codigo": "S02-D001",
+        "uid": "3bbf4dd5-c579-4d0a-9fed-0797905f2d5a",
+        "sector": 2,
+        "nombre_comun": "Palma real",
+        "nombre_cientifico": "Roystonea regia",
+        "estado_general": "Bueno",
+        "foto_miniatura_url": null,
+        "co2_almacenado_kg": 73.3,
+        "co2_captura_anual_kg": 2.2,
+        "co2_simulado": true,
+        "demo": true,
+        "destacado": false,
+        "motivo_destacado": null,
+        "dap_cm": 71.2,
+        "altura_total_m": 3.8,
+        "origen": "Introducida / exótica"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "S02-D002",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.844633,
+          -11.991722
+        ]
+      },
+      "properties": {
+        "codigo": "S02-D002",
+        "uid": "d66e7e03-dbbb-4677-b254-12b1580eece3",
+        "sector": 2,
+        "nombre_comun": "Huarango",
+        "nombre_cientifico": "Prosopis pallida",
+        "estado_general": "Bueno",
+        "foto_miniatura_url": null,
+        "co2_almacenado_kg": 5027.3,
+        "co2_captura_anual_kg": 150.8,
+        "co2_simulado": true,
+        "demo": true,
+        "destacado": true,
+        "motivo_destacado": "Dato de ejemplo: uno de los ejemplares de mayor porte del sector (simulado)",
+        "dap_cm": 116,
+        "altura_total_m": 4.2,
+        "origen": "Nativa"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "S02-D003",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.843614,
+          -11.992236
+        ]
+      },
+      "properties": {
+        "codigo": "S02-D003",
+        "uid": "1a2394d0-bb9a-477a-9875-072ca3ed8830",
+        "sector": 2,
+        "nombre_comun": "Palma real",
+        "nombre_cientifico": "Roystonea regia",
+        "estado_general": "Bueno",
+        "foto_miniatura_url": null,
+        "co2_almacenado_kg": 91.1,
+        "co2_captura_anual_kg": 2.7,
+        "co2_simulado": true,
+        "demo": true,
+        "destacado": false,
+        "motivo_destacado": null,
+        "dap_cm": 74.3,
+        "altura_total_m": 5.1,
+        "origen": "Introducida / exótica"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "S02-D004",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.839369,
+          -11.992255
+        ]
+      },
+      "properties": {
+        "codigo": "S02-D004",
+        "uid": "26853e49-8779-408b-bbc5-0efdc32d07a7",
+        "sector": 2,
+        "nombre_comun": "Huarango",
+        "nombre_cientifico": "Prosopis pallida",
+        "estado_general": "Bueno",
+        "foto_miniatura_url": null,
+        "co2_almacenado_kg": 60139,
+        "co2_captura_anual_kg": 1804.2,
+        "co2_simulado": true,
+        "demo": true,
+        "destacado": true,
+        "motivo_destacado": "Dato de ejemplo: uno de los ejemplares de mayor porte del sector (simulado)",
+        "dap_cm": 301.6,
+        "altura_total_m": 7.9,
+        "origen": "Nativa"
+      }
+    }
+  ]
+}

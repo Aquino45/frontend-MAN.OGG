@@ -1,7 +1,12 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { ArbolFeature } from '@/api/cliente'
-import { ESTRELLA_CONTORNO, ESTRELLA_LADO_GRILLA, MAPA_ESCALA_ESTRELLA } from '@/config/constantes'
+import {
+  ESTRELLA_CONTORNO,
+  ESTRELLA_LADO_GRILLA,
+  MAPA_ESCALA_ESTRELLA,
+  MAPA_PASOS_CASCADA,
+} from '@/config/constantes'
 import { arbolesSector1Mock } from '@/mocks'
 import { PuntosArboles } from './PuntosArboles'
 
@@ -17,10 +22,12 @@ function dibujar(
     onAbrir?: (codigo: string) => void
   } = {},
   codigoResaltado: string | null = null,
+  sectorId = 1,
 ) {
   return render(
     <svg>
       <PuntosArboles
+        sectorId={sectorId}
         arboles={arboles}
         proyectarPosicion={([lon, lat]) => ({ x: lon, y: -lat })}
         radio={RADIO}
@@ -133,5 +140,34 @@ describe('PuntosArboles', () => {
       'punto-arbol--demo',
       'punto-arbol--resaltado',
     )
+  })
+})
+
+describe('cascada de puntos', () => {
+  it('la primera vez que se entra a un sector los puntos llegan en cascada; la segunda, ya están', () => {
+    const primera = dibujar(ARBOLES, {}, null, 901)
+    expect(primera.container.querySelector('.puntos-arboles')).toHaveAttribute(
+      'data-cascada',
+      'true',
+    )
+    primera.unmount()
+    const segunda = dibujar(ARBOLES, {}, null, 901)
+    expect(segunda.container.querySelector('.puntos-arboles')).toHaveAttribute(
+      'data-cascada',
+      'false',
+    )
+  })
+
+  it('el escalonado tiene un tope de pasos', () => {
+    const base = ARBOLES.find((arbol) => arbol.geometry !== null) as ArbolFeature
+    const muchos = Array.from({ length: 20 }, (_, i) => ({
+      ...base,
+      properties: { ...base.properties, codigo: `B-${i}`, destacado: false },
+    }))
+    const { container } = dibujar(muchos, {}, null, 902)
+    const indices = [...container.querySelectorAll<SVGElement>('.punto-arbol')].map((punto) =>
+      Number(punto.style.getPropertyValue('--indice')),
+    )
+    expect(Math.max(...indices)).toBe(MAPA_PASOS_CASCADA)
   })
 })

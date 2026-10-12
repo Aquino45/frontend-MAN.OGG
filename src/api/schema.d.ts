@@ -128,7 +128,7 @@ export interface components {
       type: 'FeatureCollection'
       features: components['schemas']['SectorFeature'][]
     }
-    /** @description Lo mínimo para listar el árbol y dibujarlo como punto. La cartilla completa sale de `/arboles/{codigo}`. */
+    /** @description Lo necesario para listar el árbol, dibujarlo como punto y sacar cifras del conjunto (DAP, altura y origen). La cartilla completa sale de `/arboles/{codigo}`. */
     ArbolResumen: {
       codigo: components['schemas']['CodigoArbol']
       /**
@@ -139,6 +139,11 @@ export interface components {
       sector: number
       nombre_comun: string | null
       nombre_cientifico: string | null
+      /** @description Valor del catálogo de la planilla de la brigada (por ejemplo Nativa o Introducida / exótica). */
+      origen: string | null
+      altura_total_m: number | null
+      /** @description Diámetro a la altura del pecho (1.30 m). */
+      dap_cm: number | null
       /** @description Valor del catálogo de la planilla (Bueno */
       estado_general: string | null
       /** Format: uri */

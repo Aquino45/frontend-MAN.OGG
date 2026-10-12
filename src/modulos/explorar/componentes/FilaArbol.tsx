@@ -3,9 +3,10 @@
 import { memo } from 'react'
 import { Link } from 'react-router'
 import type { ArbolResumen } from '@/api/cliente'
-import { GlifoPixelArbol } from '@/compartido/GlifoPixelArbol'
+import { SpriteArbol } from '@/compartido/marca/SpriteArbol'
 import { SelloDemo } from '@/compartido/SelloDemo'
 import { SinDato } from '@/compartido/SinDato'
+import { useEnlaceConTransicion } from '@/compartido/useEnlaceConTransicion'
 import {
   ESTRELLA_CONTORNO,
   ESTRELLA_LADO_GRILLA,
@@ -22,32 +23,41 @@ interface PropsFilaArbol {
 }
 
 function FilaArbolSinMemo({ arbol, nombreSector }: PropsFilaArbol) {
+  const conTransicion = useEnlaceConTransicion()
   const destino = {
     pathname: RUTAS.mapa,
     search: escribirSeleccion({ sectorId: arbol.sector, arbolCodigo: arbol.codigo }),
   }
   const ubicacion = [arbol.codigo, nombreSector].filter(Boolean).join(' · ')
   return (
-    <Link className="fila-arbol" to={destino}>
-      <span className="fila-arbol__miniatura">
+    <Link className="explorar-fila elevable" to={destino} onClick={conTransicion}>
+      <span className="explorar-fila__miniatura">
         {arbol.foto_miniatura_url ? (
-          <img className="fila-arbol__foto" src={arbol.foto_miniatura_url} alt="" loading="lazy" />
+          <img
+            className="explorar-fila__foto"
+            src={arbol.foto_miniatura_url}
+            alt=""
+            loading="lazy"
+          />
         ) : (
-          <GlifoPixelArbol />
+          <SpriteArbol
+            nombreCientifico={arbol.nombre_cientifico}
+            nombreComun={arbol.nombre_comun}
+          />
         )}
       </span>
-      <span className="fila-arbol__cuerpo">
-        <span className="fila-arbol__nombre">{arbol.nombre_comun ?? <SinDato />}</span>
-        <em className="fila-arbol__cientifico">{arbol.nombre_cientifico ?? <SinDato />}</em>
-        <span className="fila-arbol__ubicacion">{ubicacion}</span>
-        <span className="fila-arbol__marcas">
-          <span className="fila-arbol__estado">
+      <span className="explorar-fila__cuerpo">
+        <span className="explorar-fila__nombre">{arbol.nombre_comun ?? <SinDato />}</span>
+        <em className="explorar-fila__cientifico">{arbol.nombre_cientifico ?? <SinDato />}</em>
+        <span className="explorar-fila__ubicacion">{ubicacion}</span>
+        <span className="explorar-fila__marcas">
+          <span className="explorar-fila__estado">
             {TEXTOS_CARTILLA.estado}: {arbol.estado_general ?? <SinDato />}
           </span>
           {arbol.destacado && (
-            <span className="fila-arbol__destacado">
+            <span className="explorar-fila__destacado">
               <svg
-                className="fila-arbol__estrella"
+                className="explorar-fila__estrella"
                 viewBox={`0 0 ${ESTRELLA_LADO_GRILLA} ${ESTRELLA_LADO_GRILLA}`}
                 aria-hidden="true"
                 focusable="false"

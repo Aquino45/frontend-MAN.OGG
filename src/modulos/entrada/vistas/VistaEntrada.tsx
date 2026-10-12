@@ -2,6 +2,8 @@
 // La vista pedida se dibuja desde el primer momento, así sus datos ya se están pidiendo.
 import '../estilos.css'
 import { useEffect, useState, type ComponentType, type ReactNode } from 'react'
+import { DURACION_APARICION_ENTRADA_MS } from '@/config/constantes'
+import { ContextoEntrada, type EstadoEntrada } from '../hooks/contextoEntrada'
 import { useEntrada } from '../hooks/useEntrada'
 
 interface PropsVistaEntrada {
@@ -33,6 +35,19 @@ export function VistaEntrada({ children, aleatorio }: PropsVistaEntrada) {
     }
   }, [variante, caerAEstandar])
 
+  // La entrada estándar termina cuando acaba su fundido; la alterna, cuando deja ver la vista.
+  const [fundidoTerminado, setFundidoTerminado] = useState(false)
+  useEffect(() => {
+    if (variante !== 'estandar') return
+    const temporizador = window.setTimeout(
+      () => setFundidoTerminado(true),
+      DURACION_APARICION_ENTRADA_MS,
+    )
+    return () => window.clearTimeout(temporizador)
+  }, [variante])
+  const estado: EstadoEntrada =
+    terminada && (variante === 'alterna' || fundidoTerminado) ? 'terminada' : 'en-curso'
+
   const tapada = variante === 'alterna' && !terminada
   const clases = [
     'entrada',
@@ -41,11 +56,11 @@ export function VistaEntrada({ children, aleatorio }: PropsVistaEntrada) {
   ].filter(Boolean)
 
   return (
-    <>
+    <ContextoEntrada.Provider value={estado}>
       <div className={clases.join(' ')} inert={tapada}>
         {children}
       </div>
       {variante === 'alterna' && Alterna && <Alterna onTerminar={terminar} />}
-    </>
+    </ContextoEntrada.Provider>
   )
 }

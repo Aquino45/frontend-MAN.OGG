@@ -11,7 +11,7 @@ import {
   UMBRAL_CO2_A_TONELADAS_KG,
 } from '@/config/constantes'
 import { formatearMedida } from '@/lib/formatear'
-import { listarSectores } from './cifrasCenso'
+import { listarSectores } from './sectores'
 
 // kg de CO₂ de campo y de ejemplo, siempre por separado
 export interface ValorCo2 {
@@ -134,7 +134,7 @@ function porEspecie(arboles: readonly ArbolFeature[], maximo: number): FilaCo2[]
   return filas
 }
 
-function enlaceDeCartilla(propiedades: Propiedades): string {
+export function enlaceDeCartilla(propiedades: Propiedades): string {
   const consulta = new URLSearchParams({
     [PARAMETROS_URL.sector]: String(propiedades.sector),
     [PARAMETROS_URL.arbol]: propiedades.codigo,
