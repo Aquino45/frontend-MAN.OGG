@@ -1,0 +1,29 @@
+/* Tarjetas y filas vivas: con un puntero fino suben un poco y proyectan una sombra. La sombra va
+   en un pseudo-elemento que solo cambia de opacidad (nunca se anima box-shadow), y al presionar
+   desaparece mientras la tarjeta se hunde. Se aplica con la clase `elevable`. */
+
+.elevable {
+  position: relative;
+}
+
+.elevable::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: var(--sombra-elevada);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duracion-hover) var(--curva-hover);
+}
+
+/* Quien pide menos movimiento no ve subir nada: la tarjeta se queda quieta */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .elevable:hover:not(:active) {
+    transform: translateY(var(--elevacion-hover));
+  }
+
+  .elevable:hover:not(:active)::after {
+    opacity: 1;
+  }
+}

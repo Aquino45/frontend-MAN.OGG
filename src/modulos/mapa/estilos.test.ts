@@ -4,6 +4,7 @@ import estilosBase from './estilos.css?raw'
 import estilosHoja from './hoja.estilos.css?raw'
 import estilosDestacados from './destacados.estilos.css?raw'
 import estilosBotones from '@/styles/botones.estilos.css?raw'
+import panelSector from './componentes/PanelSector.tsx?raw'
 
 // Los dos archivos del módulo: el mapa y la lista, y la hoja inferior con la barra de volver
 const estilosCss = `${estilosBase}
@@ -138,5 +139,11 @@ describe('movimiento del mapa', () => {
 
   it('el botón de texto antiguo ya no existe', () => {
     expect(estilosBotones).not.toContain('.boton--texto')
+  })
+})
+
+describe('filas vivas del panel', () => {
+  it('la fila del panel es elevable', () => {
+    expect(panelSector).toContain('elevable')
   })
 })

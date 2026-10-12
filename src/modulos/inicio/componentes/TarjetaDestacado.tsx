@@ -48,7 +48,7 @@ export function TarjetaDestacado({ destacado, medidas }: PropsTarjetaDestacado) 
   }
   const ubicacion = [arbol.codigo, nombreSector].filter(Boolean).join(' · ')
   return (
-    <Link className="destacado-tarjeta" to={destino} onClick={conTransicion}>
+    <Link className="destacado-tarjeta elevable" to={destino} onClick={conTransicion}>
       <span className="destacado-tarjeta__cabecera">
         <svg
           className="destacado-tarjeta__estrella"

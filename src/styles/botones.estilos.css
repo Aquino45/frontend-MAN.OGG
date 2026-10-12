@@ -35,8 +35,11 @@
     border-color var(--duracion-hover) var(--curva-hover);
 }
 
+/* Presionado, el botón se hunde y toma el color de su estado activo, también sin cursor (táctil) */
 .boton:active {
   transform: scale(var(--escala-activo));
+  background-color: var(--boton-fondo-hover);
+  border-color: var(--boton-borde-hover);
 }
 
 .boton--secundario {

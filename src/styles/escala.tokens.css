@@ -49,6 +49,8 @@
   --texto-cartilla-dato: var(--texto-sm);
   --texto-cartilla-menor: var(--texto-sm);
   --texto-cartilla-etiqueta: var(--texto-xs);
+  /* Sombra de una tarjeta elevada (va en un pseudo-elemento que cambia de opacidad) */
+  --sombra-elevada: 0 10px 22px var(--color-sombra);
   /* Lado de una celda del árbol de la portada, en px enteros (la rejilla es de 40 x 40) */
   --arbol-celda: 7px;
 }

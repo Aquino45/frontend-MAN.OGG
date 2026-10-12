@@ -48,7 +48,7 @@ function FilaArbol({
     <li>
       <button
         type="button"
-        className={`mapa-fila${resaltado ? ' mapa-fila--resaltada' : ''}`}
+        className={`mapa-fila elevable${resaltado ? ' mapa-fila--resaltada' : ''}`}
         data-codigo={codigo}
         onClick={() => onAbrir(codigo)}
         onPointerEnter={() => onResaltar(codigo)}

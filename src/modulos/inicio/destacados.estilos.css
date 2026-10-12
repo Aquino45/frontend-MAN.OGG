@@ -171,3 +171,23 @@
   animation: inicio-destacado-entra var(--duracion-entrada) var(--curva-salida) backwards;
   animation-delay: calc(var(--indice) * var(--retraso-escalonado-destacado));
 }
+
+/* La estrella de cada destacado da un destello cuando su tarjeta termina de entrar */
+@keyframes inicio-destello-estrella {
+  0% {
+    opacity: 0.5;
+    transform: scale(0.9);
+  }
+
+  45% {
+    opacity: 1;
+    transform: scale(1.35);
+  }
+}
+
+.inicio-destacados__lista[data-visible='true'] .destacado-tarjeta__estrella {
+  animation: inicio-destello-estrella var(--duracion-destello) var(--curva-salida) backwards;
+  animation-delay: calc(
+    var(--indice) * var(--retraso-escalonado-destacado) + var(--duracion-entrada)
+  );
+}

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import estilosCss from './estilos.css?raw'
+import filaArbol from './componentes/FilaArbol.tsx?raw'
 
 // Cuerpo de la primera regla cuyo selector es exactamente `selector`
 function reglaDe(selector: string): string {
@@ -49,5 +50,11 @@ describe('estilos de Explorar', () => {
   it('el nombre científico va en cursiva y los números alineados', () => {
     expect(reglaDe('.explorar-fila__cientifico')).toMatch(/font-style:\s*italic/)
     expect(reglaDe('.explorar__contador')).toMatch(/tabular-nums/)
+  })
+})
+
+describe('filas vivas de Explorar', () => {
+  it('la fila es elevable', () => {
+    expect(filaArbol).toContain('elevable')
   })
 })

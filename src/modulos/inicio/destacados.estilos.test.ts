@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import estilosBase from './estilos.css?raw'
 import estilosCss from './destacados.estilos.css?raw'
 import movimientoCss from '@/styles/movimiento.tokens.css?raw'
+import tarjetaDestacado from './componentes/TarjetaDestacado.tsx?raw'
 
 // Cuerpo de la primera regla cuyo selector es exactamente `selector`
 function reglaDe(selector: string): string {
@@ -75,5 +76,17 @@ describe('estilos del bloque de destacados', () => {
 
   it('el título del bloque no dibuja anillo de foco', () => {
     expect(estilosCss).toMatch(/\.inicio-destacados__titulo:focus\s*\{[^}]*outline:\s*none/)
+  })
+})
+
+describe('tarjetas destacadas vivas', () => {
+  it('la tarjeta es elevable y su estrella da un destello de menos de 300 ms, una vez', () => {
+    expect(tarjetaDestacado).toContain('elevable')
+    expect(estilosCss).toContain('@keyframes inicio-destello-estrella')
+    expect(estilosCss).toMatch(
+      /\.destacado-tarjeta__estrella\s*\{[^}]*animation:\s*inicio-destello-estrella/,
+    )
+    const duracion = Number(/--duracion-destello:\s*(\d+)ms/.exec(movimientoCss)?.[1])
+    expect(duracion).toBeLessThan(300)
   })
 })

@@ -30,7 +30,7 @@ function FilaArbolSinMemo({ arbol, nombreSector }: PropsFilaArbol) {
   }
   const ubicacion = [arbol.codigo, nombreSector].filter(Boolean).join(' · ')
   return (
-    <Link className="explorar-fila" to={destino} onClick={conTransicion}>
+    <Link className="explorar-fila elevable" to={destino} onClick={conTransicion}>
       <span className="explorar-fila__miniatura">
         {arbol.foto_miniatura_url ? (
           <img

@@ -30,6 +30,11 @@
   --curva-movimiento: cubic-bezier(0.77, 0, 0.175, 1);
   --curva-hoja: cubic-bezier(0.32, 0.72, 0, 1);
   --curva-hover: ease;
-  --escala-activo: 0.97;
+  /* Presión de botones, filas y tarjetas: se hunden un poco más que antes (0.96) */
+  --escala-activo: 0.96;
+  /* Tarjetas y filas vivas: cuánto suben con el cursor (la sombra aparece con opacidad, no se anima) */
+  --elevacion-hover: -3px;
+  /* Destello de la estrella de un destacado al aparecer */
+  --duracion-destello: 280ms;
   --alto-hoja: 85dvh;
 }
