@@ -135,4 +135,21 @@ No hay duda real que justifique 2 opciones por superficie; la dirección se ajus
 
 Satélite en un commit propio → **A** (empieza por el punto 10: logo y horizonte) → B → C ilustrado → D → E → F. Corte duro 13:30; PR listo 14:00.
 
+## 7. Cierre: rúbrica manual antes → después (12/10, sin el motor de Impeccable)
+
+**No es el puntaje /20 del motor:** el motor nunca estuvo descargado, así que esta rúbrica la puso el orquestador a ojo, con las mismas 5 dimensiones de `audit` (0 a 4) y con la evidencia al lado. Cristhian o un segundo revisor la pueden contradecir.
+
+| Dimensión | Antes | Después | Evidencia |
+| --- | --- | --- | --- |
+| Accesibilidad | 3 | 3 | Mapa real usable con teclado (botones de sectores y de vista con `aria-pressed`), atribución visible; 0 animaciones con «reducir movimiento» en 14 mediciones (7 superficies × 2 anchos). Sin avance real: no se midió contraste con herramienta |
+| Rendimiento | 4 | 4 | JS inicial 101,44 → 103,09 kB gzip (tope 111,44); MapLibre (281 kB gzip) en su chunk y su worker aparte, solo al activar Calles o Satélite |
+| Tema (claro y oscuro) | 3 | 4 | Paleta sin cambios contra `main` (0 de 179 tokens); horizonte igual en los 3 cortes y 2 temas; el escenario del árbol, el mapa real y los créditos usan solo tokens |
+| Responsive | 3 | 4 | A 360 px: botones de vista sin palabras partidas, pie sin separador suelto, sello de ejemplo en su renglón en Explorar; cabecera sin la UPeU debajo de 32rem |
+| Anti-patrones | 3 | 3 | Los choques con la identidad (sección 3) se conservaron a propósito |
+| **Total** | **16** | **18** | |
+
+## 8. Lo que no se hizo (recorte por hora, decidido por el asesor)
+
+C ilustrado, D (cartilla y Árboles) y E (Cifras) pasan a M2, salvo lo que era trivial y ya estaba en lo tocado (sello de Explorar, pie). Sin `critique` con 2 subagentes ni `detect`: sin motor. Capturas «antes y después» completas: solo se guardaron «antes» de la cabecera, el pie, el favicon y las rutas en oscuro; las de «después» están en `D:\MAN.OGG\capturas-FE-011\finales\`.
+
 Zapatito roto · ORQ-CA · dunita
