@@ -1,15 +1,25 @@
 // Página «Cifras del censo»: conteos de los árboles que entrega la API, con campo y ejemplo
-// siempre por separado. Cada bloque trae su gráfico y la tabla que lo explica.
+// siempre por separado, y las sumas de CO₂ (simulado mientras la API lo marque así). Cada bloque
+// trae su gráfico y la tabla que lo explica.
 import '../estilos.css'
+import '../co2.estilos.css'
 import { useId, useMemo } from 'react'
 import { EstadoCarga } from '@/compartido/EstadoCarga'
 import { EstadoError } from '@/compartido/EstadoError'
 import { EstadoVacio } from '@/compartido/EstadoVacio'
 import { useArbolesDelCampus } from '@/compartido/useArbolesDelCampus'
 import { useSectoresDelCampus } from '@/compartido/useSectoresDelCampus'
-import { CANTIDAD_ESPECIES_CIFRAS, REGION_INTERFAZ, TEXTOS_CIFRAS } from '@/config/constantes'
+import {
+  CANTIDAD_ESPECIES_CIFRAS,
+  CANTIDAD_ESPECIES_CO2_CIFRAS,
+  CANTIDAD_TOP_ARBOLES_CO2,
+  REGION_INTERFAZ,
+  TEXTOS_CIFRAS,
+} from '@/config/constantes'
 import { BloqueCifras } from '../componentes/BloqueCifras'
+import { SeccionCo2 } from '../componentes/SeccionCo2'
 import { calcularCifrasCenso, totalDe } from '../lib/cifrasCenso'
+import { calcularCifrasCo2 } from '../lib/cifrasCo2'
 
 const FORMATO_ENTERO = new Intl.NumberFormat(REGION_INTERFAZ, { maximumFractionDigits: 0 })
 // Bloques del esqueleto mientras cargan las cifras (solo la forma, sin números)
@@ -30,6 +40,19 @@ export function VistaCifras() {
     () =>
       sectoresListos && arbolesListos
         ? calcularCifrasCenso(sectoresListos, arbolesListos, CANTIDAD_ESPECIES_CIFRAS)
+        : null,
+    [sectoresListos, arbolesListos],
+  )
+
+  const cifrasCo2 = useMemo(
+    () =>
+      sectoresListos && arbolesListos
+        ? calcularCifrasCo2(
+            sectoresListos,
+            arbolesListos,
+            CANTIDAD_ESPECIES_CO2_CIFRAS,
+            CANTIDAD_TOP_ARBOLES_CO2,
+          )
         : null,
     [sectoresListos, arbolesListos],
   )
@@ -95,6 +118,7 @@ export function VistaCifras() {
               filas={cifras.destacadosPorSector}
             />
           </div>
+          {cifrasCo2 !== null && <SeccionCo2 cifras={cifrasCo2} />}
         </>
       )}
     </section>

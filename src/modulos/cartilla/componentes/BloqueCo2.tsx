@@ -1,9 +1,20 @@
-// Bloque invertido con el CO₂ almacenado y la captura anual. Solo muestra lo que trae la API.
+// Bloque invertido con el CO₂ almacenado y la captura anual. Solo muestra lo que trae la API
+// y marca como «Simulado» los valores que la API declara simulados.
 import type { Arbol } from '@/api/cliente'
 import { SinDato } from '@/compartido/SinDato'
 import { MEDIDAS, TEXTOS_CARTILLA } from '@/config/constantes'
 import { formatearNumero } from '@/lib/formatear'
 import { CapsulaAyuda } from './CapsulaAyuda'
+
+// Etiqueta «Simulado»: lo visible es la palabra corta; el lector de pantalla lee la frase completa
+function EtiquetaSimulado() {
+  return (
+    <span className="bloque-co2__simulado">
+      <span aria-hidden="true">{TEXTOS_CARTILLA.co2Simulado}</span>
+      <span className="solo-lectores">{TEXTOS_CARTILLA.co2SimuladoAccesible}</span>
+    </span>
+  )
+}
 
 interface PropsBloqueCo2 {
   arbol: Arbol
@@ -29,6 +40,7 @@ export function BloqueCo2({ arbol }: PropsBloqueCo2) {
             </>
           )}
         </span>
+        {arbol.co2_simulado && <EtiquetaSimulado />}
       </div>
       <div className="bloque-co2__columna bloque-co2__columna--derecha">
         <span className="bloque-co2__etiqueta">
@@ -38,6 +50,7 @@ export function BloqueCo2({ arbol }: PropsBloqueCo2) {
         <span className="bloque-co2__captura">
           {captura === null ? <SinDato /> : `+${captura} ${MEDIDAS.co2CapturaAnualKg.unidad}`}
         </span>
+        {arbol.co2_simulado && <EtiquetaSimulado />}
       </div>
     </div>
   )

@@ -1,0 +1,105 @@
+/* Sección «CO₂ del campus» de Cifras: reusa las clases de los bloques de barras y de las tablas.
+   Campo = relleno liso; ejemplo = rayado (no solo por color). La entrada de las barras es corta y
+   se apaga con «reducir movimiento». */
+
+.cifras-co2 {
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-3);
+}
+
+/* Aviso de estimaciones simuladas: borde punteado, como el sello de ejemplo */
+.cifras-co2__simulado {
+  margin: 0;
+  max-inline-size: var(--medida-cuerpo);
+  padding: var(--espacio-2) var(--espacio-3);
+  border: var(--grosor-borde-ui) dashed currentColor;
+  border-radius: var(--radio-control);
+  font-weight: 600;
+  color: var(--color-texto);
+}
+
+.cifras-co2__sin-dato {
+  margin: 0;
+  font-size: var(--texto-sm);
+  color: var(--color-texto-suave);
+}
+
+/* ---------- Ranking de árboles ---------- */
+.cifras-top {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-3);
+}
+
+.cifras-top__fila {
+  min-inline-size: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--espacio-1) var(--espacio-3);
+  align-items: baseline;
+}
+
+.cifras-top__cabeza {
+  min-inline-size: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
+.cifras-top__codigo {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-texto);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.cifras-top__detalle {
+  grid-column: 1;
+  min-inline-size: 0;
+  font-size: var(--texto-sm);
+  color: var(--color-texto-suave);
+  overflow-wrap: anywhere;
+}
+
+.cifras-top__valor {
+  grid-column: 2;
+  grid-row: 1;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+.cifras-top__barra {
+  grid-column: 1 / -1;
+}
+
+/* ---------- Entrada de las barras ---------- */
+@keyframes cifras-co2-crecer {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.cifras-co2 .cifras-grafico__campo,
+.cifras-co2 .cifras-grafico__ejemplo {
+  transform-origin: left center;
+  animation: cifras-co2-crecer var(--cifras-co2-entrada-duracion) var(--curva-movimiento) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cifras-co2 .cifras-grafico__campo,
+  .cifras-co2 .cifras-grafico__ejemplo {
+    animation: none;
+  }
+}
