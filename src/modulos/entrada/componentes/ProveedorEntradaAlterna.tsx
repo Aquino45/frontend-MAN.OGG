@@ -89,7 +89,10 @@ export function ProveedorEntradaAlterna({
   })
   useEffect(
     () => () => {
-      void forzado.current?.then((control) => control.cerrar())
+      void forzado.current?.then(
+        (control) => control.cerrar(),
+        () => {},
+      )
       forzado.current = null
     },
     [],
@@ -101,7 +104,12 @@ export function ProveedorEntradaAlterna({
         forzado.current ??= import('../lib/forzar').then(({ crearForzado }) =>
           crearForzado(() => iniciar(true), refHuella.current),
         )
-        void forzado.current.then((abierto) => abierto.abrir()).catch(() => {})
+        void forzado.current
+          .then((abierto) => abierto.abrir())
+          // Si el código no llegó, se vuelve a pedir en el próximo clic
+          .catch(() => {
+            forzado.current = null
+          })
       },
     }),
     [iniciar],

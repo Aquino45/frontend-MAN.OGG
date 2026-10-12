@@ -55,17 +55,19 @@ export function EntradaAlterna({
   useEffect(() => {
     cierre.current = { onTerminar, alCerrar }
   })
+  const yaSalio = useRef(false)
   const refSalir = useRef<(anticipada: boolean) => void>(() => {})
 
   useEffect(() => {
+    // Si ya salió, un cambio de preferencia de movimiento no la reinicia ni avisa dos veces
+    if (yaSalio.current) return
     const temporizadores: number[] = []
     const programar = (ms: number, accion: () => void) =>
       temporizadores.push(window.setTimeout(accion, ms))
-    let saliendo = false
 
     const salir = (anticipada: boolean) => {
-      if (saliendo) return
-      saliendo = true
+      if (yaSalio.current) return
+      yaSalio.current = true
       temporizadores.forEach((temporizador) => window.clearTimeout(temporizador))
       temporizadores.length = 0
       const duracionMs = pideMenos
