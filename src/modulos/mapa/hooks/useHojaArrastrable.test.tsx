@@ -198,4 +198,20 @@ describe('useHojaArrastrable', () => {
     disparar(asa, 'pointerMove', { y: 60, ms: 130, id: 3 })
     expect(screen.getByTestId('hoja').style.transform).toBe('translateY(100%)')
   })
+
+  it('si la hoja se desmonta mientras sale, no pide cerrar', async () => {
+    vi.useFakeTimers()
+    const alCerrar = vi.fn()
+    const { unmount } = render(<Hoja onCerrar={alCerrar} />)
+    screen.getByTestId('hoja').style.transitionDuration = '150ms'
+    arrastrar([
+      { y: 0, ms: 0 },
+      { y: 200, ms: 100 },
+    ])()
+    unmount()
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(400)
+    })
+    expect(alCerrar).not.toHaveBeenCalled()
+  })
 })

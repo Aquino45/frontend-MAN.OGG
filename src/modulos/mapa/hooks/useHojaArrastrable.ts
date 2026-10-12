@@ -68,7 +68,15 @@ export function useHojaArrastrable({ onCerrar, salePorAbajo }: OpcionesHoja): {
     ultimas.current = { onCerrar, salePorAbajo }
   })
 
-  useEffect(() => () => limpiarEspera.current?.(), [])
+  // Si la hoja se desmonta a mitad de una transición, no se pide cerrar sobre una hoja que ya no está
+  const desmontado = useRef(false)
+  useEffect(() => {
+    desmontado.current = false
+    return () => {
+      desmontado.current = true
+      limpiarEspera.current?.()
+    }
+  }, [])
 
   // Pone la hoja en su estado de transición y espera a que termine (o sigue al instante si el
   // CSS no la anima: movimiento reducido, teclado o sin soporte).
@@ -122,7 +130,7 @@ export function useHojaArrastrable({ onCerrar, salePorAbajo }: OpcionesHoja): {
         return
       }
       await llevarA(hoja, 'cierra', 'translateY(100%)')
-      ultimas.current.onCerrar()
+      if (!desmontado.current) ultimas.current.onCerrar()
     },
     [llevarA, volverAlLugar],
   )
@@ -151,7 +159,7 @@ export function useHojaArrastrable({ onCerrar, salePorAbajo }: OpcionesHoja): {
   const alMover = useCallback((evento: PointerEvent<HTMLElement>) => {
     const hoja = refHoja.current
     const actual = gesto.current
-    if (!hoja || !actual || evento.pointerId !== actual.idPuntero) return
+    if (!hoja || !actual || actual.hoja !== hoja || evento.pointerId !== actual.idPuntero) return
     const recorrido = evento.clientY - actual.inicioY
     if (!actual.arrastrando) {
       if (Math.abs(recorrido) < HOJA_ARRASTRE.holguraInicioPx) return
@@ -169,6 +177,8 @@ export function useHojaArrastrable({ onCerrar, salePorAbajo }: OpcionesHoja): {
       const actual = gesto.current
       if (!hoja || !actual || evento.pointerId !== actual.idPuntero) return
       gesto.current = null
+      // Un gesto que empezó en una hoja que ya fue reemplazada no actúa sobre la nueva
+      if (actual.hoja !== hoja) return
       if (!actual.arrastrando) return
       const cierra =
         !cancelado &&
