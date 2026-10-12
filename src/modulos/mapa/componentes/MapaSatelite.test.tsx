@@ -47,6 +47,9 @@ const falso = vi.hoisted(() => {
     queryRenderedFeatures(_punto: unknown, { layers }: { layers: string[] }) {
       return this.consultas[layers[0]] ?? []
     }
+    resize() {
+      this.camara.push('resize')
+    }
     cameraForBounds() {
       return { center: [0, 0], zoom: 5 }
     }
@@ -63,10 +66,33 @@ const falso = vi.hoisted(() => {
       this.removido = true
     }
   }
-  return { MapaFalso }
+  class MarcadorFalso {
+    static creados: { texto: string; posicion: [number, number]; removido: boolean }[] = []
+    registro: { texto: string; posicion: [number, number]; removido: boolean }
+    constructor({ element }: { element: HTMLElement }) {
+      this.registro = { texto: element.textContent ?? '', posicion: [0, 0], removido: false }
+      MarcadorFalso.creados.push(this.registro)
+    }
+    setLngLat(posicion: [number, number]) {
+      this.registro.posicion = posicion
+      return this
+    }
+    addTo() {
+      return this
+    }
+    remove() {
+      this.registro.removido = true
+    }
+  }
+  const ponerTrabajador = vi.fn()
+  return { MapaFalso, MarcadorFalso, ponerTrabajador }
 })
 
-vi.mock('maplibre-gl', () => ({ Map: falso.MapaFalso }))
+vi.mock('maplibre-gl', () => ({
+  Map: falso.MapaFalso,
+  Marker: falso.MarcadorFalso,
+  setWorkerUrl: falso.ponerTrabajador,
+}))
 
 const CONFIG: ConfigSatelite = { urlTeselas: 'https://teselas.test/{z}/{y}/{x}', clave: 'k&1' }
 const SECTORES = sectoresMock.features as SectorFeature[]
@@ -76,7 +102,7 @@ function pintar(propiedades: Partial<React.ComponentProps<typeof MapaSatelite>> 
     sectores: SECTORES,
     sectorSeleccionado: null,
     config: CONFIG,
-    colorNatural: false,
+    tenido: false,
     onSeleccionar: vi.fn(),
     onAbrirArbol: vi.fn(),
     ...propiedades,
@@ -114,7 +140,7 @@ describe('MapaSatelite', () => {
       layers: { paint: Record<string, number> }[]
     }
     expect(estilo.sources.imagen.tiles).toEqual(['https://teselas.test/{z}/{y}/{x}?token=k%261'])
-    expect(estilo.layers[0].paint['raster-saturation']).toBe(-1)
+    expect(estilo.layers[0].paint['raster-saturation']).toBe(0)
     expect(screen.getByRole('link', { name: /Esri/ })).toBeVisible()
   })
 
@@ -125,24 +151,52 @@ describe('MapaSatelite', () => {
     expect(ultimoMapa().capas).toContain(SATELITE_CAPA_RELLENO)
     expect(ultimoMapa().capas).toContain(SATELITE_CAPA_ARBOLES)
     expect(screen.queryByRole('status')).toBeNull()
-    expect(ultimoMapa().camara).toEqual(['fitBounds'])
+    expect(ultimoMapa().camara).toEqual(['resize', 'fitBounds'])
   })
 
   it('con movimiento reducido la cámara salta en vez de volar', async () => {
     simularMovimientoReducido(true)
     pintar()
     await cargar()
-    expect(ultimoMapa().camara).toEqual(['jumpTo'])
+    expect(ultimoMapa().camara).toEqual(['resize', 'jumpTo'])
   })
 
-  it('el tinte se ve por defecto y «Color natural» lo quita y devuelve la saturación', async () => {
+  it('la foto se ve en color natural por defecto y «Teñido» pone la capa de la paleta', async () => {
     const { container, rerender, props } = pintar()
     await cargar()
-    expect(container.querySelector('.mapa-satelite__tinte')).not.toBeNull()
+    expect(container.querySelector('.mapa-satelite__tinte')).toBeNull()
 
-    rerender(<MapaSatelite {...props} colorNatural />)
+    rerender(<MapaSatelite {...props} tenido />)
+    expect(container.querySelector('.mapa-satelite__tinte')).not.toBeNull()
+    expect(ultimoMapa().pintura['imagen.raster-saturation']).toBe(-1)
+
+    rerender(<MapaSatelite {...props} tenido={false} />)
     expect(container.querySelector('.mapa-satelite__tinte')).toBeNull()
     expect(ultimoMapa().pintura['imagen.raster-saturation']).toBe(0)
+  })
+
+  it('le da a MapLibre el worker empaquetado y pone el nombre de cada sector sobre la foto', async () => {
+    falso.MarcadorFalso.creados = []
+    pintar()
+    await cargar()
+    expect(falso.ponerTrabajador).toHaveBeenCalledWith(expect.any(String))
+    expect(falso.MarcadorFalso.creados.map((marcador) => marcador.texto)).toEqual(
+      SECTORES.map((sector) => sector.properties.nombre),
+    )
+    expect(
+      falso.MarcadorFalso.creados.every(
+        (marcador) => marcador.posicion[0] !== 0 || marcador.posicion[1] !== 0,
+      ),
+    ).toBe(true)
+  })
+
+  it('no recrea el mapa cuando la vista se vuelve a dibujar con la misma configuración', async () => {
+    const { rerender, props } = pintar()
+    await cargar()
+    const primero = ultimoMapa()
+    rerender(<MapaSatelite {...props} config={{ ...CONFIG }} sectorSeleccionado={1} />)
+    expect(falso.MapaFalso.instancias).toHaveLength(1)
+    expect(primero.removido).toBe(false)
   })
 
   it('un clic en un árbol lo abre y un clic en un sector lo selecciona', async () => {

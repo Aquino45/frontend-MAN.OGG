@@ -1,19 +1,19 @@
-// Control de la vista del mapa: «Ilustrado / Satélite» y, en el satélite, «Color natural».
+// Control de la vista del mapa: «Ilustrado / Satélite» y, en el satélite, «Teñido» (opcional).
 // Solo se dibuja si hay vista satelital configurada (lo decide quien lo usa).
 import { TEXTOS_SATELITE, type VistaMapaTipo } from '@/config/satelite'
 
 interface PropsControlVistaMapa {
   vista: VistaMapaTipo
-  colorNatural: boolean
+  tenido: boolean
   onCambiarVista: (vista: VistaMapaTipo) => void
-  onAlternarColor: () => void
+  onAlternarTenido: () => void
 }
 
 export function ControlVistaMapa({
   vista,
-  colorNatural,
+  tenido,
   onCambiarVista,
-  onAlternarColor,
+  onAlternarTenido,
 }: PropsControlVistaMapa) {
   const opciones: { vista: VistaMapaTipo; texto: string }[] = [
     { vista: 'ilustrado', texto: TEXTOS_SATELITE.ilustrado },
@@ -42,10 +42,10 @@ export function ControlVistaMapa({
         <button
           type="button"
           className="boton boton--secundario control-vista-mapa__boton"
-          aria-pressed={colorNatural}
-          onClick={onAlternarColor}
+          aria-pressed={tenido}
+          onClick={onAlternarTenido}
         >
-          {TEXTOS_SATELITE.colorNatural}
+          {TEXTOS_SATELITE.tenido}
         </button>
       )}
     </div>

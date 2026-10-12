@@ -17,8 +17,8 @@ export const SATELITE_ENLACE_ATRIBUCION = 'https://www.esri.com/'
 export const VISTAS_MAPA = ['ilustrado', 'satelite'] as const
 export type VistaMapaTipo = (typeof VISTAS_MAPA)[number]
 
-// Preferencia del color de la foto, guardada en el navegador como el tema
-export const CLAVE_SATELITE_COLOR_NATURAL = 'satelite-color-natural'
+// Preferencia del teñido de la foto (por defecto, color natural), guardada en el navegador como el tema
+export const CLAVE_SATELITE_TENIDO = 'satelite-tenido'
 
 // Márgenes del encuadre en píxeles (el mapa satelital se acerca a un sector con este aire)
 export const SATELITE_MARGEN_CAMPUS_PX = 48
@@ -28,11 +28,12 @@ export const SATELITE_DURACION_VUELO_MS = 800
 // Tinte de la foto: la imagen pierde su color y una capa de la paleta se mezcla encima
 export const SATELITE_SATURACION_TENIDA = -1
 export const SATELITE_SATURACION_NATURAL = 0
-export const SATELITE_OPACIDAD_RELLENO_SECTOR = 0.18
-export const SATELITE_OPACIDAD_RELLENO_ACTIVO = 0.42
+export const SATELITE_OPACIDAD_RELLENO_SECTOR = 0.14
+export const SATELITE_OPACIDAD_RELLENO_ACTIVO = 0.28
 export const SATELITE_OPACIDAD_PUNTO_REAL = 1
 export const SATELITE_OPACIDAD_PUNTO_DEMO = 0.75
 export const SATELITE_GROSOR_BORDE_SECTOR = 2
+export const SATELITE_GROSOR_CONTORNO_EXTRA = 3
 export const SATELITE_GROSOR_BORDE_ACTIVO = 4
 export const SATELITE_RADIO_PUNTO_PX = 6
 export const SATELITE_RADIO_PUNTO_ACTIVO_PX = 9
@@ -45,14 +46,14 @@ export const SATELITE_FUENTE_ARBOLES = 'arboles'
 export const SATELITE_CAPA_IMAGEN = 'imagen'
 export const SATELITE_CAPA_RELLENO = 'sectores-relleno'
 export const SATELITE_CAPA_BORDE = 'sectores-borde'
+export const SATELITE_CAPA_CONTORNO = 'sectores-contorno'
 export const SATELITE_CAPA_ARBOLES = 'arboles-puntos'
 
 export const TEXTOS_SATELITE = {
   grupoVista: 'Vista del mapa',
   ilustrado: 'Ilustrado',
   satelite: 'Satélite',
-  colorNatural: 'Color natural',
-  colorTenido: 'Color de la paleta',
+  tenido: 'Teñido',
   etiquetaMapa: 'Mapa satelital del campus',
   listaSectores: 'Sectores del campus',
   cargando: 'Cargando el mapa satelital',

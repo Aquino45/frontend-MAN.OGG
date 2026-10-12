@@ -4,6 +4,7 @@ import type { ConfigSatelite } from '@/config/entorno'
 import {
   SATELITE_CAPA_ARBOLES,
   SATELITE_CAPA_BORDE,
+  SATELITE_CAPA_CONTORNO,
   SATELITE_CAPA_IMAGEN,
   SATELITE_CAPA_RELLENO,
   SATELITE_FUENTE_ARBOLES,
@@ -12,6 +13,7 @@ import {
   SATELITE_GROSOR_BORDE_ACTIVO,
   SATELITE_GROSOR_BORDE_PUNTO_PX,
   SATELITE_GROSOR_BORDE_SECTOR,
+  SATELITE_GROSOR_CONTORNO_EXTRA,
   SATELITE_OPACIDAD_PUNTO_DEMO,
   SATELITE_OPACIDAD_PUNTO_REAL,
   SATELITE_OPACIDAD_RELLENO_ACTIVO,
@@ -30,10 +32,7 @@ import {
 } from '../lib/coloresSatelite'
 import { coleccionArboles, coleccionSectores, urlTeselasConClave } from '../lib/geojsonSatelite'
 
-export function estiloDeLaImagen(
-  config: ConfigSatelite,
-  colorNatural: boolean,
-): StyleSpecification {
+export function estiloDeLaImagen(config: ConfigSatelite, tenido: boolean): StyleSpecification {
   return {
     version: 8,
     sources: {
@@ -49,14 +48,14 @@ export function estiloDeLaImagen(
         id: SATELITE_CAPA_IMAGEN,
         type: 'raster',
         source: SATELITE_FUENTE_IMAGEN,
-        paint: { 'raster-saturation': saturacion(colorNatural) },
+        paint: { 'raster-saturation': saturacion(tenido) },
       },
     ],
   }
 }
 
-export const saturacion = (colorNatural: boolean) =>
-  colorNatural ? SATELITE_SATURACION_NATURAL : SATELITE_SATURACION_TENIDA
+export const saturacion = (tenido: boolean) =>
+  tenido ? SATELITE_SATURACION_TENIDA : SATELITE_SATURACION_NATURAL
 
 export function agregarCapas(mapa: MapaMapLibre, colores: ColoresSatelite) {
   mapa.addSource(SATELITE_FUENTE_SECTORES, { type: 'geojson', data: coleccionSectores([], null) })
@@ -72,6 +71,21 @@ export function agregarCapas(mapa: MapaMapLibre, colores: ColoresSatelite) {
         ['get', 'activo'],
         SATELITE_OPACIDAD_RELLENO_ACTIVO,
         SATELITE_OPACIDAD_RELLENO_SECTOR,
+      ],
+    },
+  })
+  // Contorno oscuro bajo el borde de la paleta: sobre la foto el magenta solo no se separa del suelo
+  mapa.addLayer({
+    id: SATELITE_CAPA_CONTORNO,
+    type: 'line',
+    source: SATELITE_FUENTE_SECTORES,
+    paint: {
+      'line-color': colores.puntoBorde,
+      'line-width': [
+        'case',
+        ['get', 'activo'],
+        SATELITE_GROSOR_BORDE_ACTIVO + SATELITE_GROSOR_CONTORNO_EXTRA,
+        SATELITE_GROSOR_BORDE_SECTOR + SATELITE_GROSOR_CONTORNO_EXTRA,
       ],
     },
   })
@@ -116,6 +130,7 @@ export function agregarCapas(mapa: MapaMapLibre, colores: ColoresSatelite) {
 export function aplicarColores(mapa: MapaMapLibre, colores: ColoresSatelite) {
   mapa.setPaintProperty(SATELITE_CAPA_RELLENO, 'fill-color', colores.relleno)
   mapa.setPaintProperty(SATELITE_CAPA_BORDE, 'line-color', colores.borde)
+  mapa.setPaintProperty(SATELITE_CAPA_CONTORNO, 'line-color', colores.puntoBorde)
   mapa.setPaintProperty(SATELITE_CAPA_ARBOLES, 'circle-color', [
     'case',
     ['get', 'destacado'],

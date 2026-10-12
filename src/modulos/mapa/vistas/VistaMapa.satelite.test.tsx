@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { obtenerSectores } from '@/api/cliente'
 import { invalidarCacheCampus } from '@/compartido/cacheCampus'
 import type { ConfigSatelite } from '@/config/entorno'
-import { CLAVE_SATELITE_COLOR_NATURAL, TEXTOS_SATELITE } from '@/config/satelite'
+import { CLAVE_SATELITE_TENIDO, TEXTOS_SATELITE } from '@/config/satelite'
 import { sectoresMock } from '@/mocks'
 import { VistaMapa } from './VistaMapa'
 
@@ -14,8 +14,8 @@ vi.mock('@/api/cliente', async (importarOriginal) => ({
 
 // MapLibre necesita WebGL, que jsdom no tiene: el mapa satelital se reemplaza por un testigo.
 vi.mock('../componentes/MapaSatelite', () => ({
-  default: (props: { colorNatural: boolean; onSeleccionar: (id: number) => void }) => (
-    <div data-testid="mapa-satelite" data-natural={String(props.colorNatural)}>
+  default: (props: { tenido: boolean; onSeleccionar: (id: number) => void }) => (
+    <div data-testid="mapa-satelite" data-tenido={String(props.tenido)}>
       <button type="button" onClick={() => props.onSeleccionar(1)}>
         elegir sector 1
       </button>
@@ -45,7 +45,7 @@ describe('VistaMapa: vista satelital', () => {
     render(<VistaMapa aleatorio={SIEMPRE_CERO} configSatelite={null} />)
     expect(await screen.findAllByRole('button', { name: /^Sector 1,/ })).not.toHaveLength(0)
     expect(screen.queryByRole('button', { name: TEXTOS_SATELITE.satelite })).toBeNull()
-    expect(screen.queryByRole('button', { name: TEXTOS_SATELITE.colorNatural })).toBeNull()
+    expect(screen.queryByRole('button', { name: TEXTOS_SATELITE.tenido })).toBeNull()
   })
 
   it('con clave empieza en la vista ilustrada y el botón cambia a satélite y vuelve', async () => {
@@ -63,23 +63,23 @@ describe('VistaMapa: vista satelital', () => {
     expect(await screen.findAllByRole('button', { name: /^Sector 1,/ })).not.toHaveLength(0)
   })
 
-  it('«Color natural» solo sale en el satélite, quita el tinte y se recuerda', async () => {
+  it('«Teñido» solo sale en el satélite, empieza apagado y se recuerda', async () => {
     const { unmount } = render(<VistaMapa aleatorio={SIEMPRE_CERO} configSatelite={CONFIG} />)
     await screen.findByRole('button', { name: TEXTOS_SATELITE.satelite })
-    expect(screen.queryByRole('button', { name: TEXTOS_SATELITE.colorNatural })).toBeNull()
+    expect(screen.queryByRole('button', { name: TEXTOS_SATELITE.tenido })).toBeNull()
 
     fireEvent.click(screen.getByRole('button', { name: TEXTOS_SATELITE.satelite }))
     const testigo = await screen.findByTestId('mapa-satelite')
-    expect(testigo).toHaveAttribute('data-natural', 'false')
+    expect(testigo).toHaveAttribute('data-tenido', 'false')
 
-    fireEvent.click(screen.getByRole('button', { name: TEXTOS_SATELITE.colorNatural }))
-    expect(screen.getByTestId('mapa-satelite')).toHaveAttribute('data-natural', 'true')
-    expect(window.localStorage.getItem(CLAVE_SATELITE_COLOR_NATURAL)).not.toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: TEXTOS_SATELITE.tenido }))
+    expect(screen.getByTestId('mapa-satelite')).toHaveAttribute('data-tenido', 'true')
+    expect(window.localStorage.getItem(CLAVE_SATELITE_TENIDO)).not.toBeNull()
     unmount()
 
     render(<VistaMapa aleatorio={SIEMPRE_CERO} configSatelite={CONFIG} />)
     fireEvent.click(await screen.findByRole('button', { name: TEXTOS_SATELITE.satelite }))
-    expect(await screen.findByTestId('mapa-satelite')).toHaveAttribute('data-natural', 'true')
+    expect(await screen.findByTestId('mapa-satelite')).toHaveAttribute('data-tenido', 'true')
   })
 
   it('elegir un sector en el satélite abre su panel', async () => {

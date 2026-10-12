@@ -25,7 +25,7 @@ import type { FormaGlifo } from '../componentes/GlifoArbol'
 import { MapaSectores } from '../componentes/MapaSectores'
 import { PanelSector } from '../componentes/PanelSector'
 import { useArbolesDeSector } from '../hooks/useArbolesDeSector'
-import { useColorNatural } from '../hooks/useColorNatural'
+import { useTenido } from '../hooks/useTenido'
 import { useRetornoDeFoco } from '../hooks/useRetornoDeFoco'
 import { useHojaArrastrable } from '../hooks/useHojaArrastrable'
 import { useSeleccionEnUrl } from '../hooks/useSeleccionEnUrl'
@@ -46,11 +46,15 @@ interface PropsVistaMapa {
 
 export function VistaMapa({
   aleatorio = Math.random,
-  configSatelite = obtenerConfigSatelite(),
+  configSatelite: configInyectada,
 }: PropsVistaMapa) {
+  // Se lee del entorno una sola vez: un objeto nuevo en cada dibujo recrearía el mapa
+  const [configSatelite] = useState(() =>
+    configInyectada === undefined ? obtenerConfigSatelite() : configInyectada,
+  )
   const sectores = useSectoresDelCampus()
   const [vista, setVista] = useState<VistaMapaTipo>('ilustrado')
-  const [colorNatural, alternarColorNatural] = useColorNatural()
+  const [tenido, alternarTenido] = useTenido()
   const seleccion = useSeleccionEnUrl()
   const recordarOrigen = useRetornoDeFoco(seleccion.arbolCodigo)
   const [sectorResaltado, setSectorResaltado] = useState<number | null>(null)
@@ -119,9 +123,9 @@ export function VistaMapa({
         {configSatelite && (
           <ControlVistaMapa
             vista={vista}
-            colorNatural={colorNatural}
+            tenido={tenido}
             onCambiarVista={setVista}
-            onAlternarColor={alternarColorNatural}
+            onAlternarTenido={alternarTenido}
           />
         )}
         {configSatelite && vista === 'satelite' ? (
@@ -139,7 +143,7 @@ export function VistaMapa({
               sectorSeleccionado={sectorAbierto?.id ?? null}
               arboles={arboles.estado === 'listo' ? arboles.arboles : undefined}
               config={configSatelite}
-              colorNatural={colorNatural}
+              tenido={tenido}
               onSeleccionar={alSeleccionarSector}
               onAbrirArbol={abrirArbol}
             />

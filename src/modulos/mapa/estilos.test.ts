@@ -8,6 +8,7 @@ import {
 import estilosBase from './estilos.css?raw'
 import estilosHoja from './hoja.estilos.css?raw'
 import estilosDestacados from './destacados.estilos.css?raw'
+import sateliteCss from './satelite.estilos.css?raw'
 import estilosBotones from '@/styles/botones.estilos.css?raw'
 import tokensMovimiento from '@/styles/movimiento.tokens.css?raw'
 import tokensBase from '@/styles/tokens.css?raw'
@@ -198,5 +199,15 @@ describe('movimiento del mapa', () => {
 describe('filas vivas del panel', () => {
   it('la fila del panel es elevable', () => {
     expect(panelSector).toContain('elevable')
+  })
+})
+
+describe('estilos del mapa satelital', () => {
+  // MapLibre le pone `position: relative` (clase maplibregl-map) al contenedor del lienzo: si el
+  // selector no es más específico, el lienzo se queda sin alto y la foto no se ve.
+  it('el lienzo llena su marco con un selector que le gana a la clase de MapLibre', () => {
+    expect(sateliteCss).toMatch(
+      /\.mapa-satelite__marco \.mapa-satelite__lienzo\s*\{[^}]*position:\s*absolute[^}]*inset:\s*0/,
+    )
   })
 })

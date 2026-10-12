@@ -5,6 +5,7 @@ import {
   coleccionSectores,
   limitesDeSector,
   limitesDeSectores,
+  posicionEtiqueta,
   urlTeselasConClave,
 } from './geojsonSatelite'
 
@@ -87,6 +88,30 @@ describe('limitesDeSector', () => {
 
   it('devuelve null si el sector no existe', () => {
     expect(limitesDeSector([SECTOR_UNO], 9)).toBeNull()
+  })
+})
+
+describe('posicionEtiqueta', () => {
+  it('cae dentro del sector, como la etiqueta del mapa ilustrado', () => {
+    const [longitud, latitud] = posicionEtiqueta(SECTOR_UNO)
+    expect(longitud).toBeCloseTo(-76.85, 5)
+    expect(latitud).toBeCloseTo(-11.85, 5)
+  })
+
+  it('en un sector cóncavo sigue cayendo dentro del polígono', () => {
+    const en_ele = sector(3, [
+      [0, 0],
+      [10, 0],
+      [10, 2],
+      [2, 2],
+      [2, 10],
+      [0, 10],
+      [0, 0],
+    ])
+    const [longitud, latitud] = posicionEtiqueta(en_ele)
+    const dentroDelBrazoHorizontal = longitud >= 0 && longitud <= 10 && latitud >= 0 && latitud <= 2
+    const dentroDelBrazoVertical = longitud >= 0 && longitud <= 2 && latitud >= 0 && latitud <= 10
+    expect(dentroDelBrazoHorizontal || dentroDelBrazoVertical).toBe(true)
   })
 })
 

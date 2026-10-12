@@ -1,9 +1,13 @@
 // Mapa satelital: la foto de Esri con los mismos sectores y árboles del mapa ilustrado, dibujados
 // desde las mismas coordenadas del contrato. Se carga aparte (React.lazy) solo al activar «Satélite»,
-// porque MapLibre pesa. El tinte con la paleta es una capa CSS encima del lienzo; «Color natural»
-// la quita. Con movimiento reducido la cámara salta en vez de volar.
+// porque MapLibre pesa. La foto se ve en color natural; el teñido con la paleta (opcional) es una
+// capa CSS encima del lienzo. Los nombres de los sectores son marcadores HTML (el mapa no tiene
+// tipografías de MapLibre). Con movimiento reducido la cámara salta en vez de volar.
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { Map as MapaMapLibre, type GeoJSONSource } from 'maplibre-gl'
+import { Map as MapaMapLibre, Marker, setWorkerUrl, type GeoJSONSource } from 'maplibre-gl'
+// MapLibre busca su worker junto a su propio archivo, y ahí no existe una vez empaquetado: se le da
+// el worker ya empaquetado por Vite.
+import urlTrabajadorMapLibre from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import { useEffect, useRef, useState } from 'react'
 import type { ArbolFeature, SectorFeature } from '@/api/cliente'
 import { EstadoError } from '@/compartido/EstadoError'
@@ -29,6 +33,7 @@ import {
   coleccionSectores,
   limitesDeSector,
   limitesDeSectores,
+  posicionEtiqueta,
 } from '../lib/geojsonSatelite'
 import {
   agregarCapas,
@@ -43,7 +48,7 @@ interface PropsMapaSatelite {
   sectorSeleccionado: number | null
   arboles?: readonly ArbolFeature[]
   config: ConfigSatelite
-  colorNatural: boolean
+  tenido: boolean
   onSeleccionar: (sectorId: number) => void
   onAbrirArbol: (codigo: string) => void
 }
@@ -55,10 +60,12 @@ export default function MapaSatelite({
   sectorSeleccionado,
   arboles = SIN_ARBOLES,
   config,
-  colorNatural,
+  tenido,
   onSeleccionar,
   onAbrirArbol,
 }: PropsMapaSatelite) {
+  // El mapa solo se recrea si cambia la dirección o la clave, no porque llegue otro objeto igual
+  const { urlTeselas, clave } = config
   const contenedor = useRef<HTMLDivElement>(null)
   const mapaRef = useRef<MapaMapLibre | null>(null)
   const [listo, setListo] = useState(false)
@@ -69,7 +76,7 @@ export default function MapaSatelite({
   // Los manejadores del clic viven en refs para no recrear el mapa cuando cambian.
   const alSeleccionar = useRef(onSeleccionar)
   const alAbrirArbol = useRef(onAbrirArbol)
-  const colorNaturalInicial = useRef(colorNatural)
+  const tenidoInicial = useRef(tenido)
   useEffect(() => {
     alSeleccionar.current = onSeleccionar
     alAbrirArbol.current = onAbrirArbol
@@ -79,10 +86,11 @@ export default function MapaSatelite({
     const elemento = contenedor.current
     if (!elemento) return
     let mapa: MapaMapLibre
+    setWorkerUrl(urlTrabajadorMapLibre)
     try {
       mapa = new MapaMapLibre({
         container: elemento,
-        style: estiloDeLaImagen(config, colorNaturalInicial.current),
+        style: estiloDeLaImagen({ urlTeselas, clave }, tenidoInicial.current),
         attributionControl: false,
         maxZoom: SATELITE_ZOOM_MAXIMO,
       })
@@ -129,27 +137,41 @@ export default function MapaSatelite({
       mapaRef.current = null
       setListo(false)
     }
-  }, [config, intento])
+  }, [urlTeselas, clave, intento])
 
   useEffect(() => {
     const mapa = mapaRef.current
     if (!listo || !mapa) return
-    ;(mapa.getSource(SATELITE_FUENTE_SECTORES) as GeoJSONSource).setData(
-      coleccionSectores(sectores, sectorSeleccionado),
-    )
+    const fuente = mapa.getSource<GeoJSONSource>(SATELITE_FUENTE_SECTORES)
+    fuente?.setData(coleccionSectores(sectores, sectorSeleccionado))
   }, [listo, sectores, sectorSeleccionado])
 
   useEffect(() => {
     const mapa = mapaRef.current
     if (!listo || !mapa) return
-    ;(mapa.getSource(SATELITE_FUENTE_ARBOLES) as GeoJSONSource).setData(coleccionArboles(arboles))
+    const fuente = mapa.getSource<GeoJSONSource>(SATELITE_FUENTE_ARBOLES)
+    fuente?.setData(coleccionArboles(arboles))
   }, [listo, arboles])
 
   useEffect(() => {
     const mapa = mapaRef.current
     if (!listo || !mapa) return
-    mapa.setPaintProperty(SATELITE_CAPA_IMAGEN, 'raster-saturation', saturacion(colorNatural))
-  }, [colorNatural, listo])
+    mapa.setPaintProperty(SATELITE_CAPA_IMAGEN, 'raster-saturation', saturacion(tenido))
+  }, [tenido, listo])
+
+  // Nombres de los sectores sobre la foto (decorativos: los botones de abajo ya los nombran)
+  useEffect(() => {
+    const mapa = mapaRef.current
+    if (!listo || !mapa) return
+    const marcadores = sectores.map((sector) => {
+      const elemento = document.createElement('span')
+      elemento.className = 'mapa-satelite__etiqueta'
+      elemento.setAttribute('aria-hidden', 'true')
+      elemento.textContent = sector.properties.nombre
+      return new Marker({ element: elemento }).setLngLat(posicionEtiqueta(sector)).addTo(mapa)
+    })
+    return () => marcadores.forEach((marcador) => marcador.remove())
+  }, [listo, sectores])
 
   // Encuadre: todo el campus, o el sector abierto. Con movimiento reducido, la cámara salta.
   useEffect(() => {
@@ -159,6 +181,8 @@ export default function MapaSatelite({
       (sectorSeleccionado !== null ? limitesDeSector(sectores, sectorSeleccionado) : null) ??
       limitesDeSectores(sectores)
     if (!limites) return
+    // Al abrir un sector el panel le quita ancho al mapa: se vuelve a medir antes de encuadrar
+    mapa.resize()
     const padding =
       sectorSeleccionado !== null ? SATELITE_MARGEN_SECTOR_PX : SATELITE_MARGEN_CAMPUS_PX
     if (pideMenosMovimiento) {
@@ -190,7 +214,7 @@ export default function MapaSatelite({
           role="region"
           aria-label={TEXTOS_SATELITE.etiquetaMapa}
         />
-        {!colorNatural && <div className="mapa-satelite__tinte" aria-hidden="true" />}
+        {tenido && <div className="mapa-satelite__tinte" aria-hidden="true" />}
         {!listo && (
           <p className="mapa-satelite__cargando" role="status">
             {TEXTOS_SATELITE.cargando}

@@ -43,13 +43,14 @@
   background: var(--color-superficie);
 }
 
-.mapa-satelite__lienzo {
+/* Más específico que la clase de MapLibre (.maplibregl-map pone position: relative) */
+.mapa-satelite__marco .mapa-satelite__lienzo {
   position: absolute;
   inset: 0;
 }
 
 /* Tinte: la foto sin color se mezcla con el magenta de la paleta y se oscurece hacia la noche.
-   «Color natural» quita esta capa entera. */
+   Es opcional («Teñido»); por defecto la foto se ve en color natural. */
 .mapa-satelite__tinte {
   position: absolute;
   inset: 0;
@@ -105,4 +106,18 @@
   .vista-mapa--con-sector .mapa-satelite__marco {
     block-size: var(--mapa-alto-reserva);
   }
+}
+
+/* Nombre del sector sobre la foto: claro con un halo noche para leerse sobre cualquier suelo */
+.mapa-satelite__etiqueta {
+  pointer-events: none;
+  font-family: var(--fuente-display);
+  font-size: var(--texto-sm);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--texto-lectura);
+  text-shadow:
+    0 0 3px var(--tronco-noche),
+    0 0 6px var(--tronco-noche);
 }

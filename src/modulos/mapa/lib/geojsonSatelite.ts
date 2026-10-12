@@ -3,6 +3,7 @@
 import type { Feature, FeatureCollection, Point, Polygon } from 'geojson'
 import type { ArbolFeature, SectorFeature } from '@/api/cliente'
 import { SATELITE_PARAMETRO_CLAVE } from '@/config/satelite'
+import { puntoEtiqueta } from './proyectar'
 
 // [[oeste, sur], [este, norte]]
 export type Limites = [[number, number], [number, number]]
@@ -27,6 +28,14 @@ export function limitesDeSector(
   sectorId: number,
 ): Limites | null {
   return limitesDe(sectores.filter((sector) => sector.id === sectorId))
+}
+
+// [longitud, latitud] donde va el nombre del sector: el mismo criterio que la etiqueta del mapa
+// ilustrado (el centroide, o el centro del tramo más ancho si el polígono es cóncavo).
+export function posicionEtiqueta(sector: SectorFeature): [number, number] {
+  const anillo = sector.geometry.coordinates[0].map(([x, y]) => ({ x, y }))
+  const punto = puntoEtiqueta(anillo)
+  return [punto.x, punto.y]
 }
 
 export interface PropiedadesSectorMapa {
