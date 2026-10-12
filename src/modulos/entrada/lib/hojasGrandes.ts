@@ -1,12 +1,6 @@
-// Las hojas grandes que caen en diagonal durante la secuencia de la entrada alterna: cuántas son y
-// de qué tamaño. Cada una cambia su tamaño respecto de la anterior en un paso fijo (arriba o abajo,
+// Las hojas grandes que caen en diagonal durante la secuencia de la entrada alterna: de qué tamaño son. Cada una cambia su tamaño respecto de la anterior en un paso fijo (arriba o abajo,
 // según el azar) y nunca se pasa del tope respecto de la base. Funciones puras.
-import { DURACION_ENTRADA_ALTERNA_MS, ENTRADA_ALTERNA as E } from '@/config/constantes'
-
-// Cuántas salen: la primera y una más cada tanto, hasta que empieza el final
-export function cantidadDeHojasGrandes(): number {
-  return Math.floor((DURACION_ENTRADA_ALTERNA_MS - E.hojaGrandeDesdeMs) / E.hojaGrandeCadaMs) + 1
-}
+import { ENTRADA_ALTERNA as E } from '@/config/constantes'
 
 // Factores del tamaño base (1 es el base). `aleatorio` da números en [0, 1)
 export function factoresDeTamano(cantidad: number, aleatorio: () => number): number[] {

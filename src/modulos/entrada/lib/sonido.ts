@@ -1,13 +1,15 @@
-// El sonido de la entrada alterna, sintetizado con Web Audio: un blip corto y agudo por letra y, si hay
+// El sonido de la entrada alterna, sintetizado con Web Audio: un pulso corto y grave por letra y, si hay
 // una pista, su música de fondo con fundidos. Se crea solo cuando el navegador ya dejó sonar (hubo un
 // gesto); sin Web Audio devuelve null y la entrada sigue en silencio.
 import { SONIDO_ENTRADA_ALTERNA as S } from '@/config/constantes'
 
 export interface Sonido {
-  // Un blip (el índice alterna las notas)
-  blip: (indice: number) => void
+  // El pulso de una letra al escribirse
+  tipeo: () => void
   // Empieza la pista de fondo con su fundido de entrada
   iniciarPista: (url: string) => void
+  // La celebración de elegir SÍ: una corneta de fiesta y unos soniditos brillantes
+  celebrar: () => void
   // Apaga todo con un fundido de salida (milisegundos) y suelta los recursos
   detener: (fundidoMs: number) => void
 }
@@ -30,21 +32,61 @@ export function crearSonido(): Sonido | null {
   let cerrado = false
 
   return {
-    blip(indice) {
+    tipeo() {
       if (cerrado) return
       const ahora = contexto.currentTime
-      const oscilador = contexto.createOscillator()
-      const ganancia = contexto.createGain()
-      const frecuencias = S.blipFrecuenciasHz
-      oscilador.type = 'square'
-      oscilador.frequency.value = frecuencias[indice % frecuencias.length]
-      // Ataque instantáneo y caída rápida: suena a «tick» dulce, no a zumbido
-      ganancia.gain.setValueAtTime(S.blipVolumen, ahora)
-      ganancia.gain.exponentialRampToValueAtTime(0.0001, ahora + S.blipDuracionMs / 1000)
-      oscilador.connect(ganancia)
-      ganancia.connect(contexto.destination)
-      oscilador.start(ahora)
-      oscilador.stop(ahora + S.blipDuracionMs / 1000)
+      const { frecuenciaHz, mezclaTriangular, duracionMs, volumen } = S.tipeo
+      const fin = ahora + duracionMs / 1000
+      // Dos ondas con la misma nota: la cuadrada pone el cuerpo y la triangular la suaviza
+      for (const [tipo, nivel] of [
+        ['square', volumen],
+        ['triangle', volumen * mezclaTriangular],
+      ] as const) {
+        const oscilador = contexto.createOscillator()
+        const ganancia = contexto.createGain()
+        oscilador.type = tipo
+        oscilador.frequency.value = frecuenciaHz
+        // Ataque instantáneo y caída rápida: suena a «tic» grave, no a zumbido
+        ganancia.gain.setValueAtTime(nivel, ahora)
+        ganancia.gain.exponentialRampToValueAtTime(0.0001, fin)
+        oscilador.connect(ganancia)
+        ganancia.connect(contexto.destination)
+        oscilador.start(ahora)
+        oscilador.stop(fin)
+      }
+    },
+    celebrar() {
+      if (cerrado) return
+      const C = S.celebracion
+      const ahora = contexto.currentTime
+      // Corneta: onda cuadrada que sube de nota y se apaga rápido al final
+      const corneta = contexto.createOscillator()
+      const gananciaCorneta = contexto.createGain()
+      const finCorneta = ahora + C.cornetaDuracionMs / 1000
+      corneta.type = 'square'
+      corneta.frequency.setValueAtTime(C.cornetaDesdeHz, ahora)
+      corneta.frequency.exponentialRampToValueAtTime(C.cornetaHastaHz, finCorneta)
+      gananciaCorneta.gain.setValueAtTime(C.cornetaVolumen, ahora)
+      gananciaCorneta.gain.exponentialRampToValueAtTime(0.0001, finCorneta)
+      corneta.connect(gananciaCorneta)
+      gananciaCorneta.connect(contexto.destination)
+      corneta.start(ahora)
+      corneta.stop(finCorneta)
+      // Soniditos: una escalera de notas cortas
+      C.soniditosHz.forEach((frecuenciaHz, orden) => {
+        const inicio = ahora + (C.soniditosDesdeMs + orden * C.soniditoCadaMs) / 1000
+        const fin = inicio + C.soniditoDuracionMs / 1000
+        const oscilador = contexto.createOscillator()
+        const ganancia = contexto.createGain()
+        oscilador.type = 'triangle'
+        oscilador.frequency.value = frecuenciaHz
+        ganancia.gain.setValueAtTime(C.soniditoVolumen, inicio)
+        ganancia.gain.exponentialRampToValueAtTime(0.0001, fin)
+        oscilador.connect(ganancia)
+        ganancia.connect(contexto.destination)
+        oscilador.start(inicio)
+        oscilador.stop(fin)
+      })
     },
     iniciarPista(url) {
       if (cerrado || pista) return

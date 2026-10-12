@@ -28,3 +28,4 @@ rocas metamórficas. Libres: gneis, esquisto, filita, anfibolita, milonita, corn
 | 12/10/2026 | FE-013 | tilita | ORQ-CA | basanita |
 | 12/10/2026 | FE-014 | limonita | ORQ-CA | basanita |
 | 12/10/2026 | FE-011 | arcosa | ORQ-CA | dunita |
+| 12/10/2026 | FE-016 | anfibolita | ORQ-CA | tefrita |

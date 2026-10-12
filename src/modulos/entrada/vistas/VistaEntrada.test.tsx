@@ -1,6 +1,6 @@
-import { act, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
-import { DURACION_ENTRADA_ALTERNA_MS, DURACION_SALIDA_ENTRADA_MS } from '@/config/constantes'
+import { DURACION_SALIDA_ENTRADA_MS, ENTRADA_ALTERNA as E } from '@/config/constantes'
 import { VistaEntrada } from './VistaEntrada'
 
 const SIEMPRE_ESTANDAR = () => 0
@@ -18,6 +18,14 @@ const avanzar = (ms: number) =>
   act(async () => {
     await vi.advanceTimersByTimeAsync(ms)
   })
+
+// Más de lo que puede tardar la secuencia sin que nadie toque nada
+const SECUENCIA_SOLA_MS = 60_000
+
+// Por tramos: React pinta al terminar cada uno, y cada paso de la secuencia programa el siguiente
+const avanzarPorPasos = async (totalMs: number, pasoMs = 250) => {
+  for (let t = 0; t < totalMs; t += pasoMs) await avanzar(pasoMs)
+}
 
 const ilustracion = (contenedor: HTMLElement) =>
   contenedor.ownerDocument.querySelector('.entrada-alterna')
@@ -72,7 +80,7 @@ describe('VistaEntrada', () => {
     )
   })
 
-  it('la alterna dura exactamente la duración y después se ve la vista pedida', async () => {
+  it('la alterna termina sola, sin tocar nada, y después se ve la vista pedida', async () => {
     const { container } = render(
       <VistaEntrada aleatorio={SIEMPRE_ALTERNA}>
         <p>{VISTA_PEDIDA}</p>
@@ -80,17 +88,27 @@ describe('VistaEntrada', () => {
     )
     await dejarCargar()
 
-    await avanzar(DURACION_ENTRADA_ALTERNA_MS - 1)
+    await avanzar(E.fraseDesdeMs)
     expect(container.querySelector('.entrada--tapada')).not.toBeNull()
     expect(ilustracion(container)).not.toHaveClass('entrada-alterna--saliendo')
 
-    await avanzar(1)
+    await avanzarPorPasos(SECUENCIA_SOLA_MS)
     expect(container.querySelector('.entrada--tapada')).toBeNull()
-    expect(ilustracion(container)).toHaveClass('entrada-alterna--saliendo')
-
     await avanzar(DURACION_SALIDA_ENTRADA_MS)
     expect(ilustracion(container)).toBeNull()
     expect(screen.getByText(VISTA_PEDIDA)).toBeVisible()
+  })
+
+  it('Esc la cierra al instante y deja ver la vista pedida', async () => {
+    const { container } = render(
+      <VistaEntrada aleatorio={SIEMPRE_ALTERNA}>
+        <p>{VISTA_PEDIDA}</p>
+      </VistaEntrada>,
+    )
+    await dejarCargar()
+    await avanzar(E.fraseDesdeMs)
+    fireEvent.keyDown(window, { key: 'Escape' })
+    expect(container.querySelector('.entrada--tapada')).toBeNull()
   })
 
   it('con movimiento reducido la ilustración se quita sin desvanecerse', async () => {
@@ -105,7 +123,8 @@ describe('VistaEntrada', () => {
       </VistaEntrada>,
     )
     await dejarCargar()
-    await avanzar(DURACION_ENTRADA_ALTERNA_MS)
+    // Sin escribir nada: cada frase espera lo suyo y la elección toma NO
+    await avanzarPorPasos(SECUENCIA_SOLA_MS)
     expect(ilustracion(container)).toBeNull()
     expect(container.querySelector('.entrada--tapada')).toBeNull()
   })
@@ -120,7 +139,7 @@ describe('VistaEntrada', () => {
     )
     await dejarCargar()
     expect(window.location.pathname + window.location.search).toBe(antes)
-    await avanzar(DURACION_ENTRADA_ALTERNA_MS + DURACION_SALIDA_ENTRADA_MS)
+    await avanzarPorPasos(SECUENCIA_SOLA_MS + DURACION_SALIDA_ENTRADA_MS)
     expect(window.location.pathname + window.location.search).toBe(antes)
   })
 })
