@@ -36,12 +36,24 @@
 }
 
 /* ---------- Disposición: panel al costado en pantallas anchas, hoja inferior en celular ---------- */
-/* La hoja entra una sola vez, al abrir el sector: pasar de la lista a la cartilla o cerrar con Esc
-   no la vuelve a animar (el panel es el mismo elemento). */
+/* La hoja y el panel entran una sola vez, al abrir el sector: pasar de la lista a la cartilla o
+   cerrar con Esc no los vuelve a animar (el panel es el mismo elemento). Con el teclado, nada. */
 @keyframes entrada-hoja {
   from {
     transform: translateY(100%);
   }
+}
+
+@keyframes entrada-panel {
+  from {
+    opacity: 0;
+    transform: translateX(var(--desplazamiento-panel));
+  }
+}
+
+/* El asa donde se agarra la hoja solo existe en el celular */
+.vista-mapa__asa {
+  display: none;
 }
 
 @media (min-width: 56rem) {
@@ -57,6 +69,7 @@
     inset-block-start: var(--espacio-3);
     max-block-size: calc(100dvh - 2 * var(--espacio-3));
     overflow-y: auto;
+    animation: entrada-panel var(--duracion-entrada) var(--curva-salida);
   }
 }
 
@@ -68,18 +81,55 @@
   .vista-mapa__panel {
     position: fixed;
     inset-inline: 0;
-    inset-block-end: 0;
+    /* Se extiende bajo el borde de la pantalla: al jalarla hacia arriba no deja un hueco */
+    inset-block-end: calc(-1 * var(--hoja-extension));
     z-index: 2;
-    max-block-size: min(var(--alto-hoja), calc(100dvh - var(--alto-cabecera)));
+    max-block-size: calc(
+      min(var(--alto-hoja), calc(100dvh - var(--alto-cabecera))) + var(--hoja-extension)
+    );
     overscroll-behavior: contain;
     overflow-y: auto;
-    padding: var(--espacio-4) var(--espacio-3)
-      calc(var(--espacio-3) + env(safe-area-inset-bottom, 0px));
+    padding: var(--hoja-asa-zona) var(--espacio-3)
+      calc(var(--espacio-3) + var(--hoja-extension) + env(safe-area-inset-bottom, 0px));
     border-start-start-radius: var(--radio-tarjeta);
     border-start-end-radius: var(--radio-tarjeta);
     background: var(--color-fondo);
     box-shadow: var(--sombra-flotante);
     animation: entrada-hoja var(--duracion-hoja) var(--curva-hoja);
+  }
+
+  /* Zona invisible para agarrar la hoja con el dedo: solo ahí se arrastra; el resto se desplaza */
+  .vista-mapa__asa {
+    display: block;
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 0;
+    z-index: 3;
+    block-size: var(--hoja-asa-zona);
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+  }
+
+  /* Mientras el dedo la lleva, la hoja lo sigue sin retraso; al soltarla vuelve con la curva de
+     la hoja y, si se cierra, sale más rápido de lo que entró */
+  .vista-mapa__panel[data-arrastrando='true'] {
+    animation: none;
+    transition: none;
+  }
+
+  .vista-mapa__panel[data-arrastrando='true'] .vista-mapa__asa {
+    cursor: grabbing;
+  }
+
+  .vista-mapa__panel[data-hoja='suelta'] {
+    animation: none;
+    transition: transform var(--duracion-hoja) var(--curva-hoja);
+  }
+
+  .vista-mapa__panel[data-hoja='cierra'] {
+    animation: none;
+    transition: transform var(--duracion-salida) var(--curva-salida);
   }
 
   /* Asa de la hoja inferior */

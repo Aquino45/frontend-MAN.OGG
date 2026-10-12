@@ -107,8 +107,21 @@ export const PARAMETROS_URL = { sector: 'sector', arbol: 'arbol' } as const
 // MARGEN, EN UNIDADES SVG, ENTRE EL BORDE DE UN SECTOR Y EL DEL RECUADRO AL ENTRAR EN ÉL
 export const MAPA_MARGEN_ENTRADA = 28
 
-// DURACIÓN DE LA TRANSICIÓN DEL RECUADRO AL ENTRAR O SALIR DE UN SECTOR (ms)
-export const MAPA_DURACION_ENTRADA_MS = 320
+// DURACIÓN DE LA TRANSICIÓN DEL RECUADRO AL ENTRAR O SALIR DE UN SECTOR (ms) Y SU CURVA.
+// Son los valores de --duracion-zoom y --curva-movimiento (un test comprueba que coinciden).
+export const MAPA_DURACION_ENTRADA_MS = 280
+export const MAPA_CURVA_ZOOM = [0.77, 0, 0.175, 1] as const
+
+// HOJA INFERIOR DEL CELULAR: LO QUE LEE EL GESTO DE ARRASTRE (el resto del movimiento vive en CSS).
+// Cierra por velocidad (px/ms) o por la fracción del alto que se bajó; por debajo de la holgura
+// (px) el toque no cuenta como arrastre. El elástico (px) es lo más que sube al jalar hacia
+// arriba y es igual a --hoja-extension.
+export const HOJA_ARRASTRE = {
+  velocidadCierrePxPorMs: 0.11,
+  fraccionCierre: 0.25,
+  holguraInicioPx: 8,
+  elasticoPx: 24,
+} as const
 
 // RADIO DE UN PUNTO DE ÁRBOL, EN UNIDADES SVG DEL MAPA COMPLETO (se reduce al acercar)
 export const MAPA_RADIO_PUNTO = 9
@@ -500,6 +513,9 @@ export const MAPA_INICIO_INTERLINEA_EM = 1.25
 
 // CUÁNTO SUBE EL NOMBRE DEL SECTOR POR CADA LÍNEA DE CONTEO, EN em (así el bloque queda centrado)
 export const MAPA_INICIO_SUBIDA_POR_LINEA_EM = 0.5
+
+// CUÁNTOS PASOS DE ESCALONADO TIENE LA CASCADA DE PUNTOS DE UN SECTOR (el resto entra con el último)
+export const MAPA_PASOS_CASCADA = 8
 
 // ---------- CONTEO DE CIFRAS AL ENTRAR EN PANTALLA ----------
 export const CONTEO_ANIMADO = {

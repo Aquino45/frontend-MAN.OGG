@@ -22,6 +22,7 @@ import { PanelSector } from '../componentes/PanelSector'
 import { useArbolesDeSector } from '../hooks/useArbolesDeSector'
 import { useSectores } from '../hooks/useSectores'
 import { useRetornoDeFoco } from '../hooks/useRetornoDeFoco'
+import { useHojaArrastrable } from '../hooks/useHojaArrastrable'
 import { useSeleccionEnUrl } from '../hooks/useSeleccionEnUrl'
 
 const TECLA_ESCAPE = 'Escape'
@@ -55,6 +56,11 @@ export function VistaMapa({ aleatorio = Math.random }: PropsVistaMapa) {
       : undefined
   const arboles = useArbolesDeSector(sectorAbierto?.id ?? null)
   const { arbolCodigo, cerrarArbol, cerrarSector } = seleccion
+  // Bajar la hoja del celular cierra un nivel, como Esc: con la cartilla abierta vuelve a la lista.
+  const { refHoja, propsAsa } = useHojaArrastrable({
+    onCerrar: arbolCodigo === null ? cerrarSector : cerrarArbol,
+    salePorAbajo: arbolCodigo === null,
+  })
 
   // Esc cierra primero la cartilla y después el sector.
   useEffect(() => {
@@ -108,11 +114,13 @@ export function VistaMapa({ aleatorio = Math.random }: PropsVistaMapa) {
       />
       {sectorAbierto && (
         <aside
+          ref={refHoja}
           className="vista-mapa__panel"
           aria-label={
             arbolCodigo ?? `${TEXTOS_PANEL.hojaInferior}: ${sectorAbierto.properties.nombre}`
           }
         >
+          <div className="vista-mapa__asa" aria-hidden="true" {...propsAsa} />
           {arbolCodigo === null ? (
             <PanelSector
               sector={sectorAbierto.properties}

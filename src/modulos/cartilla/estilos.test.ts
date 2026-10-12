@@ -17,9 +17,9 @@ describe('estilos de la cartilla', () => {
     expect(estilosCss).toMatch(/@container \(max-width: [\d.]+rem\)/)
   })
 
-  it('con movimiento reducido el escalonado se apaga', () => {
+  it('con movimiento reducido el fundido se apaga', () => {
     const reducido = estilosCss.slice(estilosCss.lastIndexOf('prefers-reduced-motion: reduce'))
-    expect(reducido).toContain('.cartilla > *')
+    expect(reducido).toContain('.cartilla {')
     expect(reducido).toContain('animation: none')
   })
 
@@ -99,13 +99,16 @@ describe('cartilla: sistema de diseño', () => {
     expect(reglaDe('.encabezado-arbol__nombre:focus')).toMatch(/outline:\s*none/)
   })
 
-  it('radios: tarjetas y cartilla 16, chips 4; los bloques entran desde scale 0.98 en 200 ms', () => {
+  it('radios: tarjetas y cartilla 16, chips 4; la cartilla entra con un fundido, sin escalonado', () => {
     expect(reglaDe('.cartilla')).toMatch(/border-radius:\s*var\(--radio-tarjeta\)/)
     expect(reglaDe('.tarjeta')).toMatch(/border-radius:\s*var\(--radio-tarjeta\)/)
     expect(reglaDe('.chip')).toMatch(/border-radius:\s*var\(--radio-chip\)/)
-    expect(estilosCss).toMatch(/scale\(var\(--entrada-escala-inicial\)\)/)
-    expect(estilosCss).toMatch(/animation:\s*entrada-bloque var\(--duracion-entrada\)/)
-    expect(estilosCss).not.toMatch(/translateY/)
+    expect(estilosCss).toMatch(
+      /\.cartilla\s*\{[^}]*animation:\s*entrada-cartilla var\(--duracion-fundido\)/,
+    )
+    expect(estilosCss).toMatch(/@keyframes entrada-cartilla\s*\{\s*from\s*\{\s*opacity:\s*0;\s*\}/)
+    expect(estilosCss).not.toMatch(/animation-delay|retraso-escalonado|entrada-bloque/)
+    expect(estilosCss).not.toMatch(/translateY|scale\(/)
   })
 
   it('las cifras de la cartilla usan números tabulares', () => {

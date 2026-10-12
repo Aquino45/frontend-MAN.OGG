@@ -10,6 +10,15 @@ type Modalidad = (typeof MODALIDADES_ENTRADA)[keyof typeof MODALIDADES_ENTRADA]
 
 const EVENTOS_DE_PUNTERO = ['pointerdown', 'pointermove'] as const
 
+// Verdadero si lo último que hizo la persona fue pulsar una tecla: quien anima desde código
+// (el CSS ya lo resuelve solo) no debe animar lo que dispara el teclado.
+export function entradaPorTeclado(documento: Document = document): boolean {
+  return (
+    documento.documentElement.getAttribute(ATRIBUTO_MODALIDAD_ENTRADA) ===
+    MODALIDADES_ENTRADA.teclado
+  )
+}
+
 // Devuelve la función que deja de escuchar.
 export function iniciarModalidadEntrada(documento: Document = document): () => void {
   const raiz = documento.documentElement

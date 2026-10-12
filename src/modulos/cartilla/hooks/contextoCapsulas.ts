@@ -9,8 +9,9 @@ export interface ValorCapsulas {
   abierta: string | null
   // Verdadero si se abrió con clic o toque (no se cierra al sacar el cursor)
   fijada: boolean
-  // Verdadero si el último cierre fue con el teclado: sin animación
-  cierreInstantaneo: boolean
+  // Verdadero si el último cambio no se anima: un cierre con el teclado o pasar de una cápsula
+  // abierta a la de al lado
+  sinAnimacion: boolean
   abrir: (clave: string, fijada: boolean) => void
   cerrar: (porTeclado?: boolean) => void
 }
@@ -19,7 +20,7 @@ const SIN_CAPSULAS: ValorCapsulas = {
   capsulas: new Map(),
   abierta: null,
   fijada: false,
-  cierreInstantaneo: false,
+  sinAnimacion: false,
   abrir: () => {},
   cerrar: () => {},
 }

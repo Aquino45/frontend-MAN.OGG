@@ -23,10 +23,14 @@
   --retraso-escalonado-destacado: 50ms;
   --duracion-dibujo-mapa: 280ms;
   --retraso-dibujo-mapa: 90ms;
+  /* Cascada de los puntos de los árboles al entrar a un sector por primera vez */
+  --retraso-cascada-punto: 30ms;
   /* Cuánto suben las tarjetas al entrar */
   --desplazamiento-entrada: 8px;
   /* Cuánto sube el menú del celular al abrirse */
   --desplazamiento-menu: 4px;
+  /* Cuánto viene de la derecha el panel lateral del sector al abrirse */
+  --desplazamiento-panel: 8px;
   --curva-movimiento: cubic-bezier(0.77, 0, 0.175, 1);
   --curva-hoja: cubic-bezier(0.32, 0.72, 0, 1);
   --curva-hover: ease;

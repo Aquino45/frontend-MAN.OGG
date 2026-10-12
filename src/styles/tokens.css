@@ -92,6 +92,11 @@
   --panel-ancho: 28rem;
   --hoja-asa-ancho: 2.5rem;
   --hoja-asa-alto: 0.3125rem;
+  /* Zona del asa donde se agarra la hoja del celular (44 px de alto menos el relleno) y lo que la
+     hoja se extiende bajo el borde de la pantalla para poder jalarla hacia arriba con elástico
+     (igual a HOJA_ARRASTRE.elasticoPx) */
+  --hoja-asa-zona: 1.75rem;
+  --hoja-extension: 24px;
   --foto-proporcion: 11 / 5;
   --foto-glifo: 5.25rem;
   --foto-glifo-pendiente: 4rem;

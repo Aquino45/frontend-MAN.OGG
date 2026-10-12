@@ -24,6 +24,9 @@
   cursor: pointer;
   transform-box: fill-box;
   transform-origin: center;
+  /* El zoom lo achica con la propiedad `scale` (sin transición: el mapa la escribe cuadro a
+     cuadro) y el resaltado con `transform`, que sí transiciona. */
+  scale: var(--escala-zoom, 1);
   transition:
     transform var(--duracion-hover) var(--curva-salida),
     fill var(--duracion-hover) var(--curva-hover);
@@ -213,4 +216,18 @@
   .mapa-fila:active {
     transform: none;
   }
+}
+
+/* Al entrar a un sector por primera vez, los puntos de los árboles aparecen en cascada (30 ms por
+   punto, hasta 8 pasos); las veces siguientes ya están ahí. */
+@keyframes mapa-punto-entra {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+.puntos-arboles[data-cascada='true'] .punto-arbol {
+  animation: mapa-punto-entra var(--duracion-entrada) var(--curva-salida) backwards;
+  animation-delay: calc(var(--indice) * var(--retraso-cascada-punto));
 }
