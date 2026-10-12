@@ -6,7 +6,7 @@
 // copa) y cuatro raíces que se abren desde una base ancha.
 // Cada pixel tiene intención: nada de celdas al azar. Los cuadros del reposo son la misma copa
 // con algunos lóbulos y brillos corridos una celda.
-import type { Lobulo, Tramo } from './rasterizarArbol'
+import type { Lobulo, Tramo } from '@/compartido/rasterizarPixel'
 
 export const LADO_REJILLA_ARBOL = 40
 

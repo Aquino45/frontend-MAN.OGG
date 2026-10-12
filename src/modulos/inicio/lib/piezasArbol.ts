@@ -18,7 +18,7 @@ import {
   versionChica,
   type Celda,
   type Lobulo,
-} from './rasterizarArbol'
+} from '@/compartido/rasterizarPixel'
 
 export type ClavePieza = 'raices' | 'tronco' | 'ramas' | 'atras' | 'frente' | 'brillos' | 'nube'
 // Cada clase pinta con un color de la paleta (ver arbol.estilos.css)

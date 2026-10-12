@@ -1,5 +1,4 @@
-// Pasa las formas del dibujo del árbol (lóbulos y tramos de tronco) a celdas enteras de la
-// rejilla y las junta en un solo trazo por color: sin rectángulos sueltos, que dejan líneas
+// Pasa las formas de un dibujo pixel (lóbulos y tramos) a celdas enteras de una rejilla y las junta en un solo trazo por color: sin rectángulos sueltos, que dejan líneas
 // finas entre filas. Es dato del dibujo: no sabe nada de animación.
 
 // Lóbulo: [x, y, ancho, alto, esquina]; la esquina es el radio, en celdas, del escalón redondeado

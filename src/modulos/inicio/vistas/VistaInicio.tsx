@@ -1,5 +1,6 @@
 import '../estilos.css'
 import { useMemo } from 'react'
+import { HorizontePixel } from '@/compartido/motivos/HorizontePixel'
 import { useArbolesDelCampus } from '@/compartido/useArbolesDelCampus'
 import { useSectoresDelCampus } from '@/compartido/useSectoresDelCampus'
 import { CANTIDAD_DESTACADOS_INICIO } from '@/config/constantes'
@@ -57,13 +58,16 @@ export function VistaInicio() {
   return (
     <div className="inicio">
       <Portada cantidadSectores={sectoresListos ? sectoresListos.length : null} />
+      <HorizontePixel fondo="var(--franja-contraste-fondo)" />
       <FranjaSectores
         estado={sectores.estado}
         sectores={sectoresListos ?? []}
         conteos={conteos}
         onReintentar={sectores.reintentar}
       />
+      <HorizontePixel fondo="var(--franja-cifras-fondo)" />
       <CifrasCenso estado={estadoCampus} cifras={cifras} onReintentar={reintentarCampus} />
+      <HorizontePixel fondo="var(--color-fondo)" />
       <BloqueDestacados
         estado={estadoCampus}
         destacados={destacados ?? []}

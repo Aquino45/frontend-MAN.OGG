@@ -520,6 +520,10 @@ export const MAPA_PASOS_CASCADA = 8
 // FRASE PARA LECTORES DE PANTALLA MIENTRAS SE TRAE EL CÓDIGO DE UNA PÁGINA
 export const TEXTO_CARGANDO_PAGINA = 'Cargando la página'
 
+// ---------- MOTIVOS PIXEL DEL SITIO ----------
+// Lado de una celda del horizonte de copa entre secciones, en px enteros (más fina que la del árbol)
+export const HORIZONTE_CELDA_PX = 4
+
 // ---------- CONTEO DE CIFRAS AL ENTRAR EN PANTALLA ----------
 export const CONTEO_ANIMADO = {
   // Lo que tarda un número en contar de 0 a su valor

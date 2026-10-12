@@ -1,0 +1,22 @@
+/* Motivos pixel del sitio, con la identidad del árbol. Por ahora uno solo: el horizonte de copa que
+   separa dos secciones de distinto fondo. Es un dibujo de rejilla (SVG) con colores de la paleta;
+   nunca se usa la fuente pixel. No se anima, así que «reducir movimiento» no le cambia nada. */
+
+.horizonte-pixel {
+  display: block;
+  inline-size: 100%;
+  /* Una línea de solape con la sección que sigue: así no queda ninguna costura entre las dos */
+  margin-block-end: -1px;
+  overflow: hidden;
+  shape-rendering: crispEdges;
+  pointer-events: none;
+}
+
+/* El horizonte lleva el fondo de la sección que sigue; la sombra es el borde de abajo de la copa */
+.horizonte-pixel__fondo {
+  fill: var(--horizonte-fondo);
+}
+
+.horizonte-pixel__sombra {
+  fill: var(--copa-magenta-oscuro);
+}
