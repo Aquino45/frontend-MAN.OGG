@@ -10,8 +10,8 @@ import {
   useRef,
   useState,
 } from 'react'
-import { useEntradaTerminada } from '@/modulos/entrada'
-import { ARBOL_ANIMADO as G } from '@/config/constantes'
+import { ARBOL_ANIMADO as G, FORZAR_ENTRADA } from '@/config/constantes'
+import { useEntradaTerminada, useForzarEntrada } from '@/modulos/entrada'
 import { useAccesoAlPanel } from '../hooks/useAccesoAlPanel'
 import { useAnimacionArbol } from '../hooks/useAnimacionArbol'
 import { useDesplazamientoAlPuntero } from '../hooks/useDesplazamientoAlPuntero'
@@ -72,6 +72,8 @@ export function ArbolAnimado({
   const [arranco, setArranco] = useState(false)
   const pausado = usePausaDelArbol(refEnvoltura)
   const ultimaPulsacion = useRef(-Infinity)
+  const inicioPulsacion = useRef(-Infinity)
+  const forzarEntrada = useForzarEntrada()
 
   // Empieza cuando termina la entrada del sitio, sin competir con ella.
   useEffect(() => {
@@ -99,10 +101,18 @@ export function ArbolAnimado({
 
   const alPresionar = () => {
     const ahora = performance.now()
+    inicioPulsacion.current = ahora
     if (!enReposo || ahora - ultimaPulsacion.current < G.enfriamientoPulsacionMs) return
     ultimaPulsacion.current = ahora
     sacudir()
     soltarAbanico()
+  }
+
+  // Un clic simple (se suelta enseguida) avisa a la entrada; mantener presionado es otra cosa
+  const alHacerClic = () => {
+    if (performance.now() - inicioPulsacion.current <= FORZAR_ENTRADA.clicMaximoMs) {
+      forzarEntrada.clicEnArbol()
+    }
   }
 
   return (
@@ -112,6 +122,7 @@ export function ArbolAnimado({
       data-fase={fase}
       aria-hidden="true"
       onPointerDown={alPresionar}
+      onClick={alHacerClic}
       onContextMenu={(evento) => evento.preventDefault()}
     >
       <svg

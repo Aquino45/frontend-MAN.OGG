@@ -17,22 +17,88 @@
   visibility: hidden;
 }
 
-/* Entrada alterna: ilustración animada a pantalla completa. */
+/* Entrada alterna: capa a pantalla completa con la ilustración. Hasta que la cortina de hojas cubre la
+   pantalla no se ve (la vista pedida sigue a la vista debajo, si es el caso). */
 .entrada-alterna {
   position: fixed;
   inset: 0;
   z-index: 10;
   display: grid;
   place-items: center;
-  background: var(--color-fondo);
+  overflow: hidden;
+  background: var(--tronco-noche);
+  visibility: hidden;
+}
+
+.entrada-alterna--cubierta {
+  visibility: visible;
+}
+
+.entrada-alterna__ilustracion {
+  opacity: 0;
+}
+
+.entrada-alterna__ilustracion[data-visible] {
+  opacity: 1;
 }
 
 .entrada-alterna__imagen {
+  display: block;
   inline-size: var(--entrada-ilustracion-lado);
   max-inline-size: 80vw;
   max-block-size: 80dvh;
   object-fit: contain;
   image-rendering: pixelated;
+}
+
+/* Hojas grandes: rectángulos pixel con los colores de la paleta; caen en diagonal desde arriba */
+.entrada-alterna__hoja {
+  position: absolute;
+  top: 0;
+  left: 0;
+  shape-rendering: crispEdges;
+}
+
+.entrada-alterna__hoja--0 {
+  background: var(--copa-carmin);
+}
+
+.entrada-alterna__hoja--1 {
+  background: var(--copa-magenta-oscuro);
+}
+
+.entrada-alterna__hoja--2 {
+  background: var(--copa-magenta);
+}
+
+/* Caja de diálogo: borde pixel blanco sobre negro, abajo, con la fuente pixel */
+.entrada-alterna__cajas {
+  position: absolute;
+  inset-inline: var(--espacio-4);
+  inset-block-end: var(--espacio-5);
+  display: grid;
+  gap: var(--espacio-3);
+  max-inline-size: 48rem;
+  margin-inline: auto;
+}
+
+.entrada-alterna__caja {
+  padding: var(--espacio-4);
+  border: var(--desbloqueo-borde-chapa) solid var(--blanco);
+  background: var(--tronco-noche);
+  color: var(--blanco);
+  font-family: var(--fuente-pixel);
+  font-size: var(--texto-xl);
+  line-height: 1.5;
+}
+
+.entrada-alterna__frase {
+  margin: 0;
+}
+
+/* Lo que aún no se escribió ocupa su lugar pero no se ve */
+.entrada-alterna__frase-pendiente {
+  visibility: hidden;
 }
 
 @keyframes desvanecer-entrada {

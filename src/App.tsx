@@ -5,7 +5,7 @@ import { EstadoCarga } from '@/compartido/EstadoCarga'
 import { ProveedorTransicionDePagina } from '@/compartido/ProveedorTransicionDePagina'
 import { Cabecera, Pie, VistaNoEncontrada } from '@/modulos/armazon'
 import { precargarVistaCifras, VistaCifras } from '@/modulos/cifras'
-import { VistaEntrada } from '@/modulos/entrada'
+import { ProveedorEntradaAlterna, VistaEntrada } from '@/modulos/entrada'
 import { precargarVistaExplorar, VistaExplorar } from '@/modulos/explorar'
 import { VistaInicio } from '@/modulos/inicio'
 import { precargarVistaMapa, PROPORCION_MAPA, tieneSeleccion, VistaMapa } from '@/modulos/mapa'
@@ -89,10 +89,11 @@ function Armazon({ aleatorioEntrada }: PropsApp) {
     </div>
   )
 
-  return entraPorInicio ? (
-    <VistaEntrada aleatorio={aleatorioEntrada}>{pagina}</VistaEntrada>
-  ) : (
-    pagina
+  // La variante alterna también puede salir al cambiar de sección, con el mismo azar inyectable
+  return (
+    <ProveedorEntradaAlterna aleatorio={aleatorioEntrada}>
+      {entraPorInicio ? <VistaEntrada aleatorio={aleatorioEntrada}>{pagina}</VistaEntrada> : pagina}
+    </ProveedorEntradaAlterna>
   )
 }
 

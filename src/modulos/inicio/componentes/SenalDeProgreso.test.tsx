@@ -5,7 +5,7 @@ import {
   ACCESO_PANEL_SENAL_DESDE_MS,
   ACCESO_PANEL_SENAL_OPACIDAD,
   ACCESO_PANEL_SENAL_SALIDA_MS,
-  DESBLOQUEO_CURVA,
+  CORTINA_CURVA,
 } from '@/config/constantes'
 import { SILUETA_ARBOL } from '../lib/siluetaArbol'
 import { SenalDeProgreso } from './SenalDeProgreso'
@@ -90,7 +90,7 @@ describe('SenalDeProgreso', () => {
     expect(subida.cancelar).toHaveBeenCalled()
     const salida = llamadas[1]
     expect(salida.opciones.duration).toBe(ACCESO_PANEL_SENAL_SALIDA_MS)
-    expect(salida.opciones.easing).toBe(`cubic-bezier(${DESBLOQUEO_CURVA.join(', ')})`)
+    expect(salida.opciones.easing).toBe(`cubic-bezier(${CORTINA_CURVA.join(', ')})`)
     expect(salida.fotogramas.at(-1)).toMatchObject({ opacity: 0 })
     // Apagar es más rápido que subir
     expect(Number(salida.opciones.duration)).toBeLessThan(Number(subida.opciones.duration))

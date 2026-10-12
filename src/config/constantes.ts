@@ -5,11 +5,70 @@ export const PESOS_ENTRADA = { estandar: 998, alterna: 1 } as const
 
 export type VarianteEntrada = keyof typeof PESOS_ENTRADA
 
-// CUÁNTO SE VE LA ILUSTRACIÓN DE LA ENTRADA ALTERNA, EN ms (aprox. una vuelta: 21 cuadros de 120 ms)
-export const DURACION_ENTRADA_ALTERNA_MS = 3000
+// ENTRADA ALTERNA: LA SECUENCIA. Todo en ms y desde que empieza. Es una pieza que se ve muy pocas veces,
+// así que puede pasar de los 300 ms de la interfaz de todos los días.
+// Hasta cuándo se ve entera, antes de que empiece a desvanecerse y deje ver la vista pedida
+export const DURACION_ENTRADA_ALTERNA_MS = 8_300
+// Cuánto tarda en desvanecerse al final (y al salir antes con Esc o un clic, bastante menos)
+export const DURACION_SALIDA_ENTRADA_MS = 700
+export const DURACION_SALIDA_ANTICIPADA_MS = 200
+// Con «reducir movimiento»: todo quieto y completo este rato, sin sonido, y se sigue
+export const DURACION_ENTRADA_ALTERNA_REDUCIDA_MS = 2_000
 
-// CUÁNTO TARDA EN DESVANECERSE LA ILUSTRACIÓN DE LA ENTRADA ALTERNA, EN ms
-export const DURACION_SALIDA_ENTRADA_MS = 200
+export const ENTRADA_ALTERNA = {
+  // Después de la cortina de hojas (que dura CORTINA_HOJAS.cubrirMs) aparece el fondo con la ilustración
+  ilustracionDesdeMs: 1_000,
+  ilustracionDuracionMs: 600,
+  // Hojas grandes en diagonal: la primera y luego una cada tanto, hasta que empieza el final
+  hojaGrandeDesdeMs: 1_600,
+  hojaGrandeCadaMs: 1_500,
+  hojaGrandeCaidaMs: 2_600,
+  // Tamaño de la hoja grande: fracción del lado menor de la pantalla; cada una cambia un paso de la
+  // anterior y nunca se pasa del tope respecto de la base
+  hojaGrandeBase: 0.14,
+  hojaGrandePaso: 0.1,
+  hojaGrandeTope: 0.3,
+  // Qué parte del alto se corre hacia la derecha mientras cae (la diagonal)
+  hojaGrandeDiagonal: 0.4,
+  // La caja de diálogo entra de forma dramática, tras una pausa con la ilustración sola
+  cajaDesdeMs: 2_400,
+  cajaDuracionMs: 600,
+  cajaDesplazamientoPx: 24,
+  // Las frases se escriben letra por letra y se quedan un rato para leerlas
+  frase1DesdeMs: 3_000,
+  frase2DesdeMs: 5_500,
+  msPorLetra: 35,
+  // Hasta cuándo se puede forzar con el gesto previo (el navegador solo deja sonar tras un gesto)
+  gestoValidoMs: 1_500,
+} as const
+
+export const TEXTOS_ENTRADA_ALTERNA = {
+  frases: ['* Bueno, aquí hay un hombre.', '* Quizás se alegre de verte.'],
+} as const
+
+// SONIDO DE LA ENTRADA ALTERNA (sintetizado con Web Audio; volumen bajo y fijo)
+export const SONIDO_ENTRADA_ALTERNA = {
+  // Cada letra suena con un blip corto, agudo y dulce (onda cuadrada); alternan dos notas para que no cansen
+  blipFrecuenciasHz: [1_318.5, 1_568],
+  blipDuracionMs: 45,
+  blipVolumen: 0.04,
+  // La pista de fondo entra y sale con fundidos
+  pistaVolumen: 0.18,
+  pistaFundidoEntradaMs: 600,
+  pistaFundidoSalidaMs: 700,
+} as const
+
+// FORZAR LA VARIANTE A MANO: un clic simple en el árbol de Inicio abre una ventana; si en ese lapso se
+// escribe la clave, sale. La clave nunca va escrita: se compara su huella SHA-256 (hex, de la clave en
+// minúsculas y sin espacios).
+export const FORZAR_ENTRADA = {
+  ventanaMs: 8_000,
+  largoClave: 6,
+  // Un clic es simple si se suelta antes de esto (más largo ya es mantener presionado)
+  clicMaximoMs: 400,
+  huella: '86fd6a0aa0ac31bc5062046de3d32b326a812581f5c704ce803338ac68187828',
+} as const
+
 // Lo que dura el fundido de la entrada estándar (lo que Inicio espera antes de animar su árbol)
 export const DURACION_APARICION_ENTRADA_MS = 200
 
@@ -267,41 +326,70 @@ export const ACCESO_PANEL_SENAL_SALIDA_MS = 200
 // Cuánto se ilumina el árbol al llegar la señal a la copa (0 a 1)
 export const ACCESO_PANEL_SENAL_OPACIDAD = 0.14
 
-// ANIMACIÓN DE DESBLOQUEO (UNA CORTINA DE HOJAS PIXEL QUE CUBRE LA PANTALLA). Todo en ms. Es una pieza
-// de presentación que se ve muy pocas veces: puede pasar de los 300 ms de la interfaz de todos los días.
-export const DESBLOQUEO_ANIMACION = {
-  // Cuánto dura la cortina completa; al terminar se navega
-  duracionTotalMs: 1_400,
+// CORTINA DE HOJAS PIXEL (la comparten el desbloqueo y la variante alterna de la entrada). Todo en ms.
+// Es una pieza de presentación que se ve muy pocas veces: puede pasar de los 300 ms de la interfaz
+// de todos los días. Las hojas caen en diagonal hacia la derecha, en una ola de izquierda a derecha.
+export const CORTINA_HOJAS = {
+  // Cuánto tarda en quedar toda la pantalla cubierta
+  cubrirMs: 1_000,
   // Cada hoja cae en este tiempo
   caidaHojaMs: 640,
-  // Escalonado: por columna y una variación fija por hoja (sin azar, para que se pueda reproducir)
+  // Cuánto se corre hacia la derecha mientras cae, por cada píxel de caída (la diagonal)
+  diagonal: 0.35,
+  // Escalonado: por columna, por fila y una variación fija por hoja (sin azar, reproducible)
   retrasoColumnaMs: 30,
-  variacionHojaMs: 60,
-  // El fondo detrás de las hojas asegura la cobertura total
-  fondoRetrasoMs: 500,
+  retrasoFilaMs: 14,
+  variacionHojaMs: 40,
+  // Tope del retraso de cualquier hoja: la última asienta justo al terminar de cubrir
+  retrasoMaximoHojaMs: 360,
+  // El fondo detrás de las hojas cubre lo que queda entre ellas
+  fondoRetrasoMs: 400,
   fondoDuracionMs: 400,
-  // El texto entra cuando casi toda la pantalla ya está cubierta
-  textoRetrasoMs: 760,
-  textoDuracionMs: 280,
-  textoDesplazamientoPx: 8,
+  // Cuánto tarda en retirarse (fundido) cuando otra capa toma la pantalla
+  retiradaMs: 500,
   // Tope de hojas: sostiene los 60 fps también con la CPU 4× más lenta
-  hojasMax: 72,
+  hojasMax: 96,
   // Cada hoja mide 5 x 5 celdas y la celda es de píxeles enteros
   celdasPorHoja: 5,
   celdaMinimaPx: 4,
-  // Cuánto se solapan las hojas vecinas (fracción del lado): lo justo para que se lea cada hoja; el
-  // fondo cubre lo que quede entre ellas
-  solape: 0.12,
-  // Cuánto se suma de retraso por fila de hojas y tope del retraso de cualquier hoja
-  retrasoFilaMs: 20,
-  retrasoMaximoHojaMs: 480,
+  // Cuánto se solapan las hojas vecinas (fracción del lado): ninguna, así se lee cada hoja
+  solape: 0,
+} as const
+// Misma curva fuerte de salida que --curva-salida (un test las compara)
+export const CORTINA_CURVA = [0.23, 1, 0.32, 1] as const
+
+// ANIMACIÓN DE DESBLOQUEO: cuando la cortina de hojas ya cubre, las hojas se apagan, un candado pixel se
+// abre y entra el texto. Todo en ms; los tiempos corren desde que se activa.
+export const DESBLOQUEO_ANIMACION = {
+  // Cuánto dura todo; al terminar se navega
+  duracionTotalMs: 2_300,
+  // Las hojas se apagan hasta esta opacidad para que el texto se lea limpio
+  atenuadoRetrasoMs: 1_000,
+  atenuadoDuracionMs: 300,
+  atenuadoOpacidad: 0.78,
+  // El candado entra (opacidad + 8 px) y luego su arco sube y queda abierto
+  candadoRetrasoMs: 1_150,
+  candadoDuracionMs: 280,
+  arcoRetrasoMs: 1_450,
+  arcoDuracionMs: 240,
+  arcoCeldasQueSube: 1,
+  candadoCeldaPx: 12,
+  // El texto entra palabra por palabra, desde 8 px más abajo
+  textoRetrasoMs: 1_300,
+  textoEscalonadoMs: 70,
+  textoDuracionMs: 280,
+  textoDesplazamientoPx: 8,
+  // La línea bajo el texto se dibuja de izquierda a derecha
+  lineaRetrasoMs: 1_700,
+  lineaDuracionMs: 300,
   // Con «reducir movimiento» se ve el texto un instante y se navega
   demoraReducidaMs: 700,
 } as const
-// Misma curva fuerte de salida que --curva-salida (un test las compara)
-export const DESBLOQUEO_CURVA = [0.23, 1, 0.32, 1] as const
 
-export const TEXTOS_DESBLOQUEO = { anuncio: 'Modo admin desbloqueado' } as const
+export const TEXTOS_DESBLOQUEO = {
+  anuncio: 'Modo admin desbloqueado',
+  palabras: ['Modo', 'admin', 'desbloqueado'],
+} as const
 
 // TEXTOS DE LAS CÁPSULAS «?» (la explicación de cada dato sale solo de la API)
 export const TEXTOS_CAPSULA = {

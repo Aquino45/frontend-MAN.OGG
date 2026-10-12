@@ -1,0 +1,51 @@
+/* Cortina de hojas: una capa fija sobre toda la pantalla. El movimiento lo lleva el código
+   (animaciones del navegador sobre `transform` y `opacity`); aquí viven el aspecto y el estado
+   inicial: todo empieza invisible para que no haya un destello antes de la primera animación.
+   Los colores salen de tokens (las hojas, de los de la marca). */
+
+.cortina-hojas {
+  position: fixed;
+  inset: 0;
+  z-index: var(--capa-desbloqueo);
+  overflow: hidden;
+  /* Mientras dura, nada de lo de abajo se puede pulsar ni desplazar */
+  touch-action: none;
+  user-select: none;
+}
+
+/* Montada pero sin activar: oculta y sin recibir el puntero (ya tiene sus hojas armadas) */
+.cortina-hojas:not([data-activa]) {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.cortina-hojas__decoracion {
+  position: absolute;
+  inset: 0;
+}
+
+.cortina-hojas__simbolos {
+  position: absolute;
+}
+
+.cortina-hojas__fondo {
+  position: absolute;
+  inset: 0;
+  background: var(--tronco-noche);
+  opacity: 0;
+}
+
+.cortina-hojas__hoja {
+  position: absolute;
+  opacity: 0;
+  shape-rendering: crispEdges;
+}
+
+/* «Reducir movimiento»: sin hojas ni transiciones; el fondo se ve fijo */
+.cortina-hojas[data-reducido] .cortina-hojas__fondo {
+  opacity: 1;
+}
+
+.cortina-hojas[data-reducido] .cortina-hojas__hoja {
+  display: none;
+}

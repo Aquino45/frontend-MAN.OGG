@@ -1,6 +1,6 @@
 import { act, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { DESBLOQUEO_ANIMACION as D, DESBLOQUEO_CURVA, TEXTOS_DESBLOQUEO } from '@/config/constantes'
+import { CORTINA_CURVA, DESBLOQUEO_ANIMACION as D, TEXTOS_DESBLOQUEO } from '@/config/constantes'
 import CortinaDesbloqueo from './CortinaDesbloqueo'
 
 const URL_PANEL = 'https://panel.prueba.invalid/admin/'
@@ -21,6 +21,19 @@ function simularMovimientoReducido(reducido: boolean) {
   }))
 }
 
+function espiarAnimaciones() {
+  Element.prototype.animate = function (this: Element, fotogramas, opciones) {
+    const cancelar = vi.fn()
+    llamadas.push({
+      elemento: this,
+      fotogramas: fotogramas as Keyframe[],
+      opciones: opciones as KeyframeAnimationOptions,
+      cancelar,
+    })
+    return { cancel: cancelar } as unknown as Animation
+  }
+}
+
 function montar(alQuitar = vi.fn(), activa = true) {
   const ir = vi.fn()
   const vista = render(
@@ -34,21 +47,15 @@ const avanzar = (ms: number) =>
     await vi.advanceTimersByTimeAsync(ms)
   })
 
+const deElemento = (base: HTMLElement, selector: string) =>
+  llamadas.filter(({ elemento }) => base.querySelector(selector) === elemento)
+
 describe('CortinaDesbloqueo', () => {
   beforeEach(() => {
     vi.useFakeTimers()
     llamadas.length = 0
     simularMovimientoReducido(false)
-    Element.prototype.animate = function (this: Element, fotogramas, opciones) {
-      const cancelar = vi.fn()
-      llamadas.push({
-        elemento: this,
-        fotogramas: fotogramas as Keyframe[],
-        opciones: opciones as KeyframeAnimationOptions,
-        cancelar,
-      })
-      return { cancel: cancelar } as unknown as Animation
-    }
+    espiarAnimaciones()
     window.innerWidth = 1440
     window.innerHeight = 900
   })
@@ -66,58 +73,96 @@ describe('CortinaDesbloqueo', () => {
     expect(aviso).toHaveTextContent(TEXTOS_DESBLOQUEO.anuncio)
   })
 
-  it('las hojas, el fondo y el texto dibujado son adorno: no se leen dos veces', () => {
+  it('lo dibujado (candado, palabras y línea) es adorno: no se lee dos veces', () => {
     const { baseElement } = montar()
-    const decoracion = baseElement.querySelector('.desbloqueo__decoracion')
-    expect(decoracion).toHaveAttribute('aria-hidden', 'true')
-    expect(decoracion).toContainElement(baseElement.querySelector('.desbloqueo__texto'))
+    const escena = baseElement.querySelector('.desbloqueo')
+    expect(escena).toHaveAttribute('aria-hidden', 'true')
+    expect(escena).toContainElement(baseElement.querySelector('[data-candado]'))
+    expect(escena?.textContent).toBe(TEXTOS_DESBLOQUEO.palabras.join(''))
   })
 
-  it('va en el cuerpo de la página, sobre todo lo demás, y no más hojas que el tope', () => {
+  it('la primera fase es la cortina de hojas: hay hojas cayendo antes que nada de la segunda', () => {
     const { baseElement } = montar()
-    const cortina = baseElement.querySelector('.desbloqueo')
-    expect(cortina?.parentElement).toBe(document.body)
-    const hojas = baseElement.querySelectorAll('[data-hoja]')
-    expect(hojas.length).toBeGreaterThan(0)
-    expect(hojas.length).toBeLessThanOrEqual(D.hojasMax)
+    expect(baseElement.querySelectorAll('[data-hoja]').length).toBeGreaterThan(0)
+    expect(baseElement.querySelector('.cortina-hojas')).toContainElement(
+      baseElement.querySelector('.desbloqueo'),
+    )
+    // La segunda fase empieza cuando la primera ya cubrió
+    expect(D.atenuadoRetrasoMs).toBeGreaterThanOrEqual(1_000)
+    for (const retraso of [
+      D.candadoRetrasoMs,
+      D.arcoRetrasoMs,
+      D.textoRetrasoMs,
+      D.lineaRetrasoMs,
+    ]) {
+      expect(retraso).toBeGreaterThanOrEqual(D.atenuadoRetrasoMs)
+    }
   })
 
-  it('cada hoja cae con la curva de salida y solo anima transform y opacity, sin girar ni escalar', () => {
-    montar()
-    const deHojas = llamadas.filter(({ elemento }) => elemento.hasAttribute('data-hoja'))
-    expect(deHojas.length).toBeGreaterThan(0)
-    for (const { fotogramas, opciones } of llamadas) {
-      expect(opciones.easing).toBe(`cubic-bezier(${DESBLOQUEO_CURVA.join(', ')})`)
+  it('segunda fase en orden: velo, candado, arco que sube, palabras escalonadas y línea', () => {
+    const { baseElement } = montar()
+    const velo = deElemento(baseElement, '[data-atenuado]')[0]
+    const candado = deElemento(baseElement, '[data-candado]')[0]
+    const arco = deElemento(baseElement, '[data-arco]')[0]
+    const linea = deElemento(baseElement, '[data-linea]')[0]
+    expect(velo.opciones.delay).toBe(D.atenuadoRetrasoMs)
+    expect(velo.fotogramas[1]).toMatchObject({ opacity: D.atenuadoOpacidad })
+    expect(candado.opciones.delay).toBe(D.candadoRetrasoMs)
+    expect(arco.opciones.delay).toBe(D.arcoRetrasoMs)
+    expect(arco.fotogramas[1]).toMatchObject({ transform: `translateY(${-D.arcoCeldasQueSube}px)` })
+    expect(linea.opciones.delay).toBe(D.lineaRetrasoMs)
+    expect(linea.fotogramas[0]).toMatchObject({ transform: 'scaleX(0)' })
+    expect(Number(candado.opciones.delay)).toBeLessThan(Number(arco.opciones.delay))
+    const palabras = [...baseElement.querySelectorAll('[data-palabra]')]
+    const retrasos = palabras.map((palabra) =>
+      Number(llamadas.find(({ elemento }) => elemento === palabra)?.opciones.delay),
+    )
+    expect(retrasos).toEqual(palabras.map((_, i) => D.textoRetrasoMs + i * D.textoEscalonadoMs))
+  })
+
+  it('nada nace de la nada: candado y palabras entran desde abajo y con opacidad, sin scale(0)', () => {
+    const { baseElement } = montar()
+    const entradas = [
+      ...deElemento(baseElement, '[data-candado]'),
+      ...llamadas.filter(({ elemento }) => elemento.hasAttribute('data-palabra')),
+    ]
+    expect(entradas.length).toBe(1 + TEXTOS_DESBLOQUEO.palabras.length)
+    for (const { fotogramas } of entradas) {
+      expect(fotogramas[0]).toMatchObject({
+        opacity: 0,
+        transform: `translateY(${D.textoDesplazamientoPx}px)`,
+      })
+    }
+  })
+
+  it('anima solo transform y opacity y con la curva de salida', () => {
+    const { baseElement } = montar()
+    const propias = llamadas.filter(({ elemento }) =>
+      baseElement.querySelector('.desbloqueo')?.contains(elemento),
+    )
+    expect(propias.length).toBeGreaterThan(0)
+    for (const { fotogramas, opciones } of propias) {
+      expect(opciones.easing).toBe(`cubic-bezier(${CORTINA_CURVA.join(', ')})`)
       for (const fotograma of fotogramas) {
-        const propiedades = Object.keys(fotograma).filter((clave) => clave !== 'offset')
-        for (const propiedad of propiedades) expect(['transform', 'opacity']).toContain(propiedad)
-        expect(String(fotograma.transform ?? '')).not.toMatch(/rotate|scale|skew/)
+        for (const propiedad of Object.keys(fotograma).filter((clave) => clave !== 'offset')) {
+          expect(['transform', 'opacity']).toContain(propiedad)
+        }
+        expect(String(fotograma.transform ?? '')).not.toMatch(/rotate|skew|scale\(0\)\s*$/)
       }
     }
-    for (const { opciones } of deHojas) {
-      expect(opciones.duration).toBe(D.caidaHojaMs)
-      expect(Number(opciones.delay)).toBeLessThanOrEqual(D.retrasoMaximoHojaMs)
-    }
   })
 
-  it('el fondo y el texto entran en su momento; el texto nunca nace de la nada', () => {
-    const { baseElement } = montar()
-    const fondo = llamadas.find(
-      ({ elemento }) => elemento === baseElement.querySelector('[data-fondo]'),
-    )
-    const chapa = llamadas.find(
-      ({ elemento }) => elemento === baseElement.querySelector('[data-chapa]'),
-    )
-    expect(fondo?.opciones.delay).toBe(D.fondoRetrasoMs)
-    expect(chapa?.opciones.delay).toBe(D.textoRetrasoMs)
-    expect(chapa?.opciones.duration).toBe(D.textoDuracionMs)
-    expect(chapa?.fotogramas[0]).toMatchObject({
-      opacity: 0,
-      transform: `translateY(${D.textoDesplazamientoPx}px)`,
-    })
+  it('todo termina antes de navegar y dura entre 2 y 2,5 s', () => {
+    const ultimaPalabra =
+      D.textoRetrasoMs + (TEXTOS_DESBLOQUEO.palabras.length - 1) * D.textoEscalonadoMs
+    expect(ultimaPalabra + D.textoDuracionMs).toBeLessThanOrEqual(D.duracionTotalMs)
+    expect(D.lineaRetrasoMs + D.lineaDuracionMs).toBeLessThanOrEqual(D.duracionTotalMs)
+    expect(D.arcoRetrasoMs + D.arcoDuracionMs).toBeLessThanOrEqual(D.duracionTotalMs)
+    expect(D.duracionTotalMs).toBeGreaterThanOrEqual(2_000)
+    expect(D.duracionTotalMs).toBeLessThanOrEqual(2_500)
   })
 
-  it('navega una sola vez, a la dirección del panel y no antes de que termine la cortina', async () => {
+  it('navega una sola vez, a la dirección del panel y no antes de que termine', async () => {
     const { ir } = montar()
     await avanzar(D.duracionTotalMs - 1)
     expect(ir).not.toHaveBeenCalled()
@@ -125,11 +170,6 @@ describe('CortinaDesbloqueo', () => {
     expect(ir).toHaveBeenCalledExactlyOnceWith(URL_PANEL)
     await avanzar(D.duracionTotalMs * 2)
     expect(ir).toHaveBeenCalledOnce()
-  })
-
-  it('dura entre 1,2 y 1,6 s en total', () => {
-    expect(D.duracionTotalMs).toBeGreaterThanOrEqual(1200)
-    expect(D.duracionTotalMs).toBeLessThanOrEqual(1600)
   })
 
   it('si se desmonta antes de tiempo, no navega y cancela sus animaciones', async () => {
@@ -141,25 +181,22 @@ describe('CortinaDesbloqueo', () => {
     for (const { cancelar } of llamadas) expect(cancelar).toHaveBeenCalled()
   })
 
-  it('montada sin activar queda oculta, sin animar, sin anunciar y sin navegar', async () => {
+  it('montada sin activar queda oculta, sin anunciar y sin navegar', async () => {
     const { ir, baseElement } = montar(vi.fn(), false)
     await avanzar(D.duracionTotalMs * 2)
     expect(llamadas).toHaveLength(0)
     expect(ir).not.toHaveBeenCalled()
-    expect(baseElement.querySelector('.desbloqueo')).not.toHaveAttribute('data-activa')
+    expect(baseElement.querySelector('.cortina-hojas')).not.toHaveAttribute('data-activa')
     expect(screen.getByRole('status', { hidden: true })).toBeEmptyDOMElement()
-    expect(baseElement.querySelectorAll('[data-hoja]').length).toBeGreaterThan(0)
   })
 
-  it('al activarse empieza a animar y a contar el tiempo desde ese momento', async () => {
+  it('al activarse empieza a contar el tiempo desde ese momento', async () => {
     const ir = vi.fn()
-    const { rerender, baseElement } = render(
+    const { rerender } = render(
       <CortinaDesbloqueo activa={false} urlPanel={URL_PANEL} ir={ir} alQuitar={vi.fn()} />,
     )
     await avanzar(D.duracionTotalMs * 3)
     rerender(<CortinaDesbloqueo activa urlPanel={URL_PANEL} ir={ir} alQuitar={vi.fn()} />)
-    expect(baseElement.querySelector('.desbloqueo')).toHaveAttribute('data-activa', 'si')
-    expect(llamadas.length).toBeGreaterThan(0)
     await avanzar(D.duracionTotalMs - 1)
     expect(ir).not.toHaveBeenCalled()
     await avanzar(1)
@@ -180,15 +217,7 @@ describe('CortinaDesbloqueo con «reducir movimiento»', () => {
     vi.useFakeTimers()
     llamadas.length = 0
     simularMovimientoReducido(true)
-    Element.prototype.animate = function (this: Element, fotogramas, opciones) {
-      llamadas.push({
-        elemento: this,
-        fotogramas: fotogramas as Keyframe[],
-        opciones: opciones as KeyframeAnimationOptions,
-        cancelar: vi.fn(),
-      })
-      return { cancel: vi.fn() } as unknown as Animation
-    }
+    espiarAnimaciones()
   })
   afterEach(() => {
     vi.useRealTimers()
@@ -196,13 +225,15 @@ describe('CortinaDesbloqueo con «reducir movimiento»', () => {
     Reflect.deleteProperty(Element.prototype, 'animate')
   })
 
-  it('no crea ninguna animación: el texto se ve fijo', () => {
+  it('no crea ninguna animación: candado abierto y texto fijos', () => {
     const { baseElement } = montar()
     expect(llamadas).toHaveLength(0)
-    expect(baseElement.querySelector('.desbloqueo')).toHaveAttribute('data-reducido', 'si')
+    expect(baseElement.querySelector('.cortina-hojas')).toHaveAttribute('data-reducido', 'si')
+    const arco = baseElement.querySelector<SVGElement>('[data-arco]')
+    expect(arco?.style.transform).toBe(`translateY(${-D.arcoCeldasQueSube}px)`)
   })
 
-  it('anuncia el texto y navega un instante después, sin esperar la cortina', async () => {
+  it('anuncia el texto y navega un instante después, sin esperar la animación', async () => {
     const { ir } = montar()
     await avanzar(1)
     expect(screen.getByRole('status')).toHaveTextContent(TEXTOS_DESBLOQUEO.anuncio)
