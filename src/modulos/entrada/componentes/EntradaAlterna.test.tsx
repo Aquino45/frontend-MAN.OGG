@@ -131,7 +131,7 @@ describe('EntradaAlterna', () => {
     await avanzar(1)
     expect(hojas()).toHaveLength(2)
     await avanzar(DURACION_ENTRADA_ALTERNA_MS)
-    expect(cantidadDeHojasGrandes()).toBe(5)
+    expect(cantidadDeHojasGrandes()).toBe(7)
   })
 
   it('cada hoja grande cambia un paso respecto de la anterior y ninguna pasa del tope', async () => {
@@ -143,7 +143,7 @@ describe('EntradaAlterna', () => {
     const lados = [...hojas()].map((hoja) => parseFloat((hoja as HTMLElement).style.width))
     const base = 900 * E.hojaGrandeBase
     const factores = lados.map((lado) => Math.round((lado / base) * 10) / 10)
-    expect(factores).toEqual([1, 1.1, 1.2, 1.1, 1.2])
+    expect(factores).toEqual([1, 1.1, 1.2, 1.1, 1.2, 1.3, 1.3])
     factores.forEach((factor) => {
       expect(factor).toBeGreaterThanOrEqual(1 - E.hojaGrandeTope)
       expect(factor).toBeLessThanOrEqual(1 + E.hojaGrandeTope)
@@ -173,7 +173,7 @@ describe('EntradaAlterna', () => {
     expect(textoEscrito()).toBe(T.frases[1])
   })
 
-  it('avisa que la vista ya puede verse a los 8,3 s y se quita 0,7 s después, una sola vez', async () => {
+  it('avisa que la vista ya puede verse a los 11,3 s y se quita 1,2 s después, una sola vez', async () => {
     const { onTerminar, alCerrar } = montar()
     await avanzar(DURACION_ENTRADA_ALTERNA_MS - 1)
     expect(onTerminar).not.toHaveBeenCalled()

@@ -3,8 +3,8 @@ import { DURACION_ENTRADA_ALTERNA_MS, ENTRADA_ALTERNA as E } from '@/config/cons
 import { cantidadDeHojasGrandes, factoresDeTamano } from './hojasGrandes'
 
 describe('cantidadDeHojasGrandes', () => {
-  it('la primera sale a su hora y luego una cada tanto, hasta que empieza el final (unas 5)', () => {
-    expect(cantidadDeHojasGrandes()).toBe(5)
+  it('la primera sale a su hora y luego una cada tanto, hasta que empieza el final (unas 7)', () => {
+    expect(cantidadDeHojasGrandes()).toBe(7)
     const ultima = E.hojaGrandeDesdeMs + (cantidadDeHojasGrandes() - 1) * E.hojaGrandeCadaMs
     expect(ultima).toBeLessThan(DURACION_ENTRADA_ALTERNA_MS)
     expect(ultima + E.hojaGrandeCadaMs).toBeGreaterThanOrEqual(DURACION_ENTRADA_ALTERNA_MS)

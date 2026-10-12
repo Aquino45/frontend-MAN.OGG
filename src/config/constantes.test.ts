@@ -28,10 +28,10 @@ describe('constantes de la entrada al mapa', () => {
     expect(PESOS_ENTRADA.alterna / total).toBe(1 / 999)
   })
 
-  it('la secuencia dura unos 9 s: 8,3 s a la vista y 0,7 s de fundido final', () => {
-    expect(DURACION_ENTRADA_ALTERNA_MS).toBe(8_300)
-    expect(DURACION_SALIDA_ENTRADA_MS).toBe(700)
-    expect(DURACION_ENTRADA_ALTERNA_MS + DURACION_SALIDA_ENTRADA_MS).toBe(9_000)
+  it('la secuencia dura 12,5 s: 11,3 s a la vista y 1,2 s de fundido final', () => {
+    expect(DURACION_ENTRADA_ALTERNA_MS).toBe(11_300)
+    expect(DURACION_SALIDA_ENTRADA_MS).toBe(1_200)
+    expect(DURACION_ENTRADA_ALTERNA_MS + DURACION_SALIDA_ENTRADA_MS).toBe(12_500)
     expect(DURACION_SALIDA_ANTICIPADA_MS).toBeLessThan(DURACION_SALIDA_ENTRADA_MS)
   })
 

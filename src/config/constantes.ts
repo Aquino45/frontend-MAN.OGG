@@ -8,9 +8,9 @@ export type VarianteEntrada = keyof typeof PESOS_ENTRADA
 // ENTRADA ALTERNA: LA SECUENCIA. Todo en ms y desde que empieza. Es una pieza que se ve muy pocas veces,
 // así que puede pasar de los 300 ms de la interfaz de todos los días.
 // Hasta cuándo se ve entera, antes de que empiece a desvanecerse y deje ver la vista pedida
-export const DURACION_ENTRADA_ALTERNA_MS = 8_300
+export const DURACION_ENTRADA_ALTERNA_MS = 11_300
 // Cuánto tarda en desvanecerse al final (y al salir antes con Esc o un clic, bastante menos)
-export const DURACION_SALIDA_ENTRADA_MS = 700
+export const DURACION_SALIDA_ENTRADA_MS = 1_200
 export const DURACION_SALIDA_ANTICIPADA_MS = 200
 // Con «reducir movimiento»: todo quieto y completo este rato, sin sonido, y se sigue
 export const DURACION_ENTRADA_ALTERNA_REDUCIDA_MS = 2_000
@@ -36,8 +36,8 @@ export const ENTRADA_ALTERNA = {
   cajaDesplazamientoPx: 24,
   // Las frases se escriben letra por letra y se quedan un rato para leerlas
   frase1DesdeMs: 3_000,
-  frase2DesdeMs: 5_500,
-  msPorLetra: 35,
+  frase2DesdeMs: 6_500,
+  msPorLetra: 70,
   // Hasta cuándo se puede forzar con el gesto previo (el navegador solo deja sonar tras un gesto)
   gestoValidoMs: 1_500,
 } as const
@@ -48,14 +48,15 @@ export const TEXTOS_ENTRADA_ALTERNA = {
 
 // SONIDO DE LA ENTRADA ALTERNA (sintetizado con Web Audio; volumen bajo y fijo)
 export const SONIDO_ENTRADA_ALTERNA = {
-  // Cada letra suena con un blip corto, agudo y dulce (onda cuadrada); alternan dos notas para que no cansen
-  blipFrecuenciasHz: [1_318.5, 1_568],
-  blipDuracionMs: 45,
-  blipVolumen: 0.04,
+  // Cada letra suena con un blip corto y grave (onda cuadrada, do5 y mi5); alternan dos notas para
+  // que no cansen. Es más corto que el tiempo de cada letra, así entre blip y blip queda una pausa
+  blipFrecuenciasHz: [523.25, 659.25],
+  blipDuracionMs: 60,
+  blipVolumen: 0.05,
   // La pista de fondo entra y sale con fundidos
   pistaVolumen: 0.18,
   pistaFundidoEntradaMs: 600,
-  pistaFundidoSalidaMs: 700,
+  pistaFundidoSalidaMs: 1_200,
 } as const
 
 // FORZAR LA VARIANTE A MANO: un clic simple en el árbol de Inicio abre una ventana; si en ese lapso se
