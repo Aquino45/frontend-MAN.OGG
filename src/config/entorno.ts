@@ -1,4 +1,5 @@
 // ÚNICO LUGAR DEL PROYECTO QUE LEE import.meta.env
+import { SATELITE_URL_TESELAS_POR_DEFECTO } from './satelite'
 
 export interface Entorno {
   urlApi: string
@@ -44,4 +45,23 @@ export function leerUrlPanel(variables: VariablesCrudas): string | null {
 
 export function obtenerUrlPanel(): string | null {
   return leerUrlPanel(import.meta.env)
+}
+
+export interface ConfigSatelite {
+  urlTeselas: string
+  clave: string
+}
+
+// Vista satelital (opcional). Sin clave no hay configuración y el sitio sigue con el mapa ilustrado.
+export function leerConfigSatelite(variables: VariablesCrudas): ConfigSatelite | null {
+  const clave = variables.VITE_ESRI_CLAVE
+  if (typeof clave !== 'string' || clave.trim() === '') return null
+  const url = variables.VITE_ESRI_URL_TESELAS
+  const urlTeselas =
+    typeof url === 'string' && url.trim() !== '' ? url.trim() : SATELITE_URL_TESELAS_POR_DEFECTO
+  return { urlTeselas, clave: clave.trim() }
+}
+
+export function obtenerConfigSatelite(): ConfigSatelite | null {
+  return leerConfigSatelite(import.meta.env)
 }

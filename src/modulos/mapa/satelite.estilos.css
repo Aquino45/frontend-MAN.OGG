@@ -1,0 +1,108 @@
+/* Vista satelital: el control de vista, el marco del mapa, el tinte con la paleta y la atribución.
+   Todo el color sale de tokens. */
+
+.vista-mapa__mapa {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-3);
+  min-inline-size: 0;
+}
+
+.control-vista-mapa {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-2) var(--espacio-3);
+}
+
+.control-vista-mapa__vistas {
+  display: inline-flex;
+  gap: var(--espacio-2);
+}
+
+/* El botón de la vista activa queda marcado por forma (borde en el acento) y no solo por color */
+.control-vista-mapa__boton[aria-pressed='true'],
+.mapa-satelite__sectores .boton[aria-pressed='true'] {
+  --boton-fondo: var(--color-superficie);
+  --boton-borde: var(--color-acento);
+  border-width: var(--grosor-acento);
+}
+
+.mapa-satelite {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+}
+
+.mapa-satelite__marco {
+  position: relative;
+  overflow: hidden;
+  min-block-size: var(--mapa-alto-reserva);
+  block-size: var(--mapa-alto-maximo);
+  border-radius: var(--radio-tarjeta);
+  background: var(--color-superficie);
+}
+
+.mapa-satelite__lienzo {
+  position: absolute;
+  inset: 0;
+}
+
+/* Tinte: la foto sin color se mezcla con el magenta de la paleta y se oscurece hacia la noche.
+   «Color natural» quita esta capa entera. */
+.mapa-satelite__tinte {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mapa-satelite__tinte::before,
+.mapa-satelite__tinte::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.mapa-satelite__tinte::before {
+  background: var(--copa-magenta-oscuro);
+  mix-blend-mode: color;
+}
+
+.mapa-satelite__tinte::after {
+  background: var(--tronco-noche);
+  mix-blend-mode: multiply;
+  opacity: 0.35;
+}
+
+.mapa-satelite__cargando {
+  position: absolute;
+  inset-block-end: var(--espacio-3);
+  inset-inline-start: var(--espacio-3);
+  margin: 0;
+  padding: var(--espacio-1) var(--espacio-2);
+  border-radius: var(--radio-chip);
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-size: var(--texto-sm);
+}
+
+.mapa-satelite__atribucion {
+  margin: 0;
+  font-size: var(--texto-sm);
+  color: var(--color-texto-tenue);
+}
+
+.mapa-satelite__sectores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (max-width: 55.99rem) {
+  .vista-mapa--con-sector .mapa-satelite__marco {
+    block-size: var(--mapa-alto-reserva);
+  }
+}
