@@ -44,7 +44,7 @@ censo-arboreo-frontend/
 │   ├── lib/                   ← funciones puras que usan 2 módulos o más (formatear unidades, elegirVariante)
 │   ├── test/                  ← setup.ts de Vitest
 │   └── modulos/               ← una carpeta por funcionalidad
-│       ├── mapa/              ← mapa ilustrado, hover y selección de sector
+│       ├── mapa/              ← mapa ilustrado, hover y selección de sector; y el mapa real (`componentes/MapaReal`, en su propio chunk con MapLibre): calles (OpenStreetMap, sin clave) y satélite (Esri, con `VITE_ESRI_CLAVE`), con los mismos sectores, límites (continuo o punteado), puntos y estrellas que el ilustrado
 │       │   ├── componentes/   ← MapaSectores, PanelSector…
 │       │   ├── hooks/         ← useArbolesDeSector
 │       │   ├── vistas/        ← VistaMapa

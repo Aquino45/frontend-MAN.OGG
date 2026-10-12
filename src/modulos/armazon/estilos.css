@@ -43,18 +43,9 @@
   transform: scale(var(--escala-activo));
 }
 
-/* Solo el wordmark, un paso más grande que dentro del logo completo */
-.armazon-cabecera__marca .wordmark__censo {
-  font-size: max(calc(var(--marca-alto) * 0.3), var(--texto-xs));
-}
-
-.armazon-cabecera__marca .wordmark__arboreo {
-  font-size: calc(var(--marca-alto) * 0.6);
-}
-
-/* Entrada corta al abrir el sitio: sube 4 px mientras aparece. La cabecera no se vuelve a montar al
+/* Entrada corta del logo al abrir el sitio: sube 4 px mientras aparece. La cabecera no se vuelve a montar al
    cambiar de página, así que ocurre una sola vez; con «reducir movimiento» no se anima. */
-.armazon-cabecera__marca .wordmark {
+.armazon-cabecera__marca .logo-nuestro {
   animation: armazon-marca-entra var(--duracion-entrada) var(--curva-salida) both;
   transition: transform var(--duracion-hover) var(--curva-salida);
 }
@@ -71,9 +62,9 @@
   }
 }
 
-/* Hover sutil: el wordmark se corre 2 px a la derecha, solo con cursor fino */
+/* Hover sutil: el logo se corre 2 px a la derecha, solo con cursor fino */
 @media (hover: hover) and (pointer: fine) {
-  .armazon-cabecera__marca:hover .wordmark {
+  .armazon-cabecera__marca:hover .logo-nuestro {
     transform: translateX(2px);
   }
 }

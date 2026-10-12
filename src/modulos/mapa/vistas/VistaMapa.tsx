@@ -17,15 +17,14 @@ import {
   TEXTOS_MAPA,
   TEXTOS_PANEL,
 } from '@/config/constantes'
-import { obtenerConfigSatelite, type ConfigSatelite } from '@/config/entorno'
-import { TEXTOS_SATELITE, type VistaMapaTipo } from '@/config/satelite'
+import { obtenerConfigMapaReal, type ConfigMapaReal } from '@/config/entorno'
+import { TEXTOS_SATELITE, VISTAS_MAPA, type VistaMapaTipo } from '@/config/satelite'
 import { elegirVariante } from '@/lib/elegirVariante'
 import { ControlVistaMapa } from '../componentes/ControlVistaMapa'
 import type { FormaGlifo } from '../componentes/GlifoArbol'
 import { MapaSectores } from '../componentes/MapaSectores'
 import { PanelSector } from '../componentes/PanelSector'
 import { useArbolesDeSector } from '../hooks/useArbolesDeSector'
-import { useTenido } from '../hooks/useTenido'
 import { useRetornoDeFoco } from '../hooks/useRetornoDeFoco'
 import { useHojaArrastrable } from '../hooks/useHojaArrastrable'
 import { useSeleccionEnUrl } from '../hooks/useSeleccionEnUrl'
@@ -34,27 +33,30 @@ const TECLA_ESCAPE = 'Escape'
 // Proporción del esqueleto del mapa mientras carga (la misma del mapa compacto de Inicio)
 import { PROPORCION_MAPA } from './proporcionMapa'
 
-// MapLibre pesa: el mapa satelital se descarga solo cuando alguien activa «Satélite».
-const MapaSatelite = lazy(() => import('../componentes/MapaSatelite'))
+// MapLibre pesa: el mapa real se descarga solo cuando alguien activa «Calles» o «Satélite».
+const MapaReal = lazy(() => import('../componentes/MapaReal'))
 
 interface PropsVistaMapa {
   // Fuente de azar para las variantes de adorno; se inyecta en los tests.
   aleatorio?: () => number
-  // Vista satelital: sin configuración (sin clave) no hay botón. Se inyecta en los tests.
-  configSatelite?: ConfigSatelite | null
+  // Calles y satélite: sin clave de Esri no hay satélite. Se inyecta en los tests.
+  configMapaReal?: ConfigMapaReal
 }
 
 export function VistaMapa({
   aleatorio = Math.random,
-  configSatelite: configInyectada,
+  configMapaReal: configInyectada,
 }: PropsVistaMapa) {
   // Se lee del entorno una sola vez: un objeto nuevo en cada dibujo recrearía el mapa
-  const [configSatelite] = useState(() =>
-    configInyectada === undefined ? obtenerConfigSatelite() : configInyectada,
+  const [configMapaReal] = useState(() =>
+    configInyectada === undefined ? obtenerConfigMapaReal() : configInyectada,
   )
+  // El satélite solo existe con la clave de Esri; las calles siempre
+  const vistasDisponibles: readonly VistaMapaTipo[] = configMapaReal.clave
+    ? VISTAS_MAPA
+    : VISTAS_MAPA.filter((vistaPosible) => vistaPosible !== 'satelite')
   const sectores = useSectoresDelCampus()
   const [vista, setVista] = useState<VistaMapaTipo>('ilustrado')
-  const [tenido, alternarTenido] = useTenido()
   const seleccion = useSeleccionEnUrl()
   const recordarOrigen = useRetornoDeFoco(seleccion.arbolCodigo)
   const [sectorResaltado, setSectorResaltado] = useState<number | null>(null)
@@ -120,30 +122,23 @@ export function VistaMapa({
   return (
     <section className={`vista-mapa${sectorAbierto ? ' vista-mapa--con-sector' : ''}`}>
       <div className="vista-mapa__mapa">
-        {configSatelite && (
-          <ControlVistaMapa
-            vista={vista}
-            tenido={tenido}
-            onCambiarVista={setVista}
-            onAlternarTenido={alternarTenido}
-          />
-        )}
-        {configSatelite && vista === 'satelite' ? (
+        <ControlVistaMapa vista={vista} vistas={vistasDisponibles} onCambiarVista={setVista} />
+        {vista !== 'ilustrado' ? (
           <Suspense
             fallback={
               <EstadoCarga
-                etiqueta={TEXTOS_SATELITE.cargando}
+                etiqueta={TEXTOS_SATELITE.cargando[vista]}
                 forma="bloque"
                 proporcion={PROPORCION_MAPA}
               />
             }
           >
-            <MapaSatelite
+            <MapaReal
               sectores={sectores.sectores}
               sectorSeleccionado={sectorAbierto?.id ?? null}
               arboles={arboles.estado === 'listo' ? arboles.arboles : undefined}
-              config={configSatelite}
-              tenido={tenido}
+              config={configMapaReal}
+              base={vista}
               onSeleccionar={alSeleccionarSector}
               onAbrirArbol={abrirArbol}
             />

@@ -1,10 +1,20 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { SectorFeature } from '@/api/cliente'
-import type { ConfigSatelite } from '@/config/entorno'
-import { SATELITE_CAPA_ARBOLES, SATELITE_CAPA_RELLENO, TEXTOS_SATELITE } from '@/config/satelite'
+import type { ConfigMapaReal } from '@/config/entorno'
+import {
+  ATRIBUCION_POR_BASE,
+  ENLACE_ATRIBUCION_POR_BASE,
+  SATELITE_CAPA_ARBOLES,
+  SATELITE_CAPA_BORDE,
+  SATELITE_CAPA_BORDE_PROVISIONAL,
+  SATELITE_CAPA_ESTRELLAS,
+  SATELITE_CAPA_RELLENO,
+  SATELITE_IMAGEN_ESTRELLA,
+  TEXTOS_SATELITE,
+} from '@/config/satelite'
 import { sectoresMock } from '@/mocks'
-import MapaSatelite from './MapaSatelite'
+import MapaReal from './MapaReal'
 
 // MapLibre necesita WebGL, que jsdom no tiene: se reemplaza por un mapa falso que registra lo que
 // se le pide y deja disparar sus eventos.
@@ -16,6 +26,8 @@ const falso = vi.hoisted(() => {
     opciones: Record<string, unknown>
     manejadores = new Map<string, Manejador[]>()
     capas: string[] = []
+    definiciones: Record<string, Record<string, unknown>> = {}
+    imagenes: string[] = []
     pintura: Record<string, unknown> = {}
     datos: Record<string, unknown> = {}
     camara: string[] = []
@@ -37,6 +49,10 @@ const falso = vi.hoisted(() => {
     }
     addLayer(capa: { id: string }) {
       this.capas.push(capa.id)
+      this.definiciones[capa.id] = capa
+    }
+    addImage(id: string) {
+      this.imagenes.push(id)
     }
     getSource(id: string) {
       return { setData: (datos: unknown) => (this.datos[id] = datos) }
@@ -68,9 +84,11 @@ const falso = vi.hoisted(() => {
   }
   class MarcadorFalso {
     static creados: { texto: string; posicion: [number, number]; removido: boolean }[] = []
+    static clases: string[] = []
     registro: { texto: string; posicion: [number, number]; removido: boolean }
     constructor({ element }: { element: HTMLElement }) {
       this.registro = { texto: element.textContent ?? '', posicion: [0, 0], removido: false }
+      MarcadorFalso.clases.push(element.className)
       MarcadorFalso.creados.push(this.registro)
     }
     setLngLat(posicion: [number, number]) {
@@ -94,20 +112,26 @@ vi.mock('maplibre-gl', () => ({
   setWorkerUrl: falso.ponerTrabajador,
 }))
 
-const CONFIG: ConfigSatelite = { urlTeselas: 'https://teselas.test/{z}/{y}/{x}', clave: 'k&1' }
+const CONFIG: ConfigMapaReal = {
+  clave: 'k&1',
+  urlsTeselas: {
+    satelite: 'https://satelite.test/{z}/{y}/{x}',
+    calles: 'https://calles.test/{z}/{y}/{x}',
+  },
+}
 const SECTORES = sectoresMock.features as SectorFeature[]
 
-function pintar(propiedades: Partial<React.ComponentProps<typeof MapaSatelite>> = {}) {
+function pintar(propiedades: Partial<React.ComponentProps<typeof MapaReal>> = {}) {
   const props = {
     sectores: SECTORES,
     sectorSeleccionado: null,
     config: CONFIG,
-    tenido: false,
+    base: 'satelite' as const,
     onSeleccionar: vi.fn(),
     onAbrirArbol: vi.fn(),
     ...propiedades,
   }
-  return { ...render(<MapaSatelite {...props} />), props }
+  return { ...render(<MapaReal {...props} />), props }
 }
 
 const ultimoMapa = () => falso.MapaFalso.instancias[falso.MapaFalso.instancias.length - 1]
@@ -122,7 +146,7 @@ function simularMovimientoReducido(reducido: boolean) {
   }))
 }
 
-describe('MapaSatelite', () => {
+describe('MapaReal', () => {
   beforeEach(() => {
     falso.MapaFalso.instancias = []
     falso.MapaFalso.fallarAlCrear = false
@@ -133,20 +157,25 @@ describe('MapaSatelite', () => {
     vi.unstubAllGlobals()
   })
 
-  it('pide la foto con la clave escapada y la atribución queda visible', () => {
-    pintar()
-    const estilo = ultimoMapa().opciones.style as {
-      sources: { imagen: { tiles: string[] } }
-      layers: { paint: Record<string, number> }[]
-    }
-    expect(estilo.sources.imagen.tiles).toEqual(['https://teselas.test/{z}/{y}/{x}?token=k%261'])
-    expect(estilo.layers[0].paint['raster-saturation']).toBe(0)
-    expect(screen.getByRole('link', { name: /Esri/ })).toBeVisible()
-  })
+  it.each([
+    ['satelite', 'https://satelite.test/{z}/{y}/{x}?token=k%261'],
+    ['calles', 'https://calles.test/{z}/{y}/{x}'],
+  ] as const)(
+    'en «%s» pide las teselas de esa base (solo el satélite lleva la clave, escapada) y la atribución queda visible',
+    (base, url) => {
+      pintar({ base })
+      const estilo = ultimoMapa().opciones.style as { sources: { imagen: { tiles: string[] } } }
+      expect(estilo.sources.imagen.tiles).toEqual([url])
+      expect(screen.getByRole('region', { name: TEXTOS_SATELITE.etiquetaMapa[base] })).toBeVisible()
+      const atribucion = screen.getByRole('link', { name: ATRIBUCION_POR_BASE[base] })
+      expect(atribucion).toBeVisible()
+      expect(atribucion).toHaveAttribute('href', ENLACE_ATRIBUCION_POR_BASE[base])
+    },
+  )
 
   it('al cargar agrega los sectores y los árboles, y encuadra el campus', async () => {
     pintar()
-    expect(screen.getByRole('status')).toHaveTextContent(TEXTOS_SATELITE.cargando)
+    expect(screen.getByRole('status')).toHaveTextContent(TEXTOS_SATELITE.cargando.satelite)
     await cargar()
     expect(ultimoMapa().capas).toContain(SATELITE_CAPA_RELLENO)
     expect(ultimoMapa().capas).toContain(SATELITE_CAPA_ARBOLES)
@@ -161,21 +190,55 @@ describe('MapaSatelite', () => {
     expect(ultimoMapa().camara).toEqual(['resize', 'jumpTo'])
   })
 
-  it('la foto se ve en color natural por defecto y «Teñido» pone la capa de la paleta', async () => {
-    const { container, rerender, props } = pintar()
+  it('el límite es continuo si el sector es real y punteado si es provisional', async () => {
+    pintar()
     await cargar()
-    expect(container.querySelector('.mapa-satelite__tinte')).toBeNull()
-
-    rerender(<MapaSatelite {...props} tenido />)
-    expect(container.querySelector('.mapa-satelite__tinte')).not.toBeNull()
-    expect(ultimoMapa().pintura['imagen.raster-saturation']).toBe(-1)
-
-    rerender(<MapaSatelite {...props} tenido={false} />)
-    expect(container.querySelector('.mapa-satelite__tinte')).toBeNull()
-    expect(ultimoMapa().pintura['imagen.raster-saturation']).toBe(0)
+    const real = ultimoMapa().definiciones[SATELITE_CAPA_BORDE]
+    const provisional = ultimoMapa().definiciones[SATELITE_CAPA_BORDE_PROVISIONAL]
+    expect(real.filter).toEqual(['!=', ['get', 'provisional'], true])
+    expect((real.paint as Record<string, unknown>)['line-dasharray']).toBeUndefined()
+    expect(provisional.filter).toEqual(['==', ['get', 'provisional'], true])
+    expect((provisional.paint as Record<string, unknown>)['line-dasharray']).toEqual([2, 2])
   })
 
-  it('le da a MapLibre el worker empaquetado y pone el nombre de cada sector sobre la foto', async () => {
+  describe('destacados', () => {
+    afterEach(() => vi.restoreAllMocks())
+
+    it('se dibujan como estrellas, no como puntos, y los demás árboles como puntos', async () => {
+      const contexto = {
+        beginPath: vi.fn(),
+        moveTo: vi.fn(),
+        lineTo: vi.fn(),
+        closePath: vi.fn(),
+        fill: vi.fn(),
+        stroke: vi.fn(),
+        getImageData: vi.fn(() => ({ width: 52, height: 52, data: new Uint8ClampedArray(4) })),
+      }
+      vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(
+        contexto as unknown as CanvasRenderingContext2D,
+      )
+      pintar()
+      await cargar()
+      expect(ultimoMapa().imagenes).toEqual([SATELITE_IMAGEN_ESTRELLA])
+      expect(contexto.lineTo).toHaveBeenCalledTimes(9)
+      const estrellas = ultimoMapa().definiciones[SATELITE_CAPA_ESTRELLAS]
+      expect(estrellas.type).toBe('symbol')
+      expect(estrellas.filter).toEqual(['==', ['get', 'destacado'], true])
+      const puntos = ultimoMapa().definiciones[SATELITE_CAPA_ARBOLES]
+      expect(puntos.type).toBe('circle')
+      expect(puntos.filter).toEqual(['!=', ['get', 'destacado'], true])
+    })
+
+    it('si el navegador no puede dibujar la estrella, el destacado sigue viéndose como un punto mayor', async () => {
+      vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null)
+      pintar()
+      await cargar()
+      expect(ultimoMapa().imagenes).toEqual([])
+      expect(ultimoMapa().definiciones[SATELITE_CAPA_ESTRELLAS].type).toBe('circle')
+    })
+  })
+
+  it('le da a MapLibre el worker empaquetado y pone el nombre de cada sector sobre el mapa', async () => {
     falso.MarcadorFalso.creados = []
     pintar()
     await cargar()
@@ -190,14 +253,26 @@ describe('MapaSatelite', () => {
     ).toBe(true)
   })
 
-  it('quita los nombres de la foto al salir y los vuelve a poner si cambian los sectores', async () => {
+  it.each([
+    ['calles', 'mapa-satelite__etiqueta--calles'],
+    ['satelite', 'mapa-satelite__etiqueta--satelite'],
+  ] as const)('en «%s» los nombres de sector llevan su clase de contraste', async (base, clase) => {
+    falso.MarcadorFalso.clases = []
+    pintar({ base })
+    await cargar()
+    expect(falso.MarcadorFalso.clases).toHaveLength(SECTORES.length)
+    // Los nombres son marcadores HTML: la clase se pone en el elemento que se le da al marcador
+    expect(falso.MarcadorFalso.clases.every((clases) => clases.includes(clase))).toBe(true)
+  })
+
+  it('quita los nombres del mapa al salir y los vuelve a poner si cambian los sectores', async () => {
     falso.MarcadorFalso.creados = []
     const { rerender, props, unmount } = pintar()
     await cargar()
     expect(falso.MarcadorFalso.creados).toHaveLength(SECTORES.length)
     expect(falso.MarcadorFalso.creados.some((marcador) => marcador.removido)).toBe(false)
 
-    rerender(<MapaSatelite {...props} sectores={SECTORES.slice(0, 2)} />)
+    rerender(<MapaReal {...props} sectores={SECTORES.slice(0, 2)} />)
     const primerosCreados = falso.MarcadorFalso.creados.slice(0, SECTORES.length)
     expect(primerosCreados.every((marcador) => marcador.removido)).toBe(true)
     expect(falso.MarcadorFalso.creados).toHaveLength(SECTORES.length + 2)
@@ -210,7 +285,7 @@ describe('MapaSatelite', () => {
     const { rerender, props } = pintar()
     await cargar()
     const primero = ultimoMapa()
-    rerender(<MapaSatelite {...props} config={{ ...CONFIG }} sectorSeleccionado={1} />)
+    rerender(<MapaReal {...props} config={{ ...CONFIG }} sectorSeleccionado={1} />)
     expect(falso.MapaFalso.instancias).toHaveLength(1)
     expect(primero.removido).toBe(false)
   })
@@ -244,7 +319,7 @@ describe('MapaSatelite', () => {
   it('si el mapa no se puede crear avisa y Reintentar lo vuelve a intentar', async () => {
     falso.MapaFalso.fallarAlCrear = true
     pintar()
-    expect(await screen.findByRole('alert')).toHaveTextContent(TEXTOS_SATELITE.errorTitulo)
+    expect(await screen.findByRole('alert')).toHaveTextContent(TEXTOS_SATELITE.errorTitulo.satelite)
 
     falso.MapaFalso.fallarAlCrear = false
     fireEvent.click(screen.getByRole('button', { name: /reintentar/i }))

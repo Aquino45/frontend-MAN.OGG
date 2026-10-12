@@ -97,7 +97,6 @@ Reglas por defecto de Impeccable que chocan con compromisos de marca. Decisión 
 | Versión de MapLibre | `maplibre-gl@6.11.2`, versión exacta (sin `^`), en su chunk con `import()` al activar «Satélite» |
 | Fuente | Esri World Imagery por la fuente raster con URL del servicio nuevo y clave en `VITE_ESRI_CLAVE`; el plugin de Esri **no entra** salvo que la atribución dinámica no alcance (se pregunta antes) |
 | Atribución | A mano en la fuente raster, junto al crédito de OSM del pie. Qué texto exacto pide Esri para la capa: **por confirmar** en los términos |
-| Teñido (opcional; por defecto la foto va en color natural, decisión de Cristhian del 12/10) | `raster-saturation: -1` sobre la imagen y una capa de color con `mix-blend-mode`, con los colores leídos de los tokens CSS en ejecución |
 | Encuadre | `fitBounds` con el recuadro calculado desde los polígonos (sin coordenadas escritas a mano) |
 | Movimiento reducido | `jumpTo` en lugar de `flyTo` |
 | Peso del chunk | Se mide al integrarlo (sin verificar) |
@@ -106,6 +105,19 @@ Reglas por defecto de Impeccable que chocan con compromisos de marca. Decisión 
 **Falta de Cristhian:** la clave en `.env` del worktree (`VITE_ESRI_CLAVE`) y las URL de referencia `http://localhost:5173`, `:5175` y `:5176` en su credencial (sin `/*`). Sin ella se construye todo el código y los tests (con la fuente simulada) y se verifica "sin clave no hay botón"; la comprobación con imagen real queda abierta.
 
 **`.env.example`:** en este entorno no se puede leer (los permisos lo bloquean). Al documentar las `VITE_` del satélite se corrige también el ejemplo de `VITE_URL_PANEL` de `/admin/` a `/panel-censo/` (autorizado por el asesor, 12/10) y se declara en «Hice fuera de lo pedido». **Si el bloqueo sigue, queda como pendiente a mano de Cristhian.**
+
+### Auditoría del «Teñido» (12/10, a pedido de Cristhian: «no aporta, justifica su existencia»)
+
+| Qué aportaba | Qué costaba | Veredicto |
+| --- | --- | --- |
+| Armonía con la paleta | Volvía la foto gris: se pierde lo que justifica un satélite (verde de árboles, techos, caminos, el cauce) | El color de la paleta ya lo ponen el contorno, el relleno y el nombre de cada sector |
+| Ninguna tarea del visitante lo necesita | Un control más junto a «Ilustrado / Satélite», una preferencia guardada, una capa de mezcla (`mix-blend-mode`) y su CSS, 6 tests | No hay un caso de uso que lo justifique |
+| «Se ve de marca» | Contraste de los sectores sobre una foto teñida de magenta: relleno y foto se confundían (visto en el 5175) | Con la foto natural el sector resalta más |
+
+**Decisión: se quita.** Se borraron el botón, el hook de la preferencia, la capa CSS, las constantes y sus tests; un test comprueba que ya no hay botón «Teñido».
+
+### Calles (12/10)
+Con la clave actual solo `World_Imagery` responde en el host de claves de Esri; los servicios de calles de Esri (`World_Street_Map`, `World_Basemap_v2`, estilos de Basemap Styles) devolvieron 404 (medido con Playwright, 12/10). Para «Calles» se usan las teselas estándar de OpenStreetMap, sin clave y con su atribución. **Por confirmar con Cristhian:** la política de uso de las teselas públicas de OpenStreetMap permite uso ligero pero no está pensada para tráfico alto; si el sitio crece, conviene un proveedor propio (`VITE_URL_CALLES` ya permite cambiarlo sin tocar código).
 
 ## 5. Dirección de composición por superficie (decisiones del orquestador)
 

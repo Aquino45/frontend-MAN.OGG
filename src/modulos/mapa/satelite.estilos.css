@@ -1,4 +1,4 @@
-/* Vista satelital: el control de vista, el marco del mapa, el tinte con la paleta y la atribución.
+/* Vistas de calles y satélite: el control de vista, el marco del mapa, los nombres y la atribución.
    Todo el color sale de tokens. */
 
 .vista-mapa__mapa {
@@ -49,32 +49,6 @@
   inset: 0;
 }
 
-/* Tinte: la foto sin color se mezcla con el magenta de la paleta y se oscurece hacia la noche.
-   Es opcional («Teñido»); por defecto la foto se ve en color natural. */
-.mapa-satelite__tinte {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.mapa-satelite__tinte::before,
-.mapa-satelite__tinte::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-}
-
-.mapa-satelite__tinte::before {
-  background: var(--copa-magenta-oscuro);
-  mix-blend-mode: color;
-}
-
-.mapa-satelite__tinte::after {
-  background: var(--tronco-noche);
-  mix-blend-mode: multiply;
-  opacity: 0.35;
-}
-
 .mapa-satelite__cargando {
   position: absolute;
   inset-block-end: var(--espacio-3);
@@ -120,4 +94,12 @@
   text-shadow:
     0 0 3px var(--tronco-noche),
     0 0 6px var(--tronco-noche);
+}
+
+/* Sobre las calles el fondo es claro: texto noche con halo claro */
+.mapa-satelite__etiqueta--calles {
+  color: var(--tronco-noche);
+  text-shadow:
+    0 0 3px var(--texto-lectura),
+    0 0 6px var(--texto-lectura);
 }

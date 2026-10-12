@@ -23,15 +23,16 @@ describe('Cabecera', () => {
     expect(screen.queryByRole('heading', { level: 1 })).not.toBeInTheDocument()
   })
 
-  it('el enlace de la marca es solo el wordmark en texto, sin el símbolo de baldosas', () => {
+  it('el enlace de la marca es el logo completo: el símbolo de las baldosas y el wordmark', () => {
     const { container } = verCabecera(RUTAS.inicio)
     const marca = screen.getByRole('link', { name: NOMBRE_PRODUCTO })
     expect(marca).toHaveTextContent(TEXTOS_MARCA.censo)
     expect(marca).toHaveTextContent(TEXTOS_MARCA.arboreo)
-    expect(container.querySelector('.simbolo-logo')).toBeNull()
+    expect(marca.querySelector('.simbolo-logo')).not.toBeNull()
+    expect(container.querySelectorAll('.simbolo-logo')).toHaveLength(1)
   })
 
-  it('el wordmark mide 32 px de referencia en el celular y 40 px desde 48rem', () => {
+  it('el logo mide 32 px de referencia en el celular y 40 px desde 48rem', () => {
     expect(escalaTokens).toMatch(/--marca-cabecera-alto:\s*2rem/)
     expect(escalaTokens).toMatch(
       /@media \(min-width: 48rem\)\s*\{\s*:root\s*\{[^}]*--marca-cabecera-alto:\s*2\.5rem/,
@@ -61,7 +62,7 @@ describe('Cabecera', () => {
     expect(screen.getAllByAltText(TEXTOS_MARCA.upeu)).toHaveLength(2)
   })
 
-  it('el wordmark entra una vez con transform y opacity, y el hover es sutil y protegido', () => {
+  it('el logo entra una vez con transform y opacity, y el hover es sutil y protegido', () => {
     const inicio = estilosCss.indexOf('@keyframes armazon-marca-entra')
     expect(inicio).toBeGreaterThanOrEqual(0)
     // El bloque llega hasta la llave que cierra los dos cuadros (from y to)
@@ -69,10 +70,10 @@ describe('Cabecera', () => {
     const propiedades = [...cuadros.matchAll(/([a-z-]+):/g)].map(([, nombre]) => nombre)
     expect(new Set(propiedades)).toEqual(new Set(['opacity', 'transform']))
     expect(estilosCss).toMatch(
-      /\.armazon-cabecera__marca\s+\.wordmark\s*\{[^}]*animation:\s*armazon-marca-entra\s+var\(--duracion-entrada\)\s+var\(--curva-salida\)/,
+      /\.armazon-cabecera__marca\s+\.logo-nuestro\s*\{[^}]*animation:\s*armazon-marca-entra\s+var\(--duracion-entrada\)\s+var\(--curva-salida\)/,
     )
     expect(estilosCss).toMatch(
-      /@media \(hover: hover\) and \(pointer: fine\)\s*\{[^@]*\.armazon-cabecera__marca:hover \.wordmark\s*\{[^}]*transform:\s*translateX/,
+      /@media \(hover: hover\) and \(pointer: fine\)\s*\{[^@]*\.armazon-cabecera__marca:hover \.logo-nuestro\s*\{[^}]*transform:\s*translateX/,
     )
   })
 

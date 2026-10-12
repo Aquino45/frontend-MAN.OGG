@@ -1,24 +1,14 @@
-// Control de la vista del mapa: «Ilustrado / Satélite» y, en el satélite, «Teñido» (opcional).
-// Solo se dibuja si hay vista satelital configurada (lo decide quien lo usa).
+// Control de la vista del mapa: «Ilustrado», «Calles» y «Satélite».
 import { TEXTOS_SATELITE, type VistaMapaTipo } from '@/config/satelite'
 
 interface PropsControlVistaMapa {
   vista: VistaMapaTipo
-  tenido: boolean
+  // Las vistas que se pueden elegir (el satélite solo existe con la clave de Esri)
+  vistas: readonly VistaMapaTipo[]
   onCambiarVista: (vista: VistaMapaTipo) => void
-  onAlternarTenido: () => void
 }
 
-export function ControlVistaMapa({
-  vista,
-  tenido,
-  onCambiarVista,
-  onAlternarTenido,
-}: PropsControlVistaMapa) {
-  const opciones: { vista: VistaMapaTipo; texto: string }[] = [
-    { vista: 'ilustrado', texto: TEXTOS_SATELITE.ilustrado },
-    { vista: 'satelite', texto: TEXTOS_SATELITE.satelite },
-  ]
+export function ControlVistaMapa({ vista, vistas, onCambiarVista }: PropsControlVistaMapa) {
   return (
     <div className="control-vista-mapa">
       <div
@@ -26,28 +16,18 @@ export function ControlVistaMapa({
         aria-label={TEXTOS_SATELITE.grupoVista}
         className="control-vista-mapa__vistas"
       >
-        {opciones.map((opcion) => (
+        {vistas.map((opcion) => (
           <button
-            key={opcion.vista}
+            key={opcion}
             type="button"
             className="boton boton--secundario control-vista-mapa__boton"
-            aria-pressed={vista === opcion.vista}
-            onClick={() => onCambiarVista(opcion.vista)}
+            aria-pressed={vista === opcion}
+            onClick={() => onCambiarVista(opcion)}
           >
-            {opcion.texto}
+            {TEXTOS_SATELITE[opcion]}
           </button>
         ))}
       </div>
-      {vista === 'satelite' && (
-        <button
-          type="button"
-          className="boton boton--secundario control-vista-mapa__boton"
-          aria-pressed={tenido}
-          onClick={onAlternarTenido}
-        >
-          {TEXTOS_SATELITE.tenido}
-        </button>
-      )}
     </div>
   )
 }

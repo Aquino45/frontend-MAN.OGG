@@ -1,8 +1,9 @@
-// Mapa satelital: la foto de Esri con los mismos sectores y árboles del mapa ilustrado, dibujados
-// desde las mismas coordenadas del contrato. Se carga aparte (React.lazy) solo al activar «Satélite»,
-// porque MapLibre pesa. La foto se ve en color natural; el teñido con la paleta (opcional) es una
-// capa CSS encima del lienzo. Los nombres de los sectores son marcadores HTML (el mapa no tiene
-// tipografías de MapLibre). Con movimiento reducido la cámara salta en vez de volar.
+// Mapa sobre la geografía real, en calles o en satélite (Esri): los mismos sectores y árboles del
+// mapa ilustrado, dibujados desde las mismas coordenadas del contrato, con el límite continuo si el
+// sector es real y punteado si es provisional, y los destacados como estrellas. Se carga aparte
+// (React.lazy) solo al activar una de las dos vistas, porque MapLibre pesa. Los nombres de los
+// sectores son marcadores HTML (el mapa no tiene tipografías de MapLibre). Con movimiento reducido
+// la cámara salta en vez de volar.
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { Map as MapaMapLibre, Marker, setWorkerUrl, type GeoJSONSource } from 'maplibre-gl'
 // MapLibre busca su worker junto a su propio archivo, y ahí no existe una vez empaquetado: se le da
@@ -12,21 +13,21 @@ import { useEffect, useRef, useState } from 'react'
 import type { ArbolFeature, SectorFeature } from '@/api/cliente'
 import { EstadoError } from '@/compartido/EstadoError'
 import { usePideMenosMovimiento } from '@/compartido/usePideMenosMovimiento'
-import type { ConfigSatelite } from '@/config/entorno'
 import { ATRIBUTO_TEMA } from '@/config/constantes'
+import type { ConfigMapaReal } from '@/config/entorno'
 import {
-  SATELITE_ATRIBUCION,
+  ATRIBUCION_POR_BASE,
+  ENLACE_ATRIBUCION_POR_BASE,
   SATELITE_CAPA_ARBOLES,
-  SATELITE_CAPA_IMAGEN,
   SATELITE_CAPA_RELLENO,
   SATELITE_DURACION_VUELO_MS,
-  SATELITE_ENLACE_ATRIBUCION,
   SATELITE_FUENTE_ARBOLES,
   SATELITE_FUENTE_SECTORES,
   SATELITE_MARGEN_CAMPUS_PX,
   SATELITE_MARGEN_SECTOR_PX,
   SATELITE_ZOOM_MAXIMO,
   TEXTOS_SATELITE,
+  type BaseMapaReal,
 } from '@/config/satelite'
 import {
   coleccionArboles,
@@ -35,37 +36,34 @@ import {
   limitesDeSectores,
   posicionEtiqueta,
 } from '../lib/geojsonSatelite'
-import {
-  agregarCapas,
-  aplicarColores,
-  coloresActuales,
-  estiloDeLaImagen,
-  saturacion,
-} from './capasSatelite'
+import { agregarCapas, aplicarColores, coloresActuales, estiloDeLaBase } from './capasMapaReal'
 
-interface PropsMapaSatelite {
+interface PropsMapaReal {
   sectores: readonly SectorFeature[]
   sectorSeleccionado: number | null
   arboles?: readonly ArbolFeature[]
-  config: ConfigSatelite
-  tenido: boolean
+  config: ConfigMapaReal
+  // Qué se ve debajo de los sectores: las calles o la foto satelital
+  base: BaseMapaReal
   onSeleccionar: (sectorId: number) => void
   onAbrirArbol: (codigo: string) => void
 }
 
 const SIN_ARBOLES: readonly ArbolFeature[] = []
 
-export default function MapaSatelite({
+export default function MapaReal({
   sectores,
   sectorSeleccionado,
   arboles = SIN_ARBOLES,
   config,
-  tenido,
+  base,
   onSeleccionar,
   onAbrirArbol,
-}: PropsMapaSatelite) {
+}: PropsMapaReal) {
   // El mapa solo se recrea si cambia la dirección o la clave, no porque llegue otro objeto igual
-  const { urlTeselas, clave } = config
+  // Solo el satélite lleva clave; las calles no la piden
+  const clave = base === 'satelite' ? config.clave : null
+  const urlTeselas = config.urlsTeselas[base]
   const contenedor = useRef<HTMLDivElement>(null)
   const mapaRef = useRef<MapaMapLibre | null>(null)
   const [listo, setListo] = useState(false)
@@ -76,7 +74,6 @@ export default function MapaSatelite({
   // Los manejadores del clic viven en refs para no recrear el mapa cuando cambian.
   const alSeleccionar = useRef(onSeleccionar)
   const alAbrirArbol = useRef(onAbrirArbol)
-  const tenidoInicial = useRef(tenido)
   useEffect(() => {
     alSeleccionar.current = onSeleccionar
     alAbrirArbol.current = onAbrirArbol
@@ -90,7 +87,7 @@ export default function MapaSatelite({
     try {
       mapa = new MapaMapLibre({
         container: elemento,
-        style: estiloDeLaImagen({ urlTeselas, clave }, tenidoInicial.current),
+        style: estiloDeLaBase({ urlTeselas, clave }),
         attributionControl: false,
         maxZoom: SATELITE_ZOOM_MAXIMO,
       })
@@ -153,25 +150,20 @@ export default function MapaSatelite({
     fuente?.setData(coleccionArboles(arboles))
   }, [listo, arboles])
 
-  useEffect(() => {
-    const mapa = mapaRef.current
-    if (!listo || !mapa) return
-    mapa.setPaintProperty(SATELITE_CAPA_IMAGEN, 'raster-saturation', saturacion(tenido))
-  }, [tenido, listo])
-
   // Nombres de los sectores sobre la foto (decorativos: los botones de abajo ya los nombran)
   useEffect(() => {
     const mapa = mapaRef.current
     if (!listo || !mapa) return
     const marcadores = sectores.map((sector) => {
       const elemento = document.createElement('span')
-      elemento.className = 'mapa-satelite__etiqueta'
+      // Sobre las calles (fondo claro) el nombre va oscuro con halo claro; sobre la foto, al revés
+      elemento.className = `mapa-satelite__etiqueta mapa-satelite__etiqueta--${base}`
       elemento.setAttribute('aria-hidden', 'true')
       elemento.textContent = sector.properties.nombre
       return new Marker({ element: elemento }).setLngLat(posicionEtiqueta(sector)).addTo(mapa)
     })
     return () => marcadores.forEach((marcador) => marcador.remove())
-  }, [listo, sectores])
+  }, [listo, sectores, base])
 
   // Encuadre: todo el campus, o el sector abierto. Con movimiento reducido, la cámara salta.
   useEffect(() => {
@@ -196,7 +188,7 @@ export default function MapaSatelite({
   if (fallo) {
     return (
       <EstadoError
-        mensaje={`${TEXTOS_SATELITE.errorTitulo} ${TEXTOS_SATELITE.errorAyuda}`}
+        mensaje={`${TEXTOS_SATELITE.errorTitulo[base]} ${TEXTOS_SATELITE.errorAyuda}`}
         onReintentar={() => {
           setFallo(false)
           setIntento((anterior) => anterior + 1)
@@ -212,19 +204,18 @@ export default function MapaSatelite({
           ref={contenedor}
           className="mapa-satelite__lienzo"
           role="region"
-          aria-label={TEXTOS_SATELITE.etiquetaMapa}
+          aria-label={TEXTOS_SATELITE.etiquetaMapa[base]}
         />
-        {tenido && <div className="mapa-satelite__tinte" aria-hidden="true" />}
         {!listo && (
           <p className="mapa-satelite__cargando" role="status">
-            {TEXTOS_SATELITE.cargando}
+            {TEXTOS_SATELITE.cargando[base]}
           </p>
         )}
       </div>
       <p className="mapa-satelite__atribucion">
         {TEXTOS_SATELITE.atribucionEtiqueta}:{' '}
-        <a href={SATELITE_ENLACE_ATRIBUCION} target="_blank" rel="noreferrer">
-          {SATELITE_ATRIBUCION}
+        <a href={ENLACE_ATRIBUCION_POR_BASE[base]} target="_blank" rel="noreferrer">
+          {ATRIBUCION_POR_BASE[base]}
         </a>
       </p>
       <nav aria-label={TEXTOS_SATELITE.listaSectores}>
