@@ -1,7 +1,15 @@
 // Árbol pixel de la portada: se ve completo y quieto desde el primer cuadro; cuando termina la
 // entrada del sitio la copa respira por cuadros, suelta hojas y responde al cursor, todo en saltos
 // de una celda. Es adorno (aria-hidden). Con «reducir movimiento» queda completo y quieto.
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import {
+  lazy,
+  Suspense,
+  type ComponentProps,
+  type ComponentType,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { useEntradaTerminada } from '@/modulos/entrada'
 import { ARBOL_ANIMADO as G } from '@/config/constantes'
 import { useAccesoAlPanel } from '../hooks/useAccesoAlPanel'
@@ -17,7 +25,26 @@ import { SenalDeProgreso } from './SenalDeProgreso'
 // La cortina de desbloqueo va en su propio chunk: se empieza a pedir al presionar el árbol, y para
 // cuando se cumple el tiempo ya está
 const precargarCortina = () => import('./CortinaDesbloqueo')
-const CortinaDesbloqueo = lazy(precargarCortina)
+type CortinaDesbloqueoTipo = Awaited<ReturnType<typeof precargarCortina>>['default']
+// Si el chunk no llega (red caída), se va al panel igual, sin animación
+const CortinaDesbloqueo = lazy<ComponentType<ComponentProps<CortinaDesbloqueoTipo>>>(() =>
+  precargarCortina().catch(() => ({ default: CortinaSinCargar })),
+)
+
+function CortinaSinCargar({
+  activa,
+  urlPanel,
+  ir = (direccion) => window.location.assign(direccion),
+}: {
+  activa: boolean
+  urlPanel: string
+  ir?: (direccion: string) => void
+}) {
+  useEffect(() => {
+    if (activa) ir(urlPanel)
+  }, [activa, ir, urlPanel])
+  return null
+}
 
 interface PropsArbolAnimado {
   // Fuente de azar de las hojas; propia, separada de la del sorteo de la entrada
@@ -59,7 +86,10 @@ export function ArbolAnimado({
   const conReposo = arranco && fase !== 'quieto'
   // Mientras se mantiene presionado, el árbol deja de soltar hojas y, pasado el primer segundo, se
   // ilumina de a poco; al cumplirse el tiempo cae la cortina
-  const acceso = useAccesoAlPanel(refEnvoltura, { urlPanel, alEmpezar: precargarCortina })
+  const acceso = useAccesoAlPanel(refEnvoltura, {
+    urlPanel,
+    alEmpezar: () => void precargarCortina().catch(() => {}),
+  })
   const { hojas, soltarAbanico, quitar } = useHojasQueCaen({
     activa: enReposo && !acceso.reteniendo && !acceso.desbloqueado,
     pausado,

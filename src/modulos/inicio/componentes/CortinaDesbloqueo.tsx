@@ -43,7 +43,9 @@ export default function CortinaDesbloqueo({
   const prefijo = useId().replace(/\W/g, '')
   const refContenedor = useRef<HTMLDivElement>(null)
   const [anunciado, setAnunciado] = useState(false)
-  const diseno = useMemo(() => disenarCortina(window.innerWidth, window.innerHeight), [])
+  // Se mide al activar: si la ventana cambió de tamaño mientras estaba oculta, la rejilla sale al día
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const diseno = useMemo(() => disenarCortina(window.innerWidth, window.innerHeight), [activa])
 
   // El texto entra después de activar la zona de avisos: así los lectores de pantalla lo anuncian
   useEffect(() => {

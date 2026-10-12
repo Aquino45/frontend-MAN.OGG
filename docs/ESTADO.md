@@ -43,6 +43,7 @@ Actualizado: 11/10/2026 (ticket FE-009, en revisión).
 | `modulos/cartilla/` (19 campos, cápsulas «?» y «Sobre este árbol») | existe |
 | `modulos/entrada/`, `lib/elegirVariante` y las tablas de pesos | existen |
 | `modulos/armazon/`, `modulos/inicio/`, `modulos/explorar/`, `modulos/cifras/` | existen |
+| Animación de cierre del árbol de Inicio (`modulos/inicio/componentes/`) | existe |
 
 ## Pendiente fuera de este repo
 - Protección de `main` (PR obligatorio con aprobación de Code Owner, solo squash) y agregar `lint`, `tests` y `build` como checks obligatorios.
