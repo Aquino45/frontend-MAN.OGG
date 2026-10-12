@@ -66,8 +66,7 @@ export const FORZAR_ENTRADA = {
   largoClave: 6,
   // Un clic es simple si se suelta antes de esto (más largo ya es mantener presionado)
   clicMaximoMs: 400,
-  // Mientras no se defina la clave real, la huella no coincide con nada que se pueda teclear
-  huella: '91b4d142823f7d20c5f08df69122de43f35f057a988d9619f6d3138485c9a203',
+  huella: '86fd6a0aa0ac31bc5062046de3d32b326a812581f5c704ce803338ac68187828',
 } as const
 
 // Lo que dura el fundido de la entrada estándar (lo que Inicio espera antes de animar su árbol)
