@@ -16,6 +16,8 @@ import {
   SATELITE_CAPA_IMAGEN,
   SATELITE_CAPA_RELLENO,
   SATELITE_DENSIDAD_ESTRELLA,
+  SATELITE_DESPLAZAMIENTO_ESTRELLA,
+  SATELITE_ESCALA_PUNTO_DESTACADO,
   SATELITE_FUENTE_ARBOLES,
   SATELITE_FUENTE_IMAGEN,
   SATELITE_FUENTE_SECTORES,
@@ -82,7 +84,7 @@ export function imagenDeEstrella(colores: ColoresSatelite): ImageData | null {
   const grosor = SATELITE_GROSOR_BORDE_ESTRELLA_PX * SATELITE_DENSIDAD_ESTRELLA
   const radio = lado / 2 - grosor
   const vertices = verticesDeEstrella(
-    { x: lado / 2, y: lado / 2 + radio * 0.06 },
+    { x: lado / 2, y: lado / 2 + radio * SATELITE_DESPLAZAMIENTO_ESTRELLA },
     radio,
     SATELITE_RADIO_INTERNO_ESTRELLA,
     SATELITE_PUNTAS_ESTRELLA,
@@ -197,7 +199,7 @@ export function agregarCapas(mapa: MapaMapLibre, colores: ColoresSatelite) {
       source: SATELITE_FUENTE_ARBOLES,
       filter: ES_DESTACADO,
       paint: {
-        'circle-radius': SATELITE_RADIO_PUNTO_PX * 1.5,
+        'circle-radius': SATELITE_RADIO_PUNTO_PX * SATELITE_ESCALA_PUNTO_DESTACADO,
         'circle-color': colores.puntoDestacado,
         'circle-stroke-color': colores.puntoBorde,
         'circle-stroke-width': SATELITE_GROSOR_BORDE_PUNTO_PX,

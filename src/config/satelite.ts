@@ -50,6 +50,10 @@ export const SATELITE_DENSIDAD_ESTRELLA = 2
 export const SATELITE_PUNTAS_ESTRELLA = 5
 export const SATELITE_RADIO_INTERNO_ESTRELLA = 0.42
 export const SATELITE_GROSOR_BORDE_ESTRELLA_PX = 1.5
+// La estrella se baja un poco para que su centro óptico quede en el punto del árbol
+export const SATELITE_DESPLAZAMIENTO_ESTRELLA = 0.06
+// Sin lienzo, el destacado se dibuja como un punto de este tamaño relativo al de los demás
+export const SATELITE_ESCALA_PUNTO_DESTACADO = 1.5
 
 // Nombres internos de las fuentes, capas e imágenes de MapLibre
 export const SATELITE_FUENTE_IMAGEN = 'imagen'
