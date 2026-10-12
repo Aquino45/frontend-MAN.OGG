@@ -517,6 +517,9 @@ export const MAPA_INICIO_SUBIDA_POR_LINEA_EM = 0.5
 // CUÁNTOS PASOS DE ESCALONADO TIENE LA CASCADA DE PUNTOS DE UN SECTOR (el resto entra con el último)
 export const MAPA_PASOS_CASCADA = 8
 
+// FRASE PARA LECTORES DE PANTALLA MIENTRAS SE TRAE EL CÓDIGO DE UNA PÁGINA
+export const TEXTO_CARGANDO_PAGINA = 'Cargando la página'
+
 // ---------- CONTEO DE CIFRAS AL ENTRAR EN PANTALLA ----------
 export const CONTEO_ANIMADO = {
   // Lo que tarda un número en contar de 0 a su valor
