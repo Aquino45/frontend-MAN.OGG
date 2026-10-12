@@ -374,7 +374,7 @@ export const DESBLOQUEO_ANIMACION = {
   arcoRetrasoMs: 1_450,
   arcoDuracionMs: 240,
   arcoCeldasQueSube: 1,
-  candadoCeldaPx: 8,
+  candadoCeldaPx: 12,
   // El texto entra palabra por palabra, desde 8 px más abajo
   textoRetrasoMs: 1_300,
   textoEscalonadoMs: 70,

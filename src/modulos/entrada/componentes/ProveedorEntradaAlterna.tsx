@@ -14,11 +14,11 @@ import {
   type ReactNode,
 } from 'react'
 import { useLocation, useNavigationType } from 'react-router'
-import { FORZAR_ENTRADA as F, PESOS_ENTRADA, ENTRADA_ALTERNA as E } from '@/config/constantes'
+import { ENTRADA_ALTERNA as E, PESOS_ENTRADA } from '@/config/constantes'
 import { elegirVariante } from '@/lib/elegirVariante'
 import { ContextoForzarEntrada, type ControlDeEntrada } from '../hooks/contextoForzarEntrada'
 import { hayGestoReciente, useRegistroDeGestos } from '../lib/gesto'
-import { huellaSha256, letraDeTecla } from '../lib/huella'
+import type { Forzado } from '../lib/forzar'
 
 interface PropsSecuencia {
   conSonido: boolean
@@ -46,20 +46,19 @@ interface PropsProveedor {
   children: ReactNode
   // Fuente de azar del sorteo; se inyecta en los tests
   aleatorio?: () => number
-  // Huella SHA-256 de lo que fuerza la variante; se inyecta en los tests
+  // Huella SHA-256 de lo que fuerza la variante; se inyecta en los tests (por defecto, la de las constantes)
   huella?: string
 }
 
 export function ProveedorEntradaAlterna({
   children,
   aleatorio = Math.random,
-  huella = F.huella,
+  huella,
 }: PropsProveedor) {
   useRegistroDeGestos()
   const { pathname } = useLocation()
   const tipoDeNavegacion = useNavigationType()
   const [secuencia, setSecuencia] = useState<{ conSonido: boolean } | null>(null)
-  const ventana = useRef<{ hasta: number; letras: string } | null>(null)
   // Valores que los efectos leen sin reiniciarse cuando cambian
   const refAleatorio = useRef(aleatorio)
   useEffect(() => {
@@ -82,33 +81,30 @@ export function ProveedorEntradaAlterna({
     }
   }, [pathname, tipoDeNavegacion, iniciar])
 
-  // Forzarla a mano: la ventana se abre con un clic en el árbol y escucha las letras que se tecleen
+  // Forzarla a mano: su código se pide recién con el primer clic en el árbol
+  const forzado = useRef<Promise<Forzado> | null>(null)
+  const refHuella = useRef<string | undefined>(huella)
   useEffect(() => {
-    const alTeclear = (evento: KeyboardEvent) => {
-      const abierta = ventana.current
-      if (!abierta || performance.now() > abierta.hasta) return
-      const letra = letraDeTecla(evento)
-      if (!letra) return
-      abierta.letras = (abierta.letras + letra).slice(-F.largoClave)
-      if (abierta.letras.length < F.largoClave) return
-      const intento = abierta.letras
-      void huellaSha256(intento).then((resultado) => {
-        if (resultado !== huella || ventana.current !== abierta) return
-        ventana.current = null
-        iniciar(true)
-      })
-    }
-    window.addEventListener('keydown', alTeclear)
-    return () => window.removeEventListener('keydown', alTeclear)
-  }, [huella, iniciar])
+    refHuella.current = huella
+  })
+  useEffect(
+    () => () => {
+      void forzado.current?.then((control) => control.cerrar())
+      forzado.current = null
+    },
+    [],
+  )
 
   const control = useMemo<ControlDeEntrada>(
     () => ({
       clicEnArbol: () => {
-        ventana.current = { hasta: performance.now() + F.ventanaMs, letras: '' }
+        forzado.current ??= import('../lib/forzar').then(({ crearForzado }) =>
+          crearForzado(() => iniciar(true), refHuella.current),
+        )
+        void forzado.current.then((abierto) => abierto.abrir()).catch(() => {})
       },
     }),
-    [],
+    [iniciar],
   )
 
   return (

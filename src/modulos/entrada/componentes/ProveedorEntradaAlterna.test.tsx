@@ -70,6 +70,12 @@ async function montar(aleatorio: () => number, huella?: string) {
   return vista
 }
 
+// El código de la forma manual se pide con el primer clic: se deja pasar un cuadro para que esté listo
+async function clicEnElArbol() {
+  fireEvent.click(screen.getByText('clic en el árbol'))
+  await act(async () => {})
+}
+
 const capa = () => document.querySelector('.entrada-alterna')
 const teclear = (texto: string) =>
   [...texto].forEach((tecla) => fireEvent.keyDown(window, { key: tecla }))
@@ -171,6 +177,7 @@ describe('ProveedorEntradaAlterna: forzarla a mano', () => {
     HTMLMediaElement.prototype.play = vi.fn(() => Promise.resolve())
     HTMLMediaElement.prototype.pause = vi.fn()
     await import('./EntradaAlterna')
+    await import('../lib/forzar')
     huella = (await huellaSha256(PALABRA_DE_PRUEBA)) ?? ''
   })
   beforeEach(() => {
@@ -189,7 +196,7 @@ describe('ProveedorEntradaAlterna: forzarla a mano', () => {
 
   it('un clic y la clave dentro de la ventana la fuerzan, con sonido (la última tecla fue un gesto)', async () => {
     await montar(SIEMPRE_ESTANDAR, huella)
-    fireEvent.click(screen.getByText('clic en el árbol'))
+    await clicEnElArbol()
     expect(capa()).toBeNull()
     teclear(PALABRA_DE_PRUEBA)
     await waitFor(() => expect(capa()).not.toBeNull())
@@ -198,7 +205,7 @@ describe('ProveedorEntradaAlterna: forzarla a mano', () => {
 
   it('las mayúsculas, los espacios y las teclas sueltas en el camino no estorban', async () => {
     await montar(SIEMPRE_ESTANDAR, huella)
-    fireEvent.click(screen.getByText('clic en el árbol'))
+    await clicEnElArbol()
     teclear('ZZ AB')
     fireEvent.keyDown(window, { key: 'Shift' })
     fireEvent.keyDown(window, { key: '7' })
@@ -217,7 +224,7 @@ describe('ProveedorEntradaAlterna: forzarla a mano', () => {
 
   it('otra palabra no la fuerza', async () => {
     await montar(SIEMPRE_ESTANDAR, huella)
-    fireEvent.click(screen.getByText('clic en el árbol'))
+    await clicEnElArbol()
     teclear('abcdeg')
     await act(async () => {
       await new Promise((resolver) => setTimeout(resolver, 50))
@@ -229,7 +236,7 @@ describe('ProveedorEntradaAlterna: forzarla a mano', () => {
     const ahora = vi.spyOn(performance, 'now')
     ahora.mockReturnValue(1_000)
     await montar(SIEMPRE_ESTANDAR, huella)
-    fireEvent.click(screen.getByText('clic en el árbol'))
+    await clicEnElArbol()
     ahora.mockReturnValue(1_000 + F.ventanaMs + 1)
     teclear(PALABRA_DE_PRUEBA)
     await act(async () => {
@@ -242,7 +249,7 @@ describe('ProveedorEntradaAlterna: forzarla a mano', () => {
     const ahora = vi.spyOn(performance, 'now')
     ahora.mockReturnValue(1_000)
     await montar(SIEMPRE_ESTANDAR, huella)
-    fireEvent.click(screen.getByText('clic en el árbol'))
+    await clicEnElArbol()
     ahora.mockReturnValue(1_000 + F.ventanaMs - 1)
     teclear(PALABRA_DE_PRUEBA)
     await waitFor(() => expect(capa()).not.toBeNull())
@@ -250,7 +257,7 @@ describe('ProveedorEntradaAlterna: forzarla a mano', () => {
 
   it('la clave se compara por su huella: con la huella real no sale con la palabra de prueba', async () => {
     await montar(SIEMPRE_ESTANDAR)
-    fireEvent.click(screen.getByText('clic en el árbol'))
+    await clicEnElArbol()
     teclear(PALABRA_DE_PRUEBA)
     await act(async () => {
       await new Promise((resolver) => setTimeout(resolver, 50))
