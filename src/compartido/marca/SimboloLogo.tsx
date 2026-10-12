@@ -1,4 +1,5 @@
 // El símbolo del logo: tres baldosas de pasto con tres especies y la insignia con su check.
+import type { CSSProperties } from 'react'
 import './marca.estilos.css'
 import { capasDeFilas } from './capasDeFilas'
 import { SIMBOLO_LOGO } from './simbolo.datos'
@@ -11,6 +12,7 @@ export function SimboloLogo() {
     <svg
       className="simbolo-logo"
       viewBox={`0 0 ${ANCHO} ${ALTO}`}
+      style={{ '--simbolo-filas': ALTO } as CSSProperties}
       aria-hidden="true"
       focusable="false"
     >

@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { SPRITE_GENERICO, SPRITES_POR_ESPECIE, TEXTOS_MARCA } from '@/config/constantes'
+import escalaTokens from '@/styles/escala.tokens.css?raw'
 import marcaCss from './marca.estilos.css?raw'
 import { capasDeFilas } from './capasDeFilas'
 import { claveSpriteDeEspecie } from './claveSprite'
@@ -124,6 +125,27 @@ describe('símbolo del logo', () => {
   it('el SVG es decorativo', () => {
     const { container } = render(<SimboloLogo />)
     expect(container.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it('el viewBox contiene todo el dibujo y no recorta lo que toca el borde', () => {
+    const { container } = render(<SimboloLogo />)
+    const svg = container.querySelector('svg') as SVGElement
+    expect(svg).toHaveAttribute('viewBox', `0 0 ${SIMBOLO_LOGO[0].length} ${SIMBOLO_LOGO.length}`)
+    expect(marcaCss).toMatch(/\.simbolo-logo\s*\{[^}]*overflow:\s*visible/)
+  })
+
+  it('se dibuja en celdas de px enteros: el alto es filas por la celda de la marca', () => {
+    const { container } = render(<SimboloLogo />)
+    const svg = container.querySelector('svg') as SVGElement
+    expect(svg.style.getPropertyValue('--simbolo-filas')).toBe(String(SIMBOLO_LOGO.length))
+    expect(marcaCss).toMatch(
+      /\.simbolo-logo\s*\{[^}]*block-size:\s*calc\(var\(--simbolo-filas\)\s*\*\s*var\(--marca-celda\)\)/,
+    )
+    expect(escalaTokens).toMatch(/--marca-celda:\s*1px/)
+    expect(escalaTokens).toMatch(
+      /@media \(min-width: 48rem\)\s*\{\s*:root\s*\{[^}]*--marca-celda:\s*2px/,
+    )
+    expect(marcaCss).toMatch(/\.co-marca\s*\{[^}]*--marca-celda:\s*2px/)
   })
 })
 

@@ -32,7 +32,8 @@
   display: flex;
   align-items: center;
   min-inline-size: 0;
-  min-block-size: var(--tamano-control);
+  /* Alto fijo: el símbolo del logo (58 px desde 48rem) sobresale de esta caja sin agrandar la cabecera */
+  block-size: var(--tamano-control);
   color: var(--color-texto);
   text-decoration: none;
   transition: transform var(--duracion-presion) var(--curva-salida);

@@ -55,10 +55,13 @@
   block-size: auto;
 }
 
+/* Cada celda del dibujo mide un número entero de píxeles (--marca-celda): sin filas desiguales ni
+   bordes comidos por el redondeo. El dibujo toca los bordes de su caja, así que no se recorta. */
 .simbolo-logo {
   flex: none;
-  block-size: var(--marca-alto);
+  block-size: calc(var(--simbolo-filas) * var(--marca-celda));
   inline-size: auto;
+  overflow: visible;
 }
 
 /* ---------- Wordmark: «CENSO» en mayúsculas espaciadas sobre «Arbóreo» grande ---------- */
@@ -146,6 +149,7 @@
 /* ---------- Co-marca completa (pie e Inicio) ---------- */
 .co-marca {
   --marca-alto: var(--marca-completa-alto);
+  --marca-celda: 2px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
