@@ -539,10 +539,6 @@ export const DESTACADOS_PASOS_ESCALONADO = 6
 export const ARBOL_ANIMADO = {
   // Espera tras terminar la entrada del sitio
   retrasoInicioMs: 120,
-  // Crecimiento: cada pieza brota en 2 cuadros (primero chica, después entera); entre una pieza y
-  // la siguiente pasa el escalonado
-  escalonPiezaMs: 120,
-  broteMs: 180,
   // Reposo: cada cuadro de la copa dura esto; entre ciclos, el cuadro base descansa
   cuadroMs: 220,
   pausaBaseMs: 3800,

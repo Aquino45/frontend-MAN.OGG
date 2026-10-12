@@ -46,7 +46,7 @@ censo-arboreo-frontend/
 │   └── modulos/               ← una carpeta por funcionalidad
 │       ├── mapa/              ← mapa ilustrado, hover y selección de sector
 │       │   ├── componentes/   ← MapaSectores, PanelSector…
-│       │   ├── hooks/         ← useSectores, useArbolesDeSector
+│       │   ├── hooks/         ← useArbolesDeSector
 │       │   ├── vistas/        ← VistaMapa
 │       │   └── index.ts       ← API pública del módulo
 │       ├── tema/              ← modo claro/oscuro: useTema + InterruptorTema

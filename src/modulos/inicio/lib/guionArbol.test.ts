@@ -2,18 +2,14 @@ import { describe, expect, it } from 'vitest'
 import { ARBOL_ANIMADO as G } from '@/config/constantes'
 import {
   CICLO_REPOSO_MS,
-  DURACION_CRECIMIENTO_MS,
-  inicioDePiezaMs,
   planCuadro,
   planHoja,
-  planPiezaChica,
-  planPiezaEntera,
   planSacudida,
   secuenciaReposo,
   zigzag,
   type EspecificacionHoja,
 } from './guionArbol'
-import { COPAS_REPOSO, ORDEN_CRECIMIENTO } from './piezasArbol'
+import { CUADROS_REPOSO } from './dibujoArbol'
 
 // Valor de la opacidad de un plan en un instante del ciclo (los saltos duplican el offset: el
 // último valor con ese offset manda)
@@ -24,47 +20,6 @@ function opacidadEn(fotogramas: Keyframe[], instante: number): number {
   }
   return valor
 }
-
-describe('crecimiento', () => {
-  it('termina en 1,6 s o menos y el escalonado va de 80 a 120 ms', () => {
-    expect(DURACION_CRECIMIENTO_MS).toBeLessThanOrEqual(1600)
-    expect(G.escalonPiezaMs).toBeGreaterThanOrEqual(80)
-    expect(G.escalonPiezaMs).toBeLessThanOrEqual(120)
-  })
-
-  it('las piezas brotan en el orden pedido', () => {
-    expect([...ORDEN_CRECIMIENTO]).toEqual([
-      'raices',
-      'tronco',
-      'ramas',
-      'atras',
-      'frente',
-      'brillos',
-      'nube',
-    ])
-    expect(inicioDePiezaMs('raices')).toBe(0)
-    expect(inicioDePiezaMs('nube')).toBe(6 * G.escalonPiezaMs)
-  })
-
-  it('cada pieza brota en 2 cuadros: la chica y después la entera, en saltos', () => {
-    const chica = planPiezaChica(240)
-    const entera = planPiezaEntera(240)
-    expect(chica.opciones.delay).toBe(240)
-    expect(chica.opciones.duration).toBe(G.broteMs)
-    expect(chica.opciones.easing).toBe('steps(1, end)')
-    expect(entera.opciones.duration).toBe(240 + G.broteMs)
-    expect(entera.opciones.easing).toBe('steps(1, end)')
-    expect(entera.fotogramas.every((fotograma) => fotograma.opacity === 0)).toBe(true)
-  })
-
-  it('solo anima opacidad: nada de clip-path, giro ni escala', () => {
-    for (const plan of [planPiezaChica(0), planPiezaEntera(0)]) {
-      for (const fotograma of plan.fotogramas) {
-        expect(Object.keys(fotograma)).toEqual(['opacity'])
-      }
-    }
-  })
-})
 
 describe('reposo por cuadros', () => {
   it('cada cuadro dura de 180 a 250 ms y el base descansa más que cualquiera', () => {
@@ -79,7 +34,7 @@ describe('reposo por cuadros', () => {
   })
 
   it('en cada instante se ve exactamente un cuadro de la copa', () => {
-    const planes = Array.from({ length: COPAS_REPOSO.length + 1 }, (_, cuadro) =>
+    const planes = Array.from({ length: CUADROS_REPOSO.length + 1 }, (_, cuadro) =>
       planCuadro(cuadro),
     )
     for (let paso = 0; paso <= 1000; paso++) {
@@ -93,7 +48,7 @@ describe('reposo por cuadros', () => {
   })
 
   it('los fotogramas van de menor a mayor offset y el ciclo se repite sin fin', () => {
-    for (let cuadro = 0; cuadro <= COPAS_REPOSO.length; cuadro++) {
+    for (let cuadro = 0; cuadro <= CUADROS_REPOSO.length; cuadro++) {
       const plan = planCuadro(cuadro)
       const offsets = plan.fotogramas.map((fotograma) => Number(fotograma.offset))
       expect(offsets[0]).toBe(0)

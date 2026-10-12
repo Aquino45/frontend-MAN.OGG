@@ -1,7 +1,7 @@
 import { act, fireEvent, render } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ARBOL_ANIMADO as G } from '@/config/constantes'
-import { COPAS_REPOSO, ORDEN_CRECIMIENTO } from '../lib/piezasArbol'
+import { CUADROS_REPOSO } from '../lib/dibujoArbol'
 import { ArbolAnimado } from './ArbolAnimado'
 
 let entradaTerminada = true
@@ -86,36 +86,28 @@ describe('ArbolAnimado', () => {
     expect(container.querySelectorAll('svg path').length).toBeGreaterThan(10)
   })
 
-  it('espera a que termine la entrada del sitio', async () => {
+  it('se ve completo y quieto desde el primer cuadro, aunque la entrada no haya terminado', async () => {
     entradaTerminada = false
     const { container } = render(<ArbolAnimado />)
+    expect(container.querySelectorAll('[data-pieza]')).toHaveLength(7)
+    expect(container.querySelector('[data-cuadro="1"]')).toBeNull()
     await arrancar()
     expect(container.firstElementChild).toHaveAttribute('data-fase', 'esperando')
     expect(llamadas).toHaveLength(0)
   })
 
-  it('al terminar la entrada, cada pieza brota con dos animaciones, en el orden pedido', async () => {
-    render(<ArbolAnimado />)
-    await arrancar()
-    const retrasos = llamadas
-      .filter(({ elemento }) => elemento.getAttribute('data-forma') === 'chica')
-      .map(({ elemento, opciones }) => ({
-        pieza: elemento.parentElement?.getAttribute('data-pieza'),
-        retraso: opciones.delay,
-      }))
-    expect(retrasos.map(({ pieza }) => pieza)).toEqual([...ORDEN_CRECIMIENTO])
-    retrasos.forEach(({ retraso }, indice) => expect(retraso).toBe(indice * G.escalonPiezaMs))
-    expect(
-      llamadas.filter(({ elemento }) => elemento.getAttribute('data-forma') === 'entera'),
-    ).toHaveLength(ORDEN_CRECIMIENTO.length)
+  it('no dibuja nada que desaparezca ni parte de un árbol vacío: sin versiones chicas', () => {
+    const { container } = render(<ArbolAnimado />)
+    expect(container.querySelector('[data-forma]')).toBeNull()
+    expect(container.querySelector('svg')?.getAttribute('style')).toBeNull()
   })
 
-  it('al terminar de crecer pasa al reposo con un cuadro base y los de la copa', async () => {
+  it('al terminar la entrada pasa al reposo con un cuadro base y los de la copa', async () => {
     const { container } = render(<ArbolAnimado />)
     await arrancar()
     expect(container.firstElementChild).toHaveAttribute('data-fase', 'reposo')
     const cuadros = llamadas.filter(({ elemento }) => elemento.hasAttribute('data-cuadro'))
-    expect(cuadros).toHaveLength(COPAS_REPOSO.length + 1)
+    expect(cuadros).toHaveLength(CUADROS_REPOSO.length + 1)
     for (const { opciones } of cuadros) expect(opciones.iterations).toBe(Number.POSITIVE_INFINITY)
   })
 
@@ -126,7 +118,7 @@ describe('ArbolAnimado', () => {
     await act(async () => {
       await vi.advanceTimersByTimeAsync(10)
     })
-    expect(llamadas.length).toBeGreaterThan(10)
+    expect(llamadas.length).toBeGreaterThan(CUADROS_REPOSO.length)
     for (const { fotogramas } of llamadas) {
       for (const fotograma of fotogramas) {
         const claves = Object.keys(fotograma).filter(
@@ -172,8 +164,7 @@ describe('ArbolAnimado', () => {
     await arrancar()
     expect(container.firstElementChild).toHaveAttribute('data-fase', 'quieto')
     expect(llamadas).toHaveLength(0)
-    expect(container.querySelectorAll('[data-forma="entera"]')).toHaveLength(
-      ORDEN_CRECIMIENTO.length,
-    )
+    expect(container.querySelectorAll('[data-pieza]')).toHaveLength(7)
+    expect(container.querySelector('[data-cuadro="1"]')).toBeNull()
   })
 })

@@ -8,7 +8,7 @@ import { precargarVistaCifras, VistaCifras } from '@/modulos/cifras'
 import { VistaEntrada } from '@/modulos/entrada'
 import { precargarVistaExplorar, VistaExplorar } from '@/modulos/explorar'
 import { VistaInicio } from '@/modulos/inicio'
-import { precargarVistaMapa, tieneSeleccion, VistaMapa } from '@/modulos/mapa'
+import { precargarVistaMapa, PROPORCION_MAPA, tieneSeleccion, VistaMapa } from '@/modulos/mapa'
 
 interface PropsApp {
   // Fuente de azar del sorteo de la entrada; se inyecta en los tests.
@@ -24,11 +24,24 @@ function RutaInicio() {
   return <VistaInicio />
 }
 
+// Mientras llega el código del mapa se ve ya el bloque con su proporción, el mismo de su carga
 function RutaMapa() {
   return (
     <>
       <h1 className="solo-lectores">{TEXTOS_MAPA.tituloRegion}</h1>
-      <VistaMapa />
+      <Suspense
+        fallback={
+          <section className="vista-mapa">
+            <EstadoCarga
+              etiqueta={TEXTO_CARGANDO_PAGINA}
+              forma="bloque"
+              proporcion={PROPORCION_MAPA}
+            />
+          </section>
+        }
+      >
+        <VistaMapa />
+      </Suspense>
     </>
   )
 }

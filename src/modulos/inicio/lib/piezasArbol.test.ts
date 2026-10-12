@@ -2,8 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { CUADROS_REPOSO, DIBUJO_ARBOL, LADO_REJILLA_ARBOL } from './dibujoArbol'
 import {
   COPA_BASE,
-  COPAS_REPOSO,
-  ORDEN_CRECIMIENTO,
+  copasReposo,
   ORIGENES_HOJA,
   PIEZAS_CUERPO,
   type PiezaArbol,
@@ -40,13 +39,18 @@ function pixelesRotos(copa: Set<string>): string[] {
 }
 
 describe('piezas del árbol', () => {
-  it('las piezas salen en el orden del crecimiento', () => {
+  it('las piezas salen del cuerpo a la copa', () => {
     const claves = [...PIEZAS_CUERPO, ...COPA_BASE].map((pieza) => pieza.clave)
-    expect(claves).toEqual([...ORDEN_CRECIMIENTO])
+    expect(claves).toEqual(['raices', 'tronco', 'ramas', 'atras', 'frente', 'brillos', 'nube'])
+  })
+
+  it('los cuadros del reposo se arman una sola vez', () => {
+    expect(copasReposo()).toBe(copasReposo())
+    expect(copasReposo()).toHaveLength(CUADROS_REPOSO.length)
   })
 
   it('cada capa es un solo trazo con celdas dentro de la rejilla', () => {
-    for (const pieza of [...PIEZAS_CUERPO, ...COPA_BASE, ...COPAS_REPOSO.flat()]) {
+    for (const pieza of [...PIEZAS_CUERPO, ...COPA_BASE, ...copasReposo().flat()]) {
       for (const capa of pieza.capas) {
         expect(capa.entera.length).toBeGreaterThan(0)
         for (const celda of celdasDeTrazo(capa.entera)) {
@@ -60,15 +64,6 @@ describe('piezas del árbol', () => {
     }
   })
 
-  it('las piezas del crecimiento traen su versión chica, más pequeña que la entera', () => {
-    for (const pieza of [...PIEZAS_CUERPO, ...COPA_BASE]) {
-      for (const capa of pieza.capas) {
-        expect(capa.chica.length).toBeGreaterThan(0)
-        expect(celdasDeTrazo(capa.chica).size).toBeLessThan(celdasDeTrazo(capa.entera).size)
-      }
-    }
-  })
-
   it('el dibujo base no tiene pixeles rotos ni muescas de 1 celda', () => {
     expect(pixelesRotos(celdasDe(COPA_BASE))).toEqual([])
   })
@@ -76,13 +71,13 @@ describe('piezas del árbol', () => {
   it.each(CUADROS_REPOSO.map((_, indice) => indice))(
     'el cuadro %i del reposo no deja pixeles rotos ni muescas de 1 celda',
     (indice) => {
-      expect(pixelesRotos(celdasDe(COPAS_REPOSO[indice]))).toEqual([])
+      expect(pixelesRotos(celdasDe(copasReposo()[indice]))).toEqual([])
     },
   )
 
   it('el reposo tiene entre 3 y 4 cuadros contando el base', () => {
-    expect(COPAS_REPOSO.length + 1).toBeGreaterThanOrEqual(3)
-    expect(COPAS_REPOSO.length + 1).toBeLessThanOrEqual(4)
+    expect(copasReposo().length + 1).toBeGreaterThanOrEqual(3)
+    expect(copasReposo().length + 1).toBeLessThanOrEqual(4)
   })
 
   it('los corrimientos de cada cuadro son de una celda y siguen las listas del dibujo', () => {

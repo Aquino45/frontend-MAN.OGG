@@ -1,8 +1,7 @@
-// El guion del árbol, como datos puros: en qué momento brota cada pieza, cuándo se ve cada cuadro
-// del reposo y cómo cae una hoja. Los fotogramas son de opacidad y transform, en saltos enteros
+// El guion del árbol, como datos puros: cuándo se ve cada cuadro del reposo y cómo cae una hoja. Los fotogramas son de opacidad y transform, en saltos enteros
 // (steps): ninguna pieza se escala, se gira ni se recorta.
 import { ARBOL_ANIMADO as G } from '@/config/constantes'
-import { COPAS_REPOSO, ORDEN_CRECIMIENTO, type ClavePieza } from './piezasArbol'
+import { CUADROS_REPOSO } from './dibujoArbol'
 
 export interface OpcionesAnimacion {
   duration: number
@@ -17,36 +16,11 @@ export interface PlanAnimacion {
   opciones: OpcionesAnimacion
 }
 
-// ---------- Crecimiento ----------
-
-export function inicioDePiezaMs(clave: ClavePieza): number {
-  return ORDEN_CRECIMIENTO.indexOf(clave) * G.escalonPiezaMs
-}
-
-// Cuándo termina de verse la última pieza entera
-export const DURACION_CRECIMIENTO_MS = (ORDEN_CRECIMIENTO.length - 1) * G.escalonPiezaMs + G.broteMs
-
-// Primer cuadro de una pieza: la versión chica, solo mientras brota
-export function planPiezaChica(inicioMs: number): PlanAnimacion {
-  return {
-    fotogramas: [{ opacity: 1 }, { opacity: 1 }],
-    opciones: { duration: G.broteMs, delay: inicioMs, fill: 'none', easing: 'steps(1, end)' },
-  }
-}
-
-// La pieza entera no se ve hasta que termina de brotar
-export function planPiezaEntera(inicioMs: number): PlanAnimacion {
-  return {
-    fotogramas: [{ opacity: 0 }, { opacity: 0 }],
-    opciones: { duration: inicioMs + G.broteMs, fill: 'none', easing: 'steps(1, end)' },
-  }
-}
-
 // ---------- Reposo ----------
 
 // Orden en que se ven los cuadros del reposo en un ciclo: va y vuelve (1, 2, 3, 2, 1)
 export function secuenciaReposo(): number[] {
-  const cuadros = COPAS_REPOSO.map((_, indice) => indice + 1)
+  const cuadros = CUADROS_REPOSO.map((_, indice) => indice + 1)
   return [...cuadros, ...cuadros.slice(0, -1).reverse()]
 }
 

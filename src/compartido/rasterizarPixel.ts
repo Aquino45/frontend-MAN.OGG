@@ -103,21 +103,6 @@ export function trazoDeCeldas(celdas: readonly Celda[]): string {
   return partes.join('')
 }
 
-// La pieza un paso más chica: sin las celdas que tocan el vacío. Si casi no queda nada (líneas y
-// tramos finos), un damero de la pieza, como se disuelve un sprite al aparecer.
-export function versionChica(celdas: readonly Celda[]): Celda[] {
-  const dentro = new Set(celdas.map(([x, y]) => clave(x, y)))
-  const interior = celdas.filter(
-    ([x, y]) =>
-      dentro.has(clave(x, y - 1)) &&
-      dentro.has(clave(x, y + 1)) &&
-      dentro.has(clave(x - 1, y)) &&
-      dentro.has(clave(x + 1, y)),
-  )
-  if (interior.length * 10 >= celdas.length * 3) return interior
-  return celdas.filter(([x, y]) => (x + y) % 2 === 0)
-}
-
 // Celdas que tocan (arriba, abajo, izquierda o derecha) alguna celda de `otras`
 export function celdasVecinasDe(celdas: readonly Celda[], otras: readonly Celda[]): Celda[] {
   const cerca = new Set(

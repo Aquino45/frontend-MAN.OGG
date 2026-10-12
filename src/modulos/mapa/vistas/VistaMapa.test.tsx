@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { invalidarCacheCampus } from '@/compartido/cacheCampus'
 import { ErrorApi, obtenerSectores } from '@/api/cliente'
 import { FRASES_CARGA, TEXTOS_ESTADOS, TEXTOS_MAPA } from '@/config/constantes'
 import { sectoresMock } from '@/mocks'
@@ -14,7 +15,10 @@ const obtenerSectoresFalso = vi.mocked(obtenerSectores)
 const SIEMPRE_CERO = () => 0
 
 describe('VistaMapa', () => {
-  afterEach(() => obtenerSectoresFalso.mockReset())
+  afterEach(() => {
+    obtenerSectoresFalso.mockReset()
+    invalidarCacheCampus()
+  })
 
   it('mientras carga muestra una frase de carga elegida por peso', () => {
     obtenerSectoresFalso.mockReturnValue(new Promise(() => {}))

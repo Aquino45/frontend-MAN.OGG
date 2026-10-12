@@ -1,19 +1,13 @@
-// Pone en marcha el guion del árbol: las piezas brotan una tras otra y, al terminar, la copa pasa
-// a su reposo por cuadros. Todo con la API de animaciones del navegador sobre opacity y transform.
-// Con «reducir movimiento» no se crea ninguna animación: el árbol queda completo y quieto.
-import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react'
+// Pone en marcha el guion del árbol: el árbol ya está completo y quieto desde el primer cuadro y,
+// cuando arranca, la copa pasa a su reposo por cuadros. Todo con la API de animaciones del
+// navegador sobre opacity y transform. Con «reducir movimiento» no se crea ninguna animación.
+import { useEffect, useLayoutEffect, useRef, type RefObject } from 'react'
 import { usePideMenosMovimiento } from '@/compartido/usePideMenosMovimiento'
-import {
-  inicioDePiezaMs,
-  planCuadro,
-  planPiezaChica,
-  planPiezaEntera,
-  planSacudida,
-  type PlanAnimacion,
-} from '../lib/guionArbol'
-import { COPAS_REPOSO, type ClavePieza } from '../lib/piezasArbol'
+import { CUADROS_REPOSO } from '../lib/dibujoArbol'
+import { planCuadro, planSacudida } from '../lib/guionArbol'
 
-export type FaseArbol = 'esperando' | 'creciendo' | 'reposo' | 'quieto'
+// «esperando»: completo y quieto, a la espera de que termine la entrada del sitio
+export type FaseArbol = 'esperando' | 'reposo' | 'quieto'
 
 interface OpcionesAnimacionArbol {
   // La entrada del sitio ya terminó y pasó la espera inicial
@@ -30,7 +24,6 @@ export function useAnimacionArbol(
   const sinSoporte =
     typeof Element === 'undefined' || typeof Element.prototype.animate !== 'function'
   const pideMenos = usePideMenosMovimiento() || sinSoporte
-  const [enReposo, setEnReposo] = useState(false)
   const registro = useRef(new Set<Animation>())
   const pausadoAhora = useRef(pausado)
 
@@ -42,48 +35,28 @@ export function useAnimacionArbol(
     })
   }, [pausado])
 
-  // Antes de pintar: así el árbol nunca se ve completo un instante antes de empezar a crecer.
+  // Los cuadros del reposo ya están en el árbol cuando `activo` se vuelve verdadero.
   useLayoutEffect(() => {
     const raiz = refRaiz.current
     if (!raiz || !activo || pideMenos) return
     const guardadas = registro.current
-    let vigente = true
     const propias: Animation[] = []
 
-    const lanzar = (elemento: Element | null, plan: PlanAnimacion) => {
-      if (!elemento) return null
+    for (let cuadro = 0; cuadro <= CUADROS_REPOSO.length; cuadro++) {
+      const elemento = raiz.querySelector(`[data-cuadro="${cuadro}"]`)
+      if (!elemento) continue
+      const plan = planCuadro(cuadro)
       const animacion = elemento.animate(plan.fotogramas, plan.opciones)
       propias.push(animacion)
       guardadas.add(animacion)
       if (pausadoAhora.current) animacion.pause()
-      return animacion
     }
 
-    const terminadas: Promise<Animation>[] = []
-    raiz.querySelectorAll<SVGGElement>('[data-pieza]').forEach((pieza) => {
-      const inicio = inicioDePiezaMs(pieza.dataset.pieza as ClavePieza)
-      lanzar(pieza.querySelector('[data-forma="chica"]'), planPiezaChica(inicio))
-      const entera = lanzar(pieza.querySelector('[data-forma="entera"]'), planPiezaEntera(inicio))
-      if (entera) terminadas.push(entera.finished)
-    })
-
-    Promise.all(terminadas)
-      .then(() => {
-        if (!vigente) return
-        for (let cuadro = 0; cuadro <= COPAS_REPOSO.length; cuadro++) {
-          lanzar(raiz.querySelector(`[data-cuadro="${cuadro}"]`), planCuadro(cuadro))
-        }
-        setEnReposo(true)
-      })
-      .catch(() => undefined)
-
     return () => {
-      vigente = false
       propias.forEach((animacion) => {
         animacion.cancel()
         guardadas.delete(animacion)
       })
-      setEnReposo(false)
     }
   }, [activo, pideMenos, refRaiz])
 
@@ -98,12 +71,6 @@ export function useAnimacionArbol(
     if (pausadoAhora.current) animacion.pause()
   }
 
-  const fase: FaseArbol = pideMenos
-    ? 'quieto'
-    : enReposo
-      ? 'reposo'
-      : activo
-        ? 'creciendo'
-        : 'esperando'
+  const fase: FaseArbol = pideMenos ? 'quieto' : activo ? 'reposo' : 'esperando'
   return { fase, sacudir }
 }

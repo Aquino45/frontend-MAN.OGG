@@ -1,6 +1,6 @@
-// Árbol pixel de la portada: sus piezas brotan una tras otra, la copa respira por cuadros, suelta
-// hojas y responde al cursor, todo en saltos de una celda. Es adorno (aria-hidden). Con «reducir
-// movimiento» queda completo y quieto.
+// Árbol pixel de la portada: se ve completo y quieto desde el primer cuadro; cuando termina la
+// entrada del sitio la copa respira por cuadros, suelta hojas y responde al cursor, todo en saltos
+// de una celda. Es adorno (aria-hidden). Con «reducir movimiento» queda completo y quieto.
 import { useEffect, useRef, useState } from 'react'
 import { useEntradaTerminada } from '@/modulos/entrada'
 import { ARBOL_ANIMADO as G } from '@/config/constantes'
@@ -9,13 +9,7 @@ import { useDesplazamientoAlPuntero } from '../hooks/useDesplazamientoAlPuntero'
 import { useHojasQueCaen } from '../hooks/useHojasQueCaen'
 import { usePausaDelArbol } from '../hooks/usePausaDelArbol'
 import { LADO_REJILLA_ARBOL } from '../lib/dibujoArbol'
-import {
-  COPA_BASE,
-  COPAS_REPOSO,
-  PIEZAS_CUERPO,
-  type CapaArbol,
-  type PiezaArbol,
-} from '../lib/piezasArbol'
+import { COPA_BASE, PIEZAS_CUERPO, copasReposo, type CapaArbol } from '../lib/piezasArbol'
 import { HojaCayendo } from './HojaCayendo'
 
 interface PropsArbolAnimado {
@@ -23,29 +17,11 @@ interface PropsArbolAnimado {
   aleatorioHojas?: () => number
 }
 
-function Capa({ capa, forma }: { capa: CapaArbol; forma: 'entera' | 'chica' }) {
+function Capa({ capa }: { capa: CapaArbol }) {
   const trazo = (
-    <path className={`arbol-animado__capa arbol-animado__capa--${capa.clase}`} d={capa[forma]} />
+    <path className={`arbol-animado__capa arbol-animado__capa--${capa.clase}`} d={capa.entera} />
   )
   return capa.arriba ? <g data-parte="arriba">{trazo}</g> : trazo
-}
-
-// Una pieza del crecimiento: su versión chica (solo mientras brota) y la entera
-function PiezaQueBrota({ pieza }: { pieza: PiezaArbol }) {
-  return (
-    <g data-pieza={pieza.clave}>
-      <g data-forma="chica" className="arbol-animado__chica">
-        {pieza.capas.map((capa, indice) => (
-          <Capa key={indice} capa={capa} forma="chica" />
-        ))}
-      </g>
-      <g data-forma="entera">
-        {pieza.capas.map((capa, indice) => (
-          <Capa key={indice} capa={capa} forma="entera" />
-        ))}
-      </g>
-    </g>
-  )
 }
 
 export function ArbolAnimado({ aleatorioHojas = Math.random }: PropsArbolAnimado) {
@@ -65,6 +41,8 @@ export function ArbolAnimado({ aleatorioHojas = Math.random }: PropsArbolAnimado
 
   const { fase, sacudir } = useAnimacionArbol(refRaiz, { activo: arranco, pausado })
   const enReposo = fase === 'reposo'
+  // Los cuadros del reposo se arman y se dibujan solo cuando van a verse
+  const conReposo = arranco && fase !== 'quieto'
   const { hojas, soltarAbanico, quitar } = useHojasQueCaen({
     activa: enReposo,
     pausado,
@@ -96,23 +74,32 @@ export function ArbolAnimado({ aleatorioHojas = Math.random }: PropsArbolAnimado
         focusable="false"
       >
         {PIEZAS_CUERPO.map((pieza) => (
-          <PiezaQueBrota key={pieza.clave} pieza={pieza} />
+          <g key={pieza.clave} data-pieza={pieza.clave}>
+            {pieza.capas.map((capa, indice) => (
+              <Capa key={indice} capa={capa} />
+            ))}
+          </g>
         ))}
         <g data-parte="copa">
           <g data-cuadro="0">
             {COPA_BASE.map((pieza) => (
-              <PiezaQueBrota key={pieza.clave} pieza={pieza} />
+              <g key={pieza.clave} data-pieza={pieza.clave}>
+                {pieza.capas.map((capa, indice) => (
+                  <Capa key={indice} capa={capa} />
+                ))}
+              </g>
             ))}
           </g>
-          {COPAS_REPOSO.map((copa, indice) => (
-            <g key={indice} data-cuadro={indice + 1} className="arbol-animado__cuadro">
-              {copa.flatMap((pieza) =>
-                pieza.capas.map((capa, orden) => (
-                  <Capa key={`${pieza.clave}-${orden}`} capa={capa} forma="entera" />
-                )),
-              )}
-            </g>
-          ))}
+          {conReposo &&
+            copasReposo().map((copa, indice) => (
+              <g key={indice} data-cuadro={indice + 1} className="arbol-animado__cuadro">
+                {copa.flatMap((pieza) =>
+                  pieza.capas.map((capa, orden) => (
+                    <Capa key={`${pieza.clave}-${orden}`} capa={capa} />
+                  )),
+                )}
+              </g>
+            ))}
         </g>
         <g>
           {hojas.map((hoja) => (

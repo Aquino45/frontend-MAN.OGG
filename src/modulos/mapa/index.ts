@@ -5,7 +5,7 @@ export const precargarVistaMapa = () => import('./vistas/VistaMapa')
 export const VistaMapa = lazy(() =>
   precargarVistaMapa().then((modulo) => ({ default: modulo.VistaMapa })),
 )
-export { useSectores, type EstadoSectores } from './hooks/useSectores'
+export { PROPORCION_MAPA } from './vistas/proporcionMapa'
 export { proyectarSectores, type Proyeccion, type SectorProyectado } from './lib/proyectar'
 export { nombreAccesibleSector, textoTotalArboles } from './lib/textosSector'
 export { escribirSeleccion, tieneSeleccion } from './lib/seleccionUrl'

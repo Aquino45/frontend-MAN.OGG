@@ -1,5 +1,6 @@
 /* Árbol animado de la portada. El movimiento lo lleva el código (animaciones del navegador sobre
-   opacity y transform, en saltos de una celda); aquí viven el aspecto y el estado de espera. */
+   opacity y transform, en saltos de una celda); aquí vive el aspecto, que es el mismo desde el
+   primer cuadro. */
 
 .arbol-animado {
   /* El relleno del tronco: un paso más claro que el fondo en oscuro; en claro, el tronco de la paleta */
@@ -12,11 +13,6 @@
 
 :root[data-tema='claro'] .arbol-animado {
   --arbol-tronco: var(--tronco-noche);
-}
-
-/* Hasta que termina la entrada del sitio el árbol no se ve; con «reducir movimiento» no hay espera */
-.arbol-animado[data-fase='esperando'] .arbol-animado__svg {
-  opacity: 0;
 }
 
 /* Cada celda mide un número entero de píxeles (--arbol-celda): sin celdas a medias ni líneas finas */
@@ -47,8 +43,7 @@
   fill: var(--arbol-tronco);
 }
 
-/* La versión chica de cada pieza y los cuadros del reposo solo se ven cuando la animación los enciende */
-.arbol-animado__chica,
+/* Los cuadros del reposo solo se ven cuando la animación los enciende */
 .arbol-animado__cuadro {
   opacity: 0;
 }

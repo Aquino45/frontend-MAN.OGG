@@ -1,6 +1,7 @@
 // Arma, a partir del dibujo, las piezas que se pintan: cada pieza es un grupo de capas y cada capa
-// es un solo trazo de un solo color (sin rectángulos sueltos). Las piezas del crecimiento traen
-// además su versión «chica», el primer cuadro con el que brotan. Es dato del dibujo.
+// es un solo trazo de un solo color (sin rectángulos sueltos). Es dato del dibujo: el cuerpo y la
+// copa base se arman una sola vez al cargar el módulo y los cuadros del reposo, una sola vez la
+// primera vez que se piden (el árbol ya se ve completo antes de que hagan falta).
 import {
   CUADROS_REPOSO,
   DIBUJO_ARBOL as dibujo,
@@ -15,7 +16,6 @@ import {
   sombraBajoLobulo,
   trazoDeCeldas,
   unirCeldas,
-  versionChica,
   type Celda,
   type Lobulo,
 } from '@/compartido/rasterizarPixel'
@@ -27,8 +27,6 @@ export type ClaseCapa = 'carmin' | 'oscuro' | 'magenta' | 'tronco' | 'borde'
 export interface CapaArbol {
   clase: ClaseCapa
   entera: string
-  // Trazo de la pieza un paso más chica; vacío en los cuadros del reposo
-  chica: string
   // Se corre hacia el cursor junto con los demás lóbulos de arriba
   arriba: boolean
 }
@@ -38,34 +36,11 @@ export interface PiezaArbol {
   capas: readonly CapaArbol[]
 }
 
-// Orden en que brotan las piezas
-export const ORDEN_CRECIMIENTO: readonly ClavePieza[] = [
-  'raices',
-  'tronco',
-  'ramas',
-  'atras',
-  'frente',
-  'brillos',
-  'nube',
-]
-
 const SIN_CORRIMIENTO: Corrimiento = [0, 0]
 
-function capa(
-  clase: ClaseCapa,
-  celdas: readonly Celda[],
-  conChica: boolean,
-  arriba = false,
-): CapaArbol[] {
+function capa(clase: ClaseCapa, celdas: readonly Celda[], arriba = false): CapaArbol[] {
   if (celdas.length === 0) return []
-  return [
-    {
-      clase,
-      entera: trazoDeCeldas(celdas),
-      chica: conChica ? trazoDeCeldas(versionChica(celdas)) : '',
-      arriba,
-    },
-  ]
+  return [{ clase, entera: trazoDeCeldas(celdas), arriba }]
 }
 
 function movido([x, y, ancho, alto, esquina]: Lobulo, [dx, dy]: Corrimiento): Lobulo {
@@ -76,7 +51,7 @@ const en = <T>(lista: readonly T[] | undefined, indice: number, respaldo: T): T 
   lista?.[indice] ?? respaldo
 
 // Las piezas de la copa, con los corrimientos de un cuadro (sin ellos, el cuadro base)
-export function construirCopa(cuadro?: CuadroReposo, conChica = false): PiezaArbol[] {
+export function construirCopa(cuadro?: CuadroReposo): PiezaArbol[] {
   const lobulosAtras = dibujo.atras.map((lobulo, i) =>
     movido(lobulo, en(cuadro?.atras, i, SIN_CORRIMIENTO)),
   )
@@ -113,33 +88,25 @@ export function construirCopa(cuadro?: CuadroReposo, conChica = false): PiezaArb
     )
 
   return [
-    { clave: 'atras', capas: capa('oscuro', celdasDe(lobulosAtras), conChica) },
+    { clave: 'atras', capas: capa('oscuro', celdasDe(lobulosAtras)) },
     {
       clave: 'frente',
       capas: [
-        ...capa(
-          'carmin',
-          unirCeldas(celdasDe(delFrente(false)), celdasDe(lobulosSalientes)),
-          conChica,
-        ),
-        ...capa('carmin', celdasDe(delFrente(true)), conChica, true),
-        ...capa('oscuro', sombras(false), conChica),
-        ...capa('oscuro', sombras(true), conChica, true),
+        ...capa('carmin', unirCeldas(celdasDe(delFrente(false)), celdasDe(lobulosSalientes))),
+        ...capa('carmin', celdasDe(delFrente(true)), true),
+        ...capa('oscuro', sombras(false)),
+        ...capa('oscuro', sombras(true), true),
       ],
     },
     {
       clave: 'brillos',
-      capas: [
-        ...capa('magenta', brillos(false), conChica),
-        ...capa('magenta', brillos(true), conChica, true),
-      ],
+      capas: [...capa('magenta', brillos(false)), ...capa('magenta', brillos(true), true)],
     },
     {
       clave: 'nube',
       capas: capa(
         'carmin',
         celdasDeTramos(dibujo.nube, ...(cuadro?.nube ?? SIN_CORRIMIENTO)),
-        conChica,
         true,
       ),
     },
@@ -158,16 +125,21 @@ function construirCuerpo(): PiezaArbol[] {
   return (['raices', 'tronco', 'ramas'] as const).map((clave) => ({
     clave,
     capas: [
-      ...capa('borde', celdasVecinasDe(borde, partes[clave]), true),
-      ...capa('tronco', partes[clave], true),
+      ...capa('borde', celdasVecinasDe(borde, partes[clave])),
+      ...capa('tronco', partes[clave]),
     ],
   }))
 }
 
 export const PIEZAS_CUERPO = construirCuerpo()
-// El cuadro base lleva la versión chica: es el que crece al principio
-export const COPA_BASE = construirCopa(undefined, true)
-export const COPAS_REPOSO = CUADROS_REPOSO.map((cuadro) => construirCopa(cuadro))
+export const COPA_BASE = construirCopa()
+
+// Los cuadros del reposo no hacen falta para el primer dibujo: se arman al pedirlos y quedan guardados
+let copasDelReposo: PiezaArbol[][] | null = null
+export function copasReposo(): readonly (readonly PiezaArbol[])[] {
+  copasDelReposo ??= CUADROS_REPOSO.map((cuadro) => construirCopa(cuadro))
+  return copasDelReposo
+}
 
 export interface OrigenHoja {
   x: number
