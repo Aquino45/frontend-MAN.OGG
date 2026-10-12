@@ -401,7 +401,8 @@ export const TEXTOS_CIFRAS = {
     almacenadoPorEspecie: {
       titulo: 'CO₂ almacenado por especie',
       columna: 'Especie (nombre científico)',
-      descripcion: 'Especies con más CO₂ almacenado, separadas en datos de campo y datos de ejemplo',
+      descripcion:
+        'Especies con más CO₂ almacenado, separadas en datos de campo y datos de ejemplo',
     },
     capturaPorSector: {
       titulo: 'Captura anual de CO₂ por sector',
