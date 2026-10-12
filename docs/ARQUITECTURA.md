@@ -40,7 +40,7 @@ censo-arboreo-frontend/
 │   │   ├── schema.d.ts        ← generado con openapi-typescript (no se edita)
 │   │   └── cliente.ts         ← obtenerSectores(), obtenerArbolesDeSector(id), obtenerArbol(codigo)
 │   ├── mocks/                 ← datos de los ejemplos del contrato; se eligen con VITE_USAR_MOCKS
-│   ├── compartido/            ← lo que usan 2 módulos o más: SelloDemo, SinDato, GlifoPixelArbol, los estados de carga, vacío y error, y los hooks del campus con su caché (`cacheCampus`, `useSectoresDelCampus`, `useArbolesDelCampus`)
+│   ├── compartido/            ← lo que usan 2 módulos o más: SelloDemo, SinDato, GlifoPixelArbol, los estados de carga, vacío y error, los hooks del campus con su caché (`cacheCampus`, `useSectoresDelCampus`, `useArbolesDelCampus`) y el movimiento común: `modalidadEntrada` (con el teclado no se anima), `usePideMenosMovimiento`, `transicion` (transiciones del navegador), `ProveedorTransicionDePagina` y `useEnlaceConTransicion` (cambio de página con transición)
 │   ├── lib/                   ← funciones puras que usan 2 módulos o más (formatear unidades, elegirVariante)
 │   ├── test/                  ← setup.ts de Vitest
 │   └── modulos/               ← una carpeta por funcionalidad
