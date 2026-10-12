@@ -60,7 +60,7 @@ Solo composición, jerarquía y acabado; la identidad fija no se toca. Las filas
 | Antes | Después | Por qué |
 | --- | --- | --- |
 | Solo vista ilustrada (SVG desde los polígonos del contrato) | Se conserva como vista accesible por defecto; panel, hoja, leyenda y puntos rehechos | RF-01/RF-09 siguen en «hecho» |
-| No hay vista real | Botón «Ilustrado / Satélite», «Color natural», atribución, chunk aparte (sección 4) | RF-10 |
+| No hay vista real | Botón «Ilustrado / Satélite», «Teñido» opcional, atribución, chunk aparte (sección 4) | RF-10 |
 
 ### `cartilla` (Read)
 
@@ -97,7 +97,7 @@ Reglas por defecto de Impeccable que chocan con compromisos de marca. Decisión 
 | Versión de MapLibre | `maplibre-gl@6.11.2`, versión exacta (sin `^`), en su chunk con `import()` al activar «Satélite» |
 | Fuente | Esri World Imagery por la fuente raster con URL del servicio nuevo y clave en `VITE_ESRI_CLAVE`; el plugin de Esri **no entra** salvo que la atribución dinámica no alcance (se pregunta antes) |
 | Atribución | A mano en la fuente raster, junto al crédito de OSM del pie. Qué texto exacto pide Esri para la capa: **por confirmar** en los términos |
-| Teñido | `raster-saturation: -1` sobre la imagen y una capa de color con `mix-blend-mode`, con los colores leídos de los tokens CSS en ejecución |
+| Teñido (opcional; por defecto la foto va en color natural, decisión de Cristhian del 12/10) | `raster-saturation: -1` sobre la imagen y una capa de color con `mix-blend-mode`, con los colores leídos de los tokens CSS en ejecución |
 | Encuadre | `fitBounds` con el recuadro calculado desde los polígonos (sin coordenadas escritas a mano) |
 | Movimiento reducido | `jumpTo` en lugar de `flyTo` |
 | Peso del chunk | Se mide al integrarlo (sin verificar) |

@@ -190,6 +190,22 @@ describe('MapaSatelite', () => {
     ).toBe(true)
   })
 
+  it('quita los nombres de la foto al salir y los vuelve a poner si cambian los sectores', async () => {
+    falso.MarcadorFalso.creados = []
+    const { rerender, props, unmount } = pintar()
+    await cargar()
+    expect(falso.MarcadorFalso.creados).toHaveLength(SECTORES.length)
+    expect(falso.MarcadorFalso.creados.some((marcador) => marcador.removido)).toBe(false)
+
+    rerender(<MapaSatelite {...props} sectores={SECTORES.slice(0, 2)} />)
+    const primerosCreados = falso.MarcadorFalso.creados.slice(0, SECTORES.length)
+    expect(primerosCreados.every((marcador) => marcador.removido)).toBe(true)
+    expect(falso.MarcadorFalso.creados).toHaveLength(SECTORES.length + 2)
+
+    unmount()
+    expect(falso.MarcadorFalso.creados.every((marcador) => marcador.removido)).toBe(true)
+  })
+
   it('no recrea el mapa cuando la vista se vuelve a dibujar con la misma configuración', async () => {
     const { rerender, props } = pintar()
     await cargar()

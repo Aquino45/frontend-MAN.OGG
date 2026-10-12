@@ -99,7 +99,7 @@ describe('posicionEtiqueta', () => {
   })
 
   it('en un sector cóncavo sigue cayendo dentro del polígono', () => {
-    const en_ele = sector(3, [
+    const sectorEnL = sector(3, [
       [0, 0],
       [10, 0],
       [10, 2],
@@ -108,7 +108,7 @@ describe('posicionEtiqueta', () => {
       [0, 10],
       [0, 0],
     ])
-    const [longitud, latitud] = posicionEtiqueta(en_ele)
+    const [longitud, latitud] = posicionEtiqueta(sectorEnL)
     const dentroDelBrazoHorizontal = longitud >= 0 && longitud <= 10 && latitud >= 0 && latitud <= 2
     const dentroDelBrazoVertical = longitud >= 0 && longitud <= 2 && latitud >= 0 && latitud <= 10
     expect(dentroDelBrazoHorizontal || dentroDelBrazoVertical).toBe(true)

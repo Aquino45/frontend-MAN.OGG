@@ -12,15 +12,21 @@ vi.mock('@/api/cliente', async (importarOriginal) => ({
   obtenerSectores: vi.fn(),
 }))
 
+// Configuraciones que recibió el mapa en cada dibujo (para ver que no llega un objeto nuevo cada vez)
+const configsRecibidas = vi.hoisted(() => [] as unknown[])
+
 // MapLibre necesita WebGL, que jsdom no tiene: el mapa satelital se reemplaza por un testigo.
 vi.mock('../componentes/MapaSatelite', () => ({
-  default: (props: { tenido: boolean; onSeleccionar: (id: number) => void }) => (
-    <div data-testid="mapa-satelite" data-tenido={String(props.tenido)}>
-      <button type="button" onClick={() => props.onSeleccionar(1)}>
-        elegir sector 1
-      </button>
-    </div>
-  ),
+  default: (props: { tenido: boolean; config: unknown; onSeleccionar: (id: number) => void }) => {
+    configsRecibidas.push(props.config)
+    return (
+      <div data-testid="mapa-satelite" data-tenido={String(props.tenido)}>
+        <button type="button" onClick={() => props.onSeleccionar(1)}>
+          elegir sector 1
+        </button>
+      </div>
+    )
+  },
 }))
 
 const obtenerSectoresFalso = vi.mocked(obtenerSectores)
@@ -87,5 +93,20 @@ describe('VistaMapa: vista satelital', () => {
     fireEvent.click(await screen.findByRole('button', { name: TEXTOS_SATELITE.satelite }))
     fireEvent.click(await screen.findByRole('button', { name: 'elegir sector 1' }))
     expect(await screen.findByRole('region', { name: 'Sector 1' })).toBeInTheDocument()
+  })
+
+  it('lee la configuración del entorno una sola vez: el mapa nunca recibe un objeto nuevo', async () => {
+    vi.stubEnv('VITE_ESRI_CLAVE', 'clave-del-entorno')
+    configsRecibidas.length = 0
+    const { rerender } = render(<VistaMapa aleatorio={SIEMPRE_CERO} />)
+    fireEvent.click(await screen.findByRole('button', { name: TEXTOS_SATELITE.satelite }))
+    await screen.findByTestId('mapa-satelite')
+    // Cada vez que la vista se vuelve a dibujar, la configuración debe seguir siendo la misma
+    rerender(<VistaMapa aleatorio={SIEMPRE_CERO} />)
+    rerender(<VistaMapa aleatorio={SIEMPRE_CERO} />)
+    expect(configsRecibidas.length).toBeGreaterThan(1)
+    expect(new Set(configsRecibidas).size).toBe(1)
+    expect(configsRecibidas[0]).toMatchObject({ clave: 'clave-del-entorno' })
+    vi.unstubAllEnvs()
   })
 })
