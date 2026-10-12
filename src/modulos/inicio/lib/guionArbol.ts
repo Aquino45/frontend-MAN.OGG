@@ -1,5 +1,6 @@
-// El guion del árbol, como datos puros: cuándo se ve cada cuadro del reposo y cómo cae una hoja. Los fotogramas son de opacidad y transform, en saltos enteros
-// (steps): ninguna pieza se escala, se gira ni se recorta.
+// El guion del árbol, como datos puros: cuándo se ve cada cuadro del reposo y cómo cae una hoja.
+// Los fotogramas son de opacidad y transform, en saltos enteros (steps): ninguna pieza se escala,
+// se gira ni se recorta.
 import { ARBOL_ANIMADO as G } from '@/config/constantes'
 import { CUADROS_REPOSO } from './dibujoArbol'
 

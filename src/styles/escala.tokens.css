@@ -72,6 +72,7 @@
 @supports (width: round(down, 10px, 1px)) {
   :root {
     --arbol-lado-objetivo: min(85vw, 70vh, 640px);
+    /* 40 = celdas por lado de la rejilla del árbol (LADO_REJILLA_ARBOL) */
     --arbol-celda: round(down, calc(var(--arbol-lado-objetivo) / 40), 1px);
   }
 }
