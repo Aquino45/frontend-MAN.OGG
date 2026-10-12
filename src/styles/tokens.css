@@ -103,6 +103,10 @@
   /* Alto de la cabecera cerrada (una sola fila, celular y escritorio): 44 + 2 × 16 = 76 px.
      La hoja inferior del mapa se queda debajo de esta franja. */
   --capa-cabecera: 3;
+  /* Cortina de desbloqueo: por encima de todo lo demás */
+  --capa-desbloqueo: 20;
+  --desbloqueo-texto: clamp(var(--texto-xl), 1.25rem + 4vw, 4rem);
+  --desbloqueo-borde-chapa: 4px;
   --alto-cabecera: calc(var(--tamano-control) + 2 * var(--espacio-3));
   --miniatura-lado: 3rem;
   --indicador-barra-alto: 0.5rem;

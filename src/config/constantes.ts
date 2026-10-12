@@ -257,9 +257,51 @@ export const CONSULTA_HOVER_FINO = '(hover: hover) and (pointer: fine)'
 
 // ---------- ATAJO AL PANEL ----------
 // Cuánto hay que mantener presionado el árbol de la portada para ir al panel, en ms
-export const ACCESO_PANEL_RETENCION_MS = 10_000
+export const ACCESO_PANEL_RETENCION_MS = 5_000
 // Cuántas celdas del árbol puede moverse el puntero sin que se cancele la pulsación
 export const ACCESO_PANEL_TOLERANCIA_CELDAS = 3
+// Desde cuándo de la presión empieza a verse la señal de progreso: un toque casual no la ve
+export const ACCESO_PANEL_SENAL_DESDE_MS = 1_000
+// Cuánto tarda en apagarse la señal al soltar (rápido: soltar es una respuesta, no una decisión)
+export const ACCESO_PANEL_SENAL_SALIDA_MS = 200
+// Cuánto se ilumina el árbol al llegar la señal a la copa (0 a 1)
+export const ACCESO_PANEL_SENAL_OPACIDAD = 0.14
+
+// ANIMACIÓN DE DESBLOQUEO (UNA CORTINA DE HOJAS PIXEL QUE CUBRE LA PANTALLA). Todo en ms. Es una pieza
+// de presentación que se ve muy pocas veces: puede pasar de los 300 ms de la interfaz de todos los días.
+export const DESBLOQUEO_ANIMACION = {
+  // Cuánto dura la cortina completa; al terminar se navega
+  duracionTotalMs: 1_400,
+  // Cada hoja cae en este tiempo
+  caidaHojaMs: 640,
+  // Escalonado: por columna y una variación fija por hoja (sin azar, para que se pueda reproducir)
+  retrasoColumnaMs: 30,
+  variacionHojaMs: 60,
+  // El fondo detrás de las hojas asegura la cobertura total
+  fondoRetrasoMs: 500,
+  fondoDuracionMs: 400,
+  // El texto entra cuando casi toda la pantalla ya está cubierta
+  textoRetrasoMs: 760,
+  textoDuracionMs: 280,
+  textoDesplazamientoPx: 8,
+  // Tope de hojas: sostiene los 60 fps también con la CPU 4× más lenta
+  hojasMax: 72,
+  // Cada hoja mide 5 x 5 celdas y la celda es de píxeles enteros
+  celdasPorHoja: 5,
+  celdaMinimaPx: 4,
+  // Cuánto se solapan las hojas vecinas (fracción del lado): lo justo para que se lea cada hoja; el
+  // fondo cubre lo que quede entre ellas
+  solape: 0.12,
+  // Cuánto se suma de retraso por fila de hojas y tope del retraso de cualquier hoja
+  retrasoFilaMs: 20,
+  retrasoMaximoHojaMs: 480,
+  // Con «reducir movimiento» se ve el texto un instante y se navega
+  demoraReducidaMs: 700,
+} as const
+// Misma curva fuerte de salida que --curva-salida (un test las compara)
+export const DESBLOQUEO_CURVA = [0.23, 1, 0.32, 1] as const
+
+export const TEXTOS_DESBLOQUEO = { anuncio: 'Modo admin desbloqueado' } as const
 
 // TEXTOS DE LAS CÁPSULAS «?» (la explicación de cada dato sale solo de la API)
 export const TEXTOS_CAPSULA = {
