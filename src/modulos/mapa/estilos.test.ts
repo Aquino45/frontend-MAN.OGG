@@ -210,4 +210,15 @@ describe('estilos del mapa satelital', () => {
       /\.mapa-satelite__marco \.mapa-satelite__lienzo\s*\{[^}]*position:\s*absolute[^}]*inset:\s*0/,
     )
   })
+
+  // A 360 px los tres botones ya no caben con el relleno de siempre y las palabras se partían
+  // («Ilustrad-o»): reparten el ancho, con menos relleno y sin partir la palabra.
+  it('los botones de vista reparten el ancho y no parten sus palabras', () => {
+    expect(sateliteCss).toMatch(/\.control-vista-mapa__vistas\s*\{[^}]*display:\s*flex/)
+    const boton = /\.control-vista-mapa__boton\s*\{([^}]*)\}/.exec(sateliteCss)?.[1] ?? ''
+    expect(boton).toMatch(/white-space:\s*nowrap/)
+    expect(boton).toMatch(/flex:\s*1 1 auto/)
+    expect(boton).toMatch(/padding-inline:\s*var\(--espacio-2\)/)
+    expect(boton).toMatch(/overflow-wrap:\s*normal/)
+  })
 })

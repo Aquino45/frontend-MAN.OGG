@@ -16,8 +16,19 @@
 }
 
 .control-vista-mapa__vistas {
-  display: inline-flex;
+  display: flex;
+  flex-wrap: wrap;
   gap: var(--espacio-2);
+  max-inline-size: 100%;
+}
+
+/* Tres botones: a 360 px no caben con el relleno de siempre, así que reparten el ancho con menos
+   relleno y sin partir la palabra (el botón base parte donde sea) */
+.control-vista-mapa__boton {
+  flex: 1 1 auto;
+  padding-inline: var(--espacio-2);
+  white-space: nowrap;
+  overflow-wrap: normal;
 }
 
 /* El botón de la vista activa queda marcado por forma (borde en el acento) y no solo por color */
