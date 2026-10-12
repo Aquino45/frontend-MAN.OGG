@@ -111,10 +111,10 @@ describe('panel sin repetir su entrada', () => {
 
 describe('fila del sector a 360 px', () => {
   it('no se corta: min-width 0, texto que parte palabras largas y objetivo de 44 px', () => {
-    expect(estilosCss).toMatch(/\.fila-arbol\s*\{[^}]*min-block-size:\s*var\(--tamano-control\)/)
-    expect(estilosCss).toMatch(/\.fila-arbol__texto\s*\{[^}]*min-inline-size:\s*0/)
-    expect(estilosCss).toMatch(/\.fila-arbol__texto\s*\{[^}]*overflow-wrap:\s*anywhere/)
-    expect(estilosCss).toMatch(/\.fila-arbol__datos\s*\{[^}]*flex-wrap:\s*wrap/)
+    expect(estilosCss).toMatch(/\.mapa-fila\s*\{[^}]*min-block-size:\s*var\(--tamano-control\)/)
+    expect(estilosCss).toMatch(/\.mapa-fila__texto\s*\{[^}]*min-inline-size:\s*0/)
+    expect(estilosCss).toMatch(/\.mapa-fila__texto\s*\{[^}]*overflow-wrap:\s*anywhere/)
+    expect(estilosCss).toMatch(/\.mapa-fila__datos\s*\{[^}]*flex-wrap:\s*wrap/)
   })
 })
 
@@ -127,7 +127,7 @@ describe('movimiento del mapa', () => {
   })
 
   it('lo que se presiona escala con --escala-activo', () => {
-    expect(estilosCss).toMatch(/\.fila-arbol:active\s*\{[^}]*scale\(var\(--escala-activo\)\)/)
+    expect(estilosCss).toMatch(/\.mapa-fila:active\s*\{[^}]*scale\(var\(--escala-activo\)\)/)
     expect(estilosCss).toContain('var(--duracion-presion)')
   })
 

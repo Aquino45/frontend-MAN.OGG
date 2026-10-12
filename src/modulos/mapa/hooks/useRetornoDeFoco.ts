@@ -1,7 +1,7 @@
 // Al cerrar la cartilla, devuelve el foco al punto o a la fila desde donde se abrió.
 import { useCallback, useEffect, useRef } from 'react'
 
-const CLASE_FILA = 'fila-arbol'
+const CLASE_FILA = 'mapa-fila'
 const CLASE_PUNTO = 'punto-arbol'
 
 // Los puntos del mapa son elementos SVG y las filas de la lista, HTML: los dos se pueden enfocar.

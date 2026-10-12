@@ -48,7 +48,7 @@ function FilaArbol({
     <li>
       <button
         type="button"
-        className={`fila-arbol${resaltado ? ' fila-arbol--resaltada' : ''}`}
+        className={`mapa-fila${resaltado ? ' mapa-fila--resaltada' : ''}`}
         data-codigo={codigo}
         onClick={() => onAbrir(codigo)}
         onPointerEnter={() => onResaltar(codigo)}
@@ -56,22 +56,22 @@ function FilaArbol({
         onFocus={() => onResaltar(codigo)}
         onBlur={() => onResaltar(null)}
       >
-        <span className="fila-arbol__miniatura" aria-hidden="true">
+        <span className="mapa-fila__miniatura" aria-hidden="true">
           {foto_miniatura_url ? <img src={foto_miniatura_url} alt="" /> : <GlifoPixelArbol />}
         </span>
-        <span className="fila-arbol__texto">
-          <span className="fila-arbol__nombre">{nombre_comun ?? TEXTOS_PANEL.sinDatoNombre}</span>
-          <span className="fila-arbol__cientifico">{nombre_cientifico ?? <SinDato />}</span>
-          <span className="fila-arbol__datos">
-            <span className="fila-arbol__codigo">{codigo}</span>
+        <span className="mapa-fila__texto">
+          <span className="mapa-fila__nombre">{nombre_comun ?? TEXTOS_PANEL.sinDatoNombre}</span>
+          <span className="mapa-fila__cientifico">{nombre_cientifico ?? <SinDato />}</span>
+          <span className="mapa-fila__datos">
+            <span className="mapa-fila__codigo">{codigo}</span>
             {estado_general !== null && <span>{estado_general}</span>}
             {arbol.geometry === null && <span>{TEXTOS_PANEL.sinUbicacion}</span>}
             {demo && <SelloDemo />}
           </span>
           {destacado && (
-            <span className="fila-arbol__destacado">
-              <IconoEstrella className="fila-arbol__estrella" />
-              <span className="fila-arbol__etiqueta-destacado">{TEXTOS_DESTACADO.etiqueta}</span>
+            <span className="mapa-fila__destacado">
+              <IconoEstrella className="mapa-fila__estrella" />
+              <span className="mapa-fila__etiqueta-destacado">{TEXTOS_DESTACADO.etiqueta}</span>
             </span>
           )}
         </span>

@@ -91,10 +91,10 @@ describe('PanelSector', () => {
   it('estado listo: una fila por árbol, con los destacados primero, y sus datos', () => {
     montar({ estado: 'listo', arboles: arbolesSector1Mock.features })
     const filas = screen.getAllByRole('listitem')
-    expect(filas.map((fila) => fila.querySelector('.fila-arbol__codigo')?.textContent)).toEqual(
+    expect(filas.map((fila) => fila.querySelector('.mapa-fila__codigo')?.textContent)).toEqual(
       ordenarDestacadosPrimero(arbolesSector1Mock.features).map((arbol) => arbol.properties.codigo),
     )
-    expect(filas[0].querySelector('.fila-arbol__codigo')).toHaveTextContent('S01-A012')
+    expect(filas[0].querySelector('.mapa-fila__codigo')).toHaveTextContent('S01-A012')
     expect(screen.getByText('Molle')).toBeInTheDocument()
     expect(screen.getByText('Prosopis pallida')).toBeInTheDocument()
     expect(screen.getByText('Regular')).toBeInTheDocument()
@@ -132,13 +132,13 @@ describe('PanelSector', () => {
 
   it('la fila de un destacado lleva la estrella y la palabra «Destacado», sin repetir el motivo', () => {
     const { container } = montar({ estado: 'listo', arboles: arbolesSector1Mock.features })
-    const estrellas = container.querySelectorAll('.fila-arbol__estrella')
+    const estrellas = container.querySelectorAll('.mapa-fila__estrella')
     expect(estrellas).toHaveLength(1)
     const fila = estrellas[0].closest('li') as HTMLElement
-    expect(fila.querySelector('.fila-arbol__codigo')).toHaveTextContent('S01-A012')
+    expect(fila.querySelector('.mapa-fila__codigo')).toHaveTextContent('S01-A012')
     expect(fila).toHaveTextContent(TEXTOS_DESTACADO.etiqueta)
     expect(fila).not.toHaveTextContent('ejemplar de mayor copa del sector')
-    expect(container.querySelector('.fila-arbol__motivo')).toBeNull()
+    expect(container.querySelector('.mapa-fila__motivo')).toBeNull()
     expect(estrellas[0].querySelector('path')).toHaveAttribute('d', ESTRELLA_CONTORNO)
   })
 
@@ -158,8 +158,8 @@ describe('PanelSector', () => {
       SECTOR_1,
       'S01-A012',
     )
-    expect(container.querySelectorAll('.fila-arbol--resaltada')).toHaveLength(1)
-    expect(container.querySelector('.fila-arbol--resaltada')).toHaveAttribute(
+    expect(container.querySelectorAll('.mapa-fila--resaltada')).toHaveLength(1)
+    expect(container.querySelector('.mapa-fila--resaltada')).toHaveAttribute(
       'data-codigo',
       'S01-A012',
     )

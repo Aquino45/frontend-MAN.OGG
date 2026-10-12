@@ -62,7 +62,7 @@ describe('reparto de los tokens en archivos', () => {
     expect(escala).toContain('--texto-cuerpo:')
     expect(escala).toContain('--espacio-12:')
     expect(movimiento).toContain('--duracion-hover:')
-    expect(movimiento).toContain('--escala-presion:')
+    expect(movimiento).toContain('--escala-activo:')
     expect(colores).not.toContain('--duracion-hover:')
     expect(colores).not.toContain('--texto-cuerpo:')
   })
@@ -163,7 +163,7 @@ describe('tokens.css', () => {
       ['--duracion-hover', '160ms'],
       ['--duracion-entrada', '200ms'],
       ['--duracion-hoja', '240ms'],
-      ['--duracion-zoom', '320ms'],
+      ['--duracion-zoom', '280ms'],
       ['--duracion-salida', '150ms'],
     ]) {
       expect(tokensCss).toMatch(new RegExp(`${token}:\\s*${valor};`))

@@ -81,6 +81,11 @@
   inline-size: var(--tamano-icono);
   block-size: var(--tamano-icono);
   margin: 0;
+  transition: transform var(--duracion-presion) var(--curva-salida);
+}
+
+.explorar-casilla:active .explorar-casilla__control {
+  transform: scale(var(--escala-activo));
 }
 
 /* ---------- Resultados ---------- */
@@ -104,7 +109,7 @@
   min-inline-size: 0;
 }
 
-.fila-arbol {
+.explorar-fila {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: start;
@@ -122,17 +127,17 @@
     border-color var(--duracion-hover) var(--curva-hover);
 }
 
-.fila-arbol:active {
+.explorar-fila:active {
   transform: scale(var(--escala-activo));
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .fila-arbol:hover {
+  .explorar-fila:hover {
     border-color: var(--color-acento);
   }
 }
 
-.fila-arbol__miniatura {
+.explorar-fila__miniatura {
   inline-size: var(--miniatura-lado);
   block-size: var(--miniatura-lado);
   display: grid;
@@ -142,24 +147,24 @@
   background: var(--color-superficie);
 }
 
-.fila-arbol__miniatura .glifo-pixel {
+.explorar-fila__miniatura .glifo-pixel {
   inline-size: var(--glifo-marca);
 }
 
-.fila-arbol__foto {
+.explorar-fila__foto {
   inline-size: 100%;
   block-size: 100%;
   object-fit: cover;
 }
 
-.fila-arbol__cuerpo {
+.explorar-fila__cuerpo {
   min-inline-size: 0;
   display: flex;
   flex-direction: column;
   gap: var(--espacio-1);
 }
 
-.fila-arbol__nombre {
+.explorar-fila__nombre {
   font-family: var(--fuente-display);
   font-weight: 800;
   font-size: var(--texto-cuerpo);
@@ -167,21 +172,21 @@
   overflow-wrap: anywhere;
 }
 
-.fila-arbol__cientifico {
+.explorar-fila__cientifico {
   font-size: var(--texto-md);
   font-style: italic;
   color: var(--color-texto-suave);
   overflow-wrap: anywhere;
 }
 
-.fila-arbol__ubicacion {
+.explorar-fila__ubicacion {
   font-size: var(--texto-sm);
   font-variant-numeric: tabular-nums;
   color: var(--color-texto-tenue);
   overflow-wrap: anywhere;
 }
 
-.fila-arbol__marcas {
+.explorar-fila__marcas {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -189,19 +194,19 @@
   font-size: var(--texto-sm);
 }
 
-.fila-arbol__estado {
+.explorar-fila__estado {
   min-inline-size: 0;
   overflow-wrap: anywhere;
 }
 
-.fila-arbol__destacado {
+.explorar-fila__destacado {
   display: inline-flex;
   align-items: center;
   gap: var(--espacio-1);
   font-weight: 600;
 }
 
-.fila-arbol__estrella {
+.explorar-fila__estrella {
   flex: none;
   inline-size: var(--tamano-icono);
   block-size: var(--tamano-icono);

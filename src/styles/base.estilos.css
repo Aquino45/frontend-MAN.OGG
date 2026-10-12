@@ -41,6 +41,17 @@ h6:focus {
   cursor: not-allowed;
 }
 
+/* ---------- Teclado ----------
+   Mientras se usa el teclado (Tab, flechas, Enter, Esc) nada se anima: los cambios son inmediatos. */
+:root[data-entrada='teclado'] *,
+:root[data-entrada='teclado'] *::before,
+:root[data-entrada='teclado'] *::after {
+  transition-duration: 0s !important;
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  transition-delay: 0s !important;
+}
+
 /* ---------- Movimiento reducido ----------
    Quien pide menos movimiento no recibe ninguno: los cambios de estado se ven, pero al instante. */
 

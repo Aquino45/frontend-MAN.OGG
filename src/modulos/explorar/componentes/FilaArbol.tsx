@@ -28,26 +28,31 @@ function FilaArbolSinMemo({ arbol, nombreSector }: PropsFilaArbol) {
   }
   const ubicacion = [arbol.codigo, nombreSector].filter(Boolean).join(' · ')
   return (
-    <Link className="fila-arbol" to={destino}>
-      <span className="fila-arbol__miniatura">
+    <Link className="explorar-fila" to={destino}>
+      <span className="explorar-fila__miniatura">
         {arbol.foto_miniatura_url ? (
-          <img className="fila-arbol__foto" src={arbol.foto_miniatura_url} alt="" loading="lazy" />
+          <img
+            className="explorar-fila__foto"
+            src={arbol.foto_miniatura_url}
+            alt=""
+            loading="lazy"
+          />
         ) : (
           <GlifoPixelArbol />
         )}
       </span>
-      <span className="fila-arbol__cuerpo">
-        <span className="fila-arbol__nombre">{arbol.nombre_comun ?? <SinDato />}</span>
-        <em className="fila-arbol__cientifico">{arbol.nombre_cientifico ?? <SinDato />}</em>
-        <span className="fila-arbol__ubicacion">{ubicacion}</span>
-        <span className="fila-arbol__marcas">
-          <span className="fila-arbol__estado">
+      <span className="explorar-fila__cuerpo">
+        <span className="explorar-fila__nombre">{arbol.nombre_comun ?? <SinDato />}</span>
+        <em className="explorar-fila__cientifico">{arbol.nombre_cientifico ?? <SinDato />}</em>
+        <span className="explorar-fila__ubicacion">{ubicacion}</span>
+        <span className="explorar-fila__marcas">
+          <span className="explorar-fila__estado">
             {TEXTOS_CARTILLA.estado}: {arbol.estado_general ?? <SinDato />}
           </span>
           {arbol.destacado && (
-            <span className="fila-arbol__destacado">
+            <span className="explorar-fila__destacado">
               <svg
-                className="fila-arbol__estrella"
+                className="explorar-fila__estrella"
                 viewBox={`0 0 ${ESTRELLA_LADO_GRILLA} ${ESTRELLA_LADO_GRILLA}`}
                 aria-hidden="true"
                 focusable="false"

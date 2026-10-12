@@ -107,7 +107,8 @@ body {
   cursor: pointer;
   transition:
     fill var(--duracion-hover) var(--curva-hover),
-    stroke var(--duracion-hover) var(--curva-hover);
+    stroke var(--duracion-hover) var(--curva-hover),
+    opacity var(--duracion-presion) var(--curva-salida);
 }
 
 .sector--provisional .sector__forma {
@@ -116,6 +117,10 @@ body {
 
 .sector--activo .sector__forma {
   fill: var(--mapa-relleno-resaltado);
+}
+
+.sector__forma:active {
+  opacity: var(--mapa-opacidad-presion);
 }
 
 /* El foco del sector se marca con su borde, no con el recuadro del navegador. */

@@ -30,6 +30,11 @@
   min-block-size: var(--tamano-control);
   color: var(--color-texto);
   text-decoration: none;
+  transition: transform var(--duracion-presion) var(--curva-salida);
+}
+
+.armazon-cabecera__marca:active {
+  transform: scale(var(--escala-activo));
 }
 
 .armazon-cabecera__glifo {

@@ -25,7 +25,7 @@
 }
 
 /* Estrella en la fila del panel y en la leyenda */
-.fila-arbol__destacado {
+.mapa-fila__destacado {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -34,7 +34,7 @@
   color: var(--color-texto-suave);
 }
 
-.fila-arbol__estrella,
+.mapa-fila__estrella,
 .leyenda-mapa__estrella {
   flex: none;
   inline-size: var(--leyenda-ancho-estrella);
@@ -45,7 +45,7 @@
   stroke-linejoin: round;
 }
 
-.fila-arbol__etiqueta-destacado {
+.mapa-fila__etiqueta-destacado {
   font-weight: 600;
 }
 

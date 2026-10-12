@@ -242,6 +242,12 @@ export const TEXTOS_SOBRE_ARBOL = {
 // CONSULTA DE MEDIOS DE QUIEN PIDE MENOS MOVIMIENTO
 export const CONSULTA_MOVIMIENTO_REDUCIDO = '(prefers-reduced-motion: reduce)'
 
+// CÓMO SE ESTÁ USANDO EL SITIO: con el teclado no se anima nada (lo lee el CSS en <html>)
+export const ATRIBUTO_MODALIDAD_ENTRADA = 'data-entrada'
+export const MODALIDADES_ENTRADA = { teclado: 'teclado', puntero: 'puntero' } as const
+// Teclas que por sí solas no son una acción de teclado
+export const TECLAS_MODIFICADORAS = ['Shift', 'Control', 'Alt', 'Meta'] as const
+
 // MARCA QUE LA APP DEJA EN EL ESTADO DEL HISTORIAL DE LAS ENTRADAS QUE ELLA AGREGA
 export const MARCA_HISTORIAL = 'censoArboreoEntrada'
 

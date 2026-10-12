@@ -18,7 +18,11 @@
   stroke-width: var(--mapa-inicio-grosor-borde);
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
-  transition: stroke-width var(--duracion-hover) var(--curva-hover);
+  transition: opacity var(--duracion-presion) var(--curva-salida);
+}
+
+.inicio-sector:active .inicio-sector__forma {
+  opacity: var(--mapa-opacidad-presion);
 }
 
 .inicio-sector--campo .inicio-sector__forma {
