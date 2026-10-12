@@ -40,7 +40,7 @@ export function BloqueCo2({ arbol }: PropsBloqueCo2) {
             </>
           )}
         </span>
-        {arbol.co2_simulado && <EtiquetaSimulado />}
+        {arbol.co2_simulado && almacenado !== null && <EtiquetaSimulado />}
       </div>
       <div className="bloque-co2__columna bloque-co2__columna--derecha">
         <span className="bloque-co2__etiqueta">
@@ -50,7 +50,7 @@ export function BloqueCo2({ arbol }: PropsBloqueCo2) {
         <span className="bloque-co2__captura">
           {captura === null ? <SinDato /> : `+${captura} ${MEDIDAS.co2CapturaAnualKg.unidad}`}
         </span>
-        {arbol.co2_simulado && <EtiquetaSimulado />}
+        {arbol.co2_simulado && captura !== null && <EtiquetaSimulado />}
       </div>
     </div>
   )
