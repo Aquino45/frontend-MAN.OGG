@@ -2,14 +2,13 @@
 import { useEffect, useRef } from 'react'
 import { fotogramasHoja } from '../lib/guionArbol'
 import type { HojaCayendo as DatosHoja } from '../hooks/useHojasQueCaen'
+import { LADO_HOJA } from '../lib/rejillaArbol'
 
 interface PropsHojaCayendo {
   hoja: DatosHoja
   pausado: boolean
   onTermina: (id: number) => void
 }
-
-const LADO_HOJA = 2
 
 export function HojaCayendo({ hoja, pausado, onTermina }: PropsHojaCayendo) {
   const refHoja = useRef<SVGRectElement>(null)

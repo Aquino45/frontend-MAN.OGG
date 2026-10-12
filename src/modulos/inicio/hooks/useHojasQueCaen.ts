@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ARBOL_ANIMADO as G } from '@/config/constantes'
 import type { EspecificacionHoja } from '../lib/guionArbol'
-import { ORIGENES_HOJA, PIVOTE_COPA } from '../lib/rejillaArbol'
+import { FILA_ABANICO, ORIGENES_HOJA, PIVOTE_COPA } from '../lib/rejillaArbol'
 
 export interface HojaCayendo extends EspecificacionHoja {
   id: number
@@ -15,9 +15,6 @@ interface OpcionesHojas {
   pausado: boolean
   aleatorio: () => number
 }
-
-// Fila desde la que sale la ráfaga, dentro de la copa baja
-const FILA_ABANICO = 11
 
 export function useHojasQueCaen({ activa, pausado, aleatorio }: OpcionesHojas) {
   const [hojas, setHojas] = useState<HojaCayendo[]>([])

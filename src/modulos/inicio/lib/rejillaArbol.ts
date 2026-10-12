@@ -94,6 +94,14 @@ export const SUELO_HOJA_Y = BASE_TRONCO_Y - 2
 
 // Celda de 2 x 2 que parpadea en la copa alta
 export const CELDA_PARPADEO = { x: 11, y: 2 } as const
+export const LADO_PARPADEO = 2
+
+// Hoja de 2 x 2 celdas y fila de la copa baja desde la que sale la ráfaga
+export const LADO_HOJA = 2
+export const FILA_ABANICO = 11
+
+// Franja clara del barrido de luz, en celdas de ancho
+export const ANCHO_DESTELLO = 5
 
 // Todas las celdas ocupadas por la silueta, como «x,y» (para comprobar que no cambió)
 export function celdasDeLaSilueta(): Set<string> {

@@ -9,10 +9,12 @@ import { useInclinacionAlPuntero } from '../hooks/useInclinacionAlPuntero'
 import { usePausaDelArbol } from '../hooks/usePausaDelArbol'
 import { claveFila, claveTronco, ORIGEN_COPA } from '../lib/guionArbol'
 import {
+  ANCHO_DESTELLO,
   BASE_TRONCO_Y,
   CELDA_PARPADEO,
   FILAS_COPA,
   FILAS_POR_PASO_TRONCO,
+  LADO_PARPADEO,
   LADO_REJILLA_ARBOL,
   PASOS_TRONCO,
   TRONCO,
@@ -28,8 +30,6 @@ interface PropsArbolAnimado {
 
 const ORIGEN_BASE = `${LADO_REJILLA_ARBOL / 2}px ${BASE_TRONCO_Y}px`
 const ESTILO_COPA: CSSProperties = { transformOrigin: ORIGEN_COPA }
-const ANCHO_DESTELLO = 5
-const LADO_PARPADEO = 2
 
 function pasosDelTronco() {
   return Array.from({ length: PASOS_TRONCO }, (_, paso) => ({

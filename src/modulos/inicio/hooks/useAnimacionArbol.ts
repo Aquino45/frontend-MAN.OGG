@@ -57,7 +57,10 @@ export function useAnimacionArbol(
 
   useEffect(() => {
     pausadoAhora.current = pausado
-    registro.current.forEach((animacion) => (pausado ? animacion.pause() : animacion.play()))
+    registro.current.forEach((animacion) => {
+      if (pausado) animacion.pause()
+      else if (animacion.playState === 'paused') animacion.play()
+    })
   }, [pausado])
 
   // Antes de pintar: así el árbol nunca se ve completo un instante antes de empezar a crecer.
