@@ -58,16 +58,16 @@ export function VistaInicio() {
   return (
     <div className="inicio">
       <Portada cantidadSectores={sectoresListos ? sectoresListos.length : null} />
-      <HorizontePixel fondo="var(--franja-contraste-fondo)" />
+      <HorizontePixel desde="var(--color-fondo)" fondo="var(--franja-contraste-fondo)" />
       <FranjaSectores
         estado={sectores.estado}
         sectores={sectoresListos ?? []}
         conteos={conteos}
         onReintentar={sectores.reintentar}
       />
-      <HorizontePixel fondo="var(--franja-cifras-fondo)" />
+      <HorizontePixel desde="var(--franja-contraste-fondo)" fondo="var(--franja-cifras-fondo)" />
       <CifrasCenso estado={estadoCampus} cifras={cifras} onReintentar={reintentarCampus} />
-      <HorizontePixel fondo="var(--color-fondo)" />
+      <HorizontePixel desde="var(--franja-cifras-fondo)" fondo="var(--color-fondo)" />
       <BloqueDestacados
         estado={estadoCampus}
         destacados={destacados ?? []}

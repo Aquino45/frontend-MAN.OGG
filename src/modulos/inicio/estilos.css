@@ -86,10 +86,37 @@
 }
 
 .inicio-portada__arbol {
+  position: relative;
+  isolation: isolate;
   flex: 1 0 auto;
   min-inline-size: 0;
   display: flex;
   justify-content: center;
+}
+
+/* Escenario del árbol: un halo magenta suave detrás de la copa y la sombra del suelo bajo el tronco.
+   Solo colores de la paleta, sin movimiento y sin atrapar clics. */
+.inicio-portada__arbol::before,
+.inicio-portada__arbol::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.inicio-portada__arbol::before {
+  inset: -6% 6% 8%;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--copa-magenta-oscuro) 42%, transparent),
+    transparent
+  );
+}
+
+.inicio-portada__arbol::after {
+  inset: auto 18% -3%;
+  block-size: 9%;
+  background: radial-gradient(closest-side, var(--color-sombra), transparent);
 }
 
 /* ---------- Franja de sectores (contraste) ---------- */

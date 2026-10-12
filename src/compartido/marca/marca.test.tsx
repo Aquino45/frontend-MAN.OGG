@@ -1,6 +1,9 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { SPRITE_GENERICO, SPRITES_POR_ESPECIE, TEXTOS_MARCA } from '@/config/constantes'
+import escalaTokens from '@/styles/escala.tokens.css?raw'
+import faviconSvg from '../../../public/favicon.svg?raw'
+import tokensCss from '@/styles/tokens.css?raw'
 import marcaCss from './marca.estilos.css?raw'
 import { capasDeFilas } from './capasDeFilas'
 import { claveSpriteDeEspecie } from './claveSprite'
@@ -125,6 +128,80 @@ describe('símbolo del logo', () => {
     const { container } = render(<SimboloLogo />)
     expect(container.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
   })
+
+  it('el viewBox contiene todo el dibujo y no recorta lo que toca el borde', () => {
+    const { container } = render(<SimboloLogo />)
+    const svg = container.querySelector('svg') as SVGElement
+    expect(svg).toHaveAttribute('viewBox', `0 0 ${SIMBOLO_LOGO[0].length} ${SIMBOLO_LOGO.length}`)
+    expect(marcaCss).toMatch(/\.simbolo-logo\s*\{[^}]*overflow:\s*visible/)
+  })
+
+  it('se dibuja en celdas de px enteros: el alto es filas por la celda de la marca', () => {
+    const { container } = render(<SimboloLogo />)
+    const svg = container.querySelector('svg') as SVGElement
+    expect(svg.style.getPropertyValue('--simbolo-filas')).toBe(String(SIMBOLO_LOGO.length))
+    expect(marcaCss).toMatch(
+      /\.simbolo-logo\s*\{[^}]*block-size:\s*calc\(var\(--simbolo-filas\)\s*\*\s*var\(--marca-celda\)\)/,
+    )
+    expect(escalaTokens).toMatch(/--marca-celda:\s*1px/)
+    expect(escalaTokens).toMatch(
+      /@media \(min-width: 48rem\)\s*\{\s*:root\s*\{[^}]*--marca-celda:\s*2px/,
+    )
+    expect(marcaCss).toMatch(/\.co-marca\s*\{[^}]*--marca-celda:\s*2px/)
+  })
+})
+
+describe('símbolo del logo: dibujo', () => {
+  // El color de un token de la paleta, tal como está escrito en tokens.css
+  const valorDeToken = (nombre: string) =>
+    new RegExp(String.raw`${nombre}:\s*(#[0-9a-f]{6})`, 'i').exec(tokensCss)?.[1] ?? ''
+
+  // En la mitad de arriba el borde izquierdo de la copa solo se aleja hacia afuera y el derecho
+  // también: una copa llena y redonda, sin muescas ni escalones al revés.
+  it.each([16, 32] as const)(
+    'la copa de la mínima de %i crece pareja hasta su parte más ancha',
+    (lado) => {
+      const filas = SIMBOLO_MINIMO[lado].slice(0, lado / 2).filter((fila) => /[CMO]/.test(fila))
+      const bordes = filas.map((fila) => ({
+        izquierdo: fila.search(/[CMO]/),
+        derecho: fila.length - 1 - [...fila].reverse().findIndex((letra) => 'CMO'.includes(letra)),
+      }))
+      const ancho = (borde: { izquierdo: number; derecho: number }) =>
+        borde.derecho - borde.izquierdo
+      const masAncha = bordes.indexOf(bordes.reduce((a, b) => (ancho(b) > ancho(a) ? b : a)))
+      for (let fila = 1; fila <= masAncha; fila++) {
+        expect(bordes[fila].izquierdo, `izquierdo, fila ${fila}`).toBeLessThanOrEqual(
+          bordes[fila - 1].izquierdo,
+        )
+        expect(bordes[fila].derecho, `derecho, fila ${fila}`).toBeGreaterThanOrEqual(
+          bordes[fila - 1].derecho,
+        )
+      }
+      // Y arriba no es una barra: la primera fila es más angosta que la más ancha
+      expect(ancho(bordes[0])).toBeLessThan(ancho(bordes[masAncha]))
+    },
+  )
+
+  it('las baldosas del símbolo no se empastan: hay una columna vacía entre ellas', () => {
+    const filaDeBaldosas = SIMBOLO_LOGO.find((fila) => /V+\.+V+/.test(fila))
+    expect(filaDeBaldosas).toBeDefined()
+  })
+
+  it('favicon.svg es la mínima de 32 celda por celda', () => {
+    expect(faviconSvg).toContain('viewBox="0 0 32 32"')
+    const celdasPorColor = (color: string) =>
+      [...faviconSvg.matchAll(new RegExp(`fill="${color}" d="([^"]*)"`, 'g'))]
+        .flatMap(([, trazo]) => [...trazo.matchAll(/h(\d+)v1/g)])
+        .reduce((suma, [, ancho]) => suma + Number(ancho), 0)
+    const celdasDeLetra = (letras: string) =>
+      SIMBOLO_MINIMO[32]
+        .join('')
+        .split('')
+        .filter((letra) => letras.includes(letra)).length
+    expect(celdasPorColor(valorDeToken('--copa-carmin'))).toBe(celdasDeLetra('C'))
+    expect(celdasPorColor(valorDeToken('--blanco'))).toBe(celdasDeLetra('W'))
+    expect(celdasPorColor(valorDeToken('--copa-magenta-oscuro'))).toBe(celdasDeLetra('O'))
+  })
 })
 
 describe('co-marca', () => {
@@ -156,5 +233,13 @@ describe('wordmark', () => {
     expect(marcaCss).toMatch(/\.wordmark__arboreo\s*\{[^}]*font-weight:\s*800/)
     // Sin la fuente pixel
     expect(marcaCss).not.toMatch(/silkscreen/i)
+  })
+})
+
+describe('co-marca en pantallas angostas', () => {
+  it('el separador vertical se esconde cuando la UPeU baja de renglón', () => {
+    expect(marcaCss).toMatch(
+      /@media \(width < 40rem\)\s*\{[^}]*\.co-marca__separador\s*\{\s*display:\s*none/,
+    )
   })
 })

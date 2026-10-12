@@ -32,7 +32,8 @@
   display: flex;
   align-items: center;
   min-inline-size: 0;
-  min-block-size: var(--tamano-control);
+  /* Alto fijo: el símbolo del logo (58 px desde 48rem) sobresale de esta caja sin agrandar la cabecera */
+  block-size: var(--tamano-control);
   color: var(--color-texto);
   text-decoration: none;
   transition: transform var(--duracion-presion) var(--curva-salida);
@@ -40,6 +41,32 @@
 
 .armazon-cabecera__marca:active {
   transform: scale(var(--escala-activo));
+}
+
+/* Entrada corta del logo al abrir el sitio: sube 4 px mientras aparece. La cabecera no se vuelve a montar al
+   cambiar de página, así que ocurre una sola vez; con «reducir movimiento» no se anima. */
+.armazon-cabecera__marca .logo-nuestro {
+  animation: armazon-marca-entra var(--duracion-entrada) var(--curva-salida) both;
+  transition: transform var(--duracion-hover) var(--curva-salida);
+}
+
+@keyframes armazon-marca-entra {
+  from {
+    opacity: 0;
+    transform: translateY(var(--desplazamiento-menu));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hover sutil: el logo se corre 2 px a la derecha, solo con cursor fino */
+@media (hover: hover) and (pointer: fine) {
+  .armazon-cabecera__marca:hover .logo-nuestro {
+    transform: translateX(2px);
+  }
 }
 
 .armazon-cabecera__acciones {

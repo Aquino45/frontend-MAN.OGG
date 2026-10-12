@@ -3,7 +3,8 @@
 import '../estilos.css'
 import '../hoja.estilos.css'
 import '../destacados.estilos.css'
-import { useEffect, useMemo, useState } from 'react'
+import '../satelite.estilos.css'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { EstadoCarga } from '@/compartido/EstadoCarga'
 import { useSectoresDelCampus } from '@/compartido/useSectoresDelCampus'
 import { EstadoError } from '@/compartido/EstadoError'
@@ -16,7 +17,10 @@ import {
   TEXTOS_MAPA,
   TEXTOS_PANEL,
 } from '@/config/constantes'
+import { obtenerConfigMapaReal, type ConfigMapaReal } from '@/config/entorno'
+import { TEXTOS_SATELITE, VISTAS_MAPA, type VistaMapaTipo } from '@/config/satelite'
 import { elegirVariante } from '@/lib/elegirVariante'
+import { ControlVistaMapa } from '../componentes/ControlVistaMapa'
 import type { FormaGlifo } from '../componentes/GlifoArbol'
 import { MapaSectores } from '../componentes/MapaSectores'
 import { PanelSector } from '../componentes/PanelSector'
@@ -29,13 +33,30 @@ const TECLA_ESCAPE = 'Escape'
 // Proporción del esqueleto del mapa mientras carga (la misma del mapa compacto de Inicio)
 import { PROPORCION_MAPA } from './proporcionMapa'
 
+// MapLibre pesa: el mapa real se descarga solo cuando alguien activa «Calles» o «Satélite».
+const MapaReal = lazy(() => import('../componentes/MapaReal'))
+
 interface PropsVistaMapa {
   // Fuente de azar para las variantes de adorno; se inyecta en los tests.
   aleatorio?: () => number
+  // Calles y satélite: sin clave de Esri no hay satélite. Se inyecta en los tests.
+  configMapaReal?: ConfigMapaReal
 }
 
-export function VistaMapa({ aleatorio = Math.random }: PropsVistaMapa) {
+export function VistaMapa({
+  aleatorio = Math.random,
+  configMapaReal: configInyectada,
+}: PropsVistaMapa) {
+  // Se lee del entorno una sola vez: un objeto nuevo en cada dibujo recrearía el mapa
+  const [configMapaReal] = useState(() =>
+    configInyectada === undefined ? obtenerConfigMapaReal() : configInyectada,
+  )
+  // El satélite solo existe con la clave de Esri; las calles siempre
+  const vistasDisponibles: readonly VistaMapaTipo[] = configMapaReal.clave
+    ? VISTAS_MAPA
+    : VISTAS_MAPA.filter((vistaPosible) => vistaPosible !== 'satelite')
   const sectores = useSectoresDelCampus()
+  const [vista, setVista] = useState<VistaMapaTipo>('ilustrado')
   const seleccion = useSeleccionEnUrl()
   const recordarOrigen = useRetornoDeFoco(seleccion.arbolCodigo)
   const [sectorResaltado, setSectorResaltado] = useState<number | null>(null)
@@ -100,18 +121,43 @@ export function VistaMapa({ aleatorio = Math.random }: PropsVistaMapa) {
 
   return (
     <section className={`vista-mapa${sectorAbierto ? ' vista-mapa--con-sector' : ''}`}>
-      <MapaSectores
-        sectores={sectores.sectores}
-        sectorResaltado={sectorResaltado}
-        sectorSeleccionado={sectorAbierto?.id ?? null}
-        formasGlifos={formasGlifos}
-        onResaltar={setSectorResaltado}
-        onSeleccionar={alSeleccionarSector}
-        arboles={arboles.estado === 'listo' ? arboles.arboles : undefined}
-        arbolResaltado={arbolResaltado}
-        onResaltarArbol={setArbolResaltado}
-        onAbrirArbol={abrirArbol}
-      />
+      <div className="vista-mapa__mapa">
+        <ControlVistaMapa vista={vista} vistas={vistasDisponibles} onCambiarVista={setVista} />
+        {vista !== 'ilustrado' ? (
+          <Suspense
+            fallback={
+              <EstadoCarga
+                etiqueta={TEXTOS_SATELITE.cargando[vista]}
+                forma="bloque"
+                proporcion={PROPORCION_MAPA}
+              />
+            }
+          >
+            <MapaReal
+              sectores={sectores.sectores}
+              sectorSeleccionado={sectorAbierto?.id ?? null}
+              arboles={arboles.estado === 'listo' ? arboles.arboles : undefined}
+              config={configMapaReal}
+              base={vista}
+              onSeleccionar={alSeleccionarSector}
+              onAbrirArbol={abrirArbol}
+            />
+          </Suspense>
+        ) : (
+          <MapaSectores
+            sectores={sectores.sectores}
+            sectorResaltado={sectorResaltado}
+            sectorSeleccionado={sectorAbierto?.id ?? null}
+            formasGlifos={formasGlifos}
+            onResaltar={setSectorResaltado}
+            onSeleccionar={alSeleccionarSector}
+            arboles={arboles.estado === 'listo' ? arboles.arboles : undefined}
+            arbolResaltado={arbolResaltado}
+            onResaltarArbol={setArbolResaltado}
+            onAbrirArbol={abrirArbol}
+          />
+        )}
+      </div>
       {sectorAbierto && (
         <aside
           ref={refHoja}

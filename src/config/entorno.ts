@@ -1,4 +1,9 @@
 // ÚNICO LUGAR DEL PROYECTO QUE LEE import.meta.env
+import {
+  CALLES_URL_TESELAS_POR_DEFECTO,
+  SATELITE_URL_TESELAS_POR_DEFECTO,
+  type BaseMapaReal,
+} from './satelite'
 
 export interface Entorno {
   urlApi: string
@@ -44,4 +49,31 @@ export function leerUrlPanel(variables: VariablesCrudas): string | null {
 
 export function obtenerUrlPanel(): string | null {
   return leerUrlPanel(import.meta.env)
+}
+
+export interface ConfigMapaReal {
+  // Clave de Esri: sin ella no hay vista satelital (las calles no la necesitan)
+  clave: string | null
+  // Dirección de las teselas de cada base, con {z}, {y} y {x}
+  urlsTeselas: Record<BaseMapaReal, string>
+}
+
+function textoOPorDefecto(valor: unknown, porDefecto: string): string {
+  return typeof valor === 'string' && valor.trim() !== '' ? valor.trim() : porDefecto
+}
+
+// Vistas «Calles» (siempre) y «Satélite» (solo con la clave de Esri en VITE_ESRI_CLAVE).
+export function leerConfigMapaReal(variables: VariablesCrudas): ConfigMapaReal {
+  const clave = variables.VITE_ESRI_CLAVE
+  return {
+    clave: typeof clave === 'string' && clave.trim() !== '' ? clave.trim() : null,
+    urlsTeselas: {
+      satelite: textoOPorDefecto(variables.VITE_ESRI_URL_TESELAS, SATELITE_URL_TESELAS_POR_DEFECTO),
+      calles: textoOPorDefecto(variables.VITE_URL_CALLES, CALLES_URL_TESELAS_POR_DEFECTO),
+    },
+  }
+}
+
+export function obtenerConfigMapaReal(): ConfigMapaReal {
+  return leerConfigMapaReal(import.meta.env)
 }

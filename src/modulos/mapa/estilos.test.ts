@@ -8,6 +8,7 @@ import {
 import estilosBase from './estilos.css?raw'
 import estilosHoja from './hoja.estilos.css?raw'
 import estilosDestacados from './destacados.estilos.css?raw'
+import sateliteCss from './satelite.estilos.css?raw'
 import estilosBotones from '@/styles/botones.estilos.css?raw'
 import tokensMovimiento from '@/styles/movimiento.tokens.css?raw'
 import tokensBase from '@/styles/tokens.css?raw'
@@ -198,5 +199,26 @@ describe('movimiento del mapa', () => {
 describe('filas vivas del panel', () => {
   it('la fila del panel es elevable', () => {
     expect(panelSector).toContain('elevable')
+  })
+})
+
+describe('estilos del mapa satelital', () => {
+  // MapLibre le pone `position: relative` (clase maplibregl-map) al contenedor del lienzo: si el
+  // selector no es más específico, el lienzo se queda sin alto y la foto no se ve.
+  it('el lienzo llena su marco con un selector que le gana a la clase de MapLibre', () => {
+    expect(sateliteCss).toMatch(
+      /\.mapa-satelite__marco \.mapa-satelite__lienzo\s*\{[^}]*position:\s*absolute[^}]*inset:\s*0/,
+    )
+  })
+
+  // A 360 px los tres botones ya no caben con el relleno de siempre y las palabras se partían
+  // («Ilustrad-o»): reparten el ancho, con menos relleno y sin partir la palabra.
+  it('los botones de vista reparten el ancho y no parten sus palabras', () => {
+    expect(sateliteCss).toMatch(/\.control-vista-mapa__vistas\s*\{[^}]*display:\s*flex/)
+    const boton = /\.control-vista-mapa__boton\s*\{([^}]*)\}/.exec(sateliteCss)?.[1] ?? ''
+    expect(boton).toMatch(/white-space:\s*nowrap/)
+    expect(boton).toMatch(/flex:\s*1 1 auto/)
+    expect(boton).toMatch(/padding-inline:\s*var\(--espacio-2\)/)
+    expect(boton).toMatch(/overflow-wrap:\s*normal/)
   })
 })

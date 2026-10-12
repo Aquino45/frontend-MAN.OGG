@@ -1,0 +1,116 @@
+/* Vistas de calles y satélite: el control de vista, el marco del mapa, los nombres y la atribución.
+   Todo el color sale de tokens. */
+
+.vista-mapa__mapa {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-3);
+  min-inline-size: 0;
+}
+
+.control-vista-mapa {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-2) var(--espacio-3);
+}
+
+.control-vista-mapa__vistas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2);
+  max-inline-size: 100%;
+}
+
+/* Tres botones: a 360 px no caben con el relleno de siempre, así que reparten el ancho con menos
+   relleno y sin partir la palabra (el botón base parte donde sea) */
+.control-vista-mapa__boton {
+  flex: 1 1 auto;
+  padding-inline: var(--espacio-2);
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+
+/* El botón de la vista activa queda marcado por forma (borde en el acento) y no solo por color */
+.control-vista-mapa__boton[aria-pressed='true'],
+.mapa-satelite__sectores .boton[aria-pressed='true'] {
+  --boton-fondo: var(--color-superficie);
+  --boton-borde: var(--color-acento);
+  border-width: var(--grosor-acento);
+}
+
+.mapa-satelite {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+}
+
+.mapa-satelite__marco {
+  position: relative;
+  overflow: hidden;
+  min-block-size: var(--mapa-alto-reserva);
+  block-size: var(--mapa-alto-maximo);
+  border-radius: var(--radio-tarjeta);
+  background: var(--color-superficie);
+}
+
+/* Más específico que la clase de MapLibre (.maplibregl-map pone position: relative) */
+.mapa-satelite__marco .mapa-satelite__lienzo {
+  position: absolute;
+  inset: 0;
+}
+
+.mapa-satelite__cargando {
+  position: absolute;
+  inset-block-end: var(--espacio-3);
+  inset-inline-start: var(--espacio-3);
+  margin: 0;
+  padding: var(--espacio-1) var(--espacio-2);
+  border-radius: var(--radio-chip);
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-size: var(--texto-sm);
+}
+
+.mapa-satelite__atribucion {
+  margin: 0;
+  font-size: var(--texto-sm);
+  color: var(--color-texto-tenue);
+}
+
+.mapa-satelite__sectores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (max-width: 55.99rem) {
+  .vista-mapa--con-sector .mapa-satelite__marco {
+    block-size: var(--mapa-alto-reserva);
+  }
+}
+
+/* Nombre del sector sobre la foto: claro con un halo noche para leerse sobre cualquier suelo */
+.mapa-satelite__etiqueta {
+  pointer-events: none;
+  font-family: var(--fuente-display);
+  font-size: var(--texto-sm);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--texto-lectura);
+  text-shadow:
+    0 0 3px var(--tronco-noche),
+    0 0 6px var(--tronco-noche);
+}
+
+/* Sobre las calles el fondo es claro: texto noche con halo claro */
+.mapa-satelite__etiqueta--calles {
+  color: var(--tronco-noche);
+  text-shadow:
+    0 0 3px var(--texto-lectura),
+    0 0 6px var(--texto-lectura);
+}
