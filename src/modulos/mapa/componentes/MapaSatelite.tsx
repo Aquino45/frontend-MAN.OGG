@@ -3,7 +3,7 @@
 // porque MapLibre pesa. El tinte con la paleta es una capa CSS encima del lienzo; «Color natural»
 // la quita. Con movimiento reducido la cámara salta en vez de volar.
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { Map as MapaMapLibre, type GeoJSONSource, type StyleSpecification } from 'maplibre-gl'
+import { Map as MapaMapLibre, type GeoJSONSource } from 'maplibre-gl'
 import { useEffect, useRef, useState } from 'react'
 import type { ArbolFeature, SectorFeature } from '@/api/cliente'
 import { EstadoError } from '@/compartido/EstadoError'
@@ -13,41 +13,30 @@ import { ATRIBUTO_TEMA } from '@/config/constantes'
 import {
   SATELITE_ATRIBUCION,
   SATELITE_CAPA_ARBOLES,
-  SATELITE_CAPA_BORDE,
   SATELITE_CAPA_IMAGEN,
   SATELITE_CAPA_RELLENO,
   SATELITE_DURACION_VUELO_MS,
   SATELITE_ENLACE_ATRIBUCION,
   SATELITE_FUENTE_ARBOLES,
-  SATELITE_FUENTE_IMAGEN,
   SATELITE_FUENTE_SECTORES,
-  SATELITE_GROSOR_BORDE_ACTIVO,
-  SATELITE_GROSOR_BORDE_PUNTO_PX,
-  SATELITE_GROSOR_BORDE_SECTOR,
   SATELITE_MARGEN_CAMPUS_PX,
   SATELITE_MARGEN_SECTOR_PX,
-  SATELITE_OPACIDAD_RELLENO_ACTIVO,
-  SATELITE_OPACIDAD_RELLENO_SECTOR,
-  SATELITE_RADIO_PUNTO_ACTIVO_PX,
-  SATELITE_RADIO_PUNTO_PX,
-  SATELITE_SATURACION_NATURAL,
-  SATELITE_SATURACION_TENIDA,
-  SATELITE_TAMANO_TESELA_PX,
   SATELITE_ZOOM_MAXIMO,
   TEXTOS_SATELITE,
 } from '@/config/satelite'
-import {
-  leerColoresSatelite,
-  lectorDeTokensDelDocumento,
-  type ColoresSatelite,
-} from '../lib/coloresSatelite'
 import {
   coleccionArboles,
   coleccionSectores,
   limitesDeSector,
   limitesDeSectores,
-  urlTeselasConClave,
 } from '../lib/geojsonSatelite'
+import {
+  agregarCapas,
+  aplicarColores,
+  coloresActuales,
+  estiloDeLaImagen,
+  saturacion,
+} from './capasSatelite'
 
 interface PropsMapaSatelite {
   sectores: readonly SectorFeature[]
@@ -60,97 +49,6 @@ interface PropsMapaSatelite {
 }
 
 const SIN_ARBOLES: readonly ArbolFeature[] = []
-
-function estiloDeLaImagen(config: ConfigSatelite, colorNatural: boolean): StyleSpecification {
-  return {
-    version: 8,
-    sources: {
-      [SATELITE_FUENTE_IMAGEN]: {
-        type: 'raster',
-        tiles: [urlTeselasConClave(config.urlTeselas, config.clave)],
-        tileSize: SATELITE_TAMANO_TESELA_PX,
-        maxzoom: SATELITE_ZOOM_MAXIMO,
-      },
-    },
-    layers: [
-      {
-        id: SATELITE_CAPA_IMAGEN,
-        type: 'raster',
-        source: SATELITE_FUENTE_IMAGEN,
-        paint: { 'raster-saturation': saturacion(colorNatural) },
-      },
-    ],
-  }
-}
-
-const saturacion = (colorNatural: boolean) =>
-  colorNatural ? SATELITE_SATURACION_NATURAL : SATELITE_SATURACION_TENIDA
-
-function agregarCapas(mapa: MapaMapLibre, colores: ColoresSatelite) {
-  mapa.addSource(SATELITE_FUENTE_SECTORES, { type: 'geojson', data: coleccionSectores([], null) })
-  mapa.addSource(SATELITE_FUENTE_ARBOLES, { type: 'geojson', data: coleccionArboles([]) })
-  mapa.addLayer({
-    id: SATELITE_CAPA_RELLENO,
-    type: 'fill',
-    source: SATELITE_FUENTE_SECTORES,
-    paint: {
-      'fill-color': colores.relleno,
-      'fill-opacity': [
-        'case',
-        ['get', 'activo'],
-        SATELITE_OPACIDAD_RELLENO_ACTIVO,
-        SATELITE_OPACIDAD_RELLENO_SECTOR,
-      ],
-    },
-  })
-  mapa.addLayer({
-    id: SATELITE_CAPA_BORDE,
-    type: 'line',
-    source: SATELITE_FUENTE_SECTORES,
-    paint: {
-      'line-color': colores.borde,
-      'line-width': [
-        'case',
-        ['get', 'activo'],
-        SATELITE_GROSOR_BORDE_ACTIVO,
-        SATELITE_GROSOR_BORDE_SECTOR,
-      ],
-    },
-  })
-  mapa.addLayer({
-    id: SATELITE_CAPA_ARBOLES,
-    type: 'circle',
-    source: SATELITE_FUENTE_ARBOLES,
-    paint: {
-      'circle-radius': [
-        'case',
-        ['get', 'destacado'],
-        SATELITE_RADIO_PUNTO_ACTIVO_PX,
-        SATELITE_RADIO_PUNTO_PX,
-      ],
-      'circle-color': ['case', ['get', 'destacado'], colores.puntoDestacado, colores.puntoRelleno],
-      'circle-opacity': ['case', ['get', 'demo'], 0.75, 1],
-      'circle-stroke-color': colores.puntoBorde,
-      'circle-stroke-width': SATELITE_GROSOR_BORDE_PUNTO_PX,
-    },
-  })
-}
-
-function aplicarColores(mapa: MapaMapLibre, colores: ColoresSatelite) {
-  mapa.setPaintProperty(SATELITE_CAPA_RELLENO, 'fill-color', colores.relleno)
-  mapa.setPaintProperty(SATELITE_CAPA_BORDE, 'line-color', colores.borde)
-  mapa.setPaintProperty(SATELITE_CAPA_ARBOLES, 'circle-color', [
-    'case',
-    ['get', 'destacado'],
-    colores.puntoDestacado,
-    colores.puntoRelleno,
-  ])
-  mapa.setPaintProperty(SATELITE_CAPA_ARBOLES, 'circle-stroke-color', colores.puntoBorde)
-}
-
-function coloresActuales(): ColoresSatelite {
-  return leerColoresSatelite(lectorDeTokensDelDocumento(document.documentElement))
-}
 
 export default function MapaSatelite({
   sectores,
