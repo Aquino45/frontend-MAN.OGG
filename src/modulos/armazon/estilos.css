@@ -12,6 +12,7 @@
   /* Por encima de la hoja inferior del mapa (fija): así el menú abierto se ve completo */
   position: relative;
   z-index: var(--capa-cabecera);
+  view-transition-name: cabecera;
   background: var(--color-fondo);
   padding: var(--espacio-3);
   display: flex;
@@ -136,8 +137,27 @@
     flex-basis: 100%;
   }
 
+  /* El menú entra con un fundido y una subida corta, y sale más rápido. El teclado y «reducir
+     movimiento» lo abren y cierran al instante (ver base.estilos.css). */
+  .armazon-cabecera__nav {
+    transition:
+      opacity var(--duracion-menu) var(--curva-salida),
+      transform var(--duracion-menu) var(--curva-salida),
+      display var(--duracion-menu) allow-discrete;
+  }
+
   .armazon-cabecera__nav[data-abierto='false'] {
     display: none;
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--desplazamiento-menu)));
+    transition-duration: var(--duracion-salida);
+  }
+
+  @starting-style {
+    .armazon-cabecera__nav {
+      opacity: 0;
+      transform: translateY(calc(-1 * var(--desplazamiento-menu)));
+    }
   }
 
   /* En la lista del menú móvil el texto sube a 1rem; el objetivo sigue en 44 px */

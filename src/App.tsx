@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router'
 import { RUTAS, TEXTOS_MAPA } from '@/config/constantes'
+import { ProveedorTransicionDePagina } from '@/compartido/ProveedorTransicionDePagina'
 import { Cabecera, Pie, VistaNoEncontrada } from '@/modulos/armazon'
 import { VistaCifras } from '@/modulos/cifras'
 import { VistaEntrada } from '@/modulos/entrada'
@@ -64,7 +65,9 @@ function Armazon({ aleatorioEntrada }: PropsApp) {
 export default function App({ aleatorioEntrada }: PropsApp) {
   return (
     <BrowserRouter>
-      <Armazon aleatorioEntrada={aleatorioEntrada} />
+      <ProveedorTransicionDePagina>
+        <Armazon aleatorioEntrada={aleatorioEntrada} />
+      </ProveedorTransicionDePagina>
     </BrowserRouter>
   )
 }

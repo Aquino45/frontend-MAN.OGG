@@ -19,6 +19,8 @@
   --duracion-pagina: 200ms;
   --duracion-grafico: 360ms;
   --retraso-escalonado-grafico: 30ms;
+  /* Cuánto sube el menú del celular al abrirse */
+  --desplazamiento-menu: 4px;
   --curva-movimiento: cubic-bezier(0.77, 0, 0.175, 1);
   --curva-hoja: cubic-bezier(0.32, 0.72, 0, 1);
   --curva-hover: ease;

@@ -1,6 +1,7 @@
 import { Link } from 'react-router'
 import { SelloDemo } from '@/compartido/SelloDemo'
 import { SinDato } from '@/compartido/SinDato'
+import { useEnlaceConTransicion } from '@/compartido/useEnlaceConTransicion'
 import {
   ESTRELLA_CONTORNO,
   ESTRELLA_LADO_GRILLA,
@@ -39,6 +40,7 @@ function Medida({ etiqueta, valor, magnitud }: PropsMedida) {
 // Tarjeta de un árbol destacado: toda ella es un enlace a su cartilla en el mapa.
 // El DAP y la altura llegan aparte (el resumen no los trae): esqueleto, valor o «Sin dato».
 export function TarjetaDestacado({ destacado, medidas }: PropsTarjetaDestacado) {
+  const conTransicion = useEnlaceConTransicion()
   const { arbol, nombreSector } = destacado
   const destino = {
     pathname: RUTAS.mapa,
@@ -46,7 +48,7 @@ export function TarjetaDestacado({ destacado, medidas }: PropsTarjetaDestacado) 
   }
   const ubicacion = [arbol.codigo, nombreSector].filter(Boolean).join(' · ')
   return (
-    <Link className="destacado-tarjeta" to={destino}>
+    <Link className="destacado-tarjeta" to={destino} onClick={conTransicion}>
       <span className="destacado-tarjeta__cabecera">
         <svg
           className="destacado-tarjeta__estrella"

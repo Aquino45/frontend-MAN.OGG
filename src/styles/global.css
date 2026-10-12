@@ -5,6 +5,7 @@
 @import '@fontsource/bricolage-grotesque/800.css';
 @import './botones.estilos.css';
 @import './base.estilos.css';
+@import './transicion.estilos.css';
 
 *,
 *::before,
@@ -25,9 +26,6 @@ body {
   font-family: var(--fuente-base);
   font-size: var(--texto-base);
   line-height: var(--interlinea-cuerpo);
-  transition:
-    background-color var(--duracion-hover) var(--curva-hover),
-    color var(--duracion-hover) var(--curva-hover);
 }
 
 /* ---------- Estructura de la página ---------- */

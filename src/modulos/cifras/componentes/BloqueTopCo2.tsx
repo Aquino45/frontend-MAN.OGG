@@ -4,6 +4,7 @@ import { useId } from 'react'
 import { Link } from 'react-router'
 import { SelloDemo } from '@/compartido/SelloDemo'
 import { SinDato } from '@/compartido/SinDato'
+import { useEnlaceConTransicion } from '@/compartido/useEnlaceConTransicion'
 import { TEXTOS_CIFRAS } from '@/config/constantes'
 import { formatearCo2, textoSinDatoCo2, type FilaTopCo2 } from '../lib/cifrasCo2'
 
@@ -18,6 +19,7 @@ const PORCENTAJE_COMPLETO = 100
 
 export function BloqueTopCo2({ filas, sinDato }: PropsBloqueTopCo2) {
   const idTitulo = useId()
+  const conTransicion = useEnlaceConTransicion()
   const textos = TEXTOS_CIFRAS.co2
   const textoSinDato = textoSinDatoCo2(sinDato)
   const maximo = Math.max(0, ...filas.map((fila) => fila.co2_almacenado_kg))
@@ -32,6 +34,7 @@ export function BloqueTopCo2({ filas, sinDato }: PropsBloqueTopCo2) {
             <span className="cifras-top__cabeza">
               <Link
                 to={fila.enlace}
+                onClick={conTransicion}
                 className="cifras-top__codigo"
                 aria-label={textos.verEnMapa.replace('{codigo}', fila.codigo)}
               >

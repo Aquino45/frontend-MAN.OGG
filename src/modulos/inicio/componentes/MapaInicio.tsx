@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router'
 import type { SectorFeature } from '@/api/cliente'
+import { useEnlaceConTransicion } from '@/compartido/useEnlaceConTransicion'
 import {
   MAPA_INICIO_INTERLINEA_EM,
   MAPA_INICIO_SUBIDA_POR_LINEA_EM,
@@ -46,6 +47,7 @@ function describirSector(sector: SectorFeature, conteos: PropsMapaInicio['conteo
 // Mapa compacto de los sectores: cada uno es un enlace a /mapa?sector=<id>.
 // Las formas van primero y los textos encima de todas, para que ningún sector tape un rótulo.
 export function MapaInicio({ sectores, conteos }: PropsMapaInicio) {
+  const conTransicion = useEnlaceConTransicion()
   const proyeccion = useMemo(() => proyectarSectores(sectores), [sectores])
   const descripciones = useMemo(
     () => sectores.map((sector) => describirSector(sector, conteos)),
@@ -74,6 +76,7 @@ export function MapaInicio({ sectores, conteos }: PropsMapaInicio) {
             key={proyectado.id}
             className={clases}
             to={enlaceDelSector(proyectado.id)}
+            onClick={conTransicion}
             aria-label={nombreAccesibleSector(properties)}
           >
             <path className="inicio-sector__forma" d={proyectado.trazado} />

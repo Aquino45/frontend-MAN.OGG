@@ -1,4 +1,5 @@
 import { Link } from 'react-router'
+import { useEnlaceConTransicion } from '@/compartido/useEnlaceConTransicion'
 import { RUTAS, TEXTOS_INICIO } from '@/config/constantes'
 
 interface PropsEnlaceMapa {
@@ -8,8 +9,13 @@ interface PropsEnlaceMapa {
 
 // Enlace principal a /mapa, con una flecha decorativa.
 export function EnlaceMapa({ variante }: PropsEnlaceMapa) {
+  const conTransicion = useEnlaceConTransicion()
   return (
-    <Link className={variante === 'portada' ? 'boton boton--pildora' : 'boton'} to={RUTAS.mapa}>
+    <Link
+      className={variante === 'portada' ? 'boton boton--pildora' : 'boton'}
+      to={RUTAS.mapa}
+      onClick={conTransicion}
+    >
       {TEXTOS_INICIO.explorarMapa}
       <svg className="boton__icono" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
         <path d="M5 12h14M13 6l6 6-6 6" />

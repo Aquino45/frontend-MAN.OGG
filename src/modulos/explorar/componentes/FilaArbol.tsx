@@ -6,6 +6,7 @@ import type { ArbolResumen } from '@/api/cliente'
 import { GlifoPixelArbol } from '@/compartido/GlifoPixelArbol'
 import { SelloDemo } from '@/compartido/SelloDemo'
 import { SinDato } from '@/compartido/SinDato'
+import { useEnlaceConTransicion } from '@/compartido/useEnlaceConTransicion'
 import {
   ESTRELLA_CONTORNO,
   ESTRELLA_LADO_GRILLA,
@@ -22,13 +23,14 @@ interface PropsFilaArbol {
 }
 
 function FilaArbolSinMemo({ arbol, nombreSector }: PropsFilaArbol) {
+  const conTransicion = useEnlaceConTransicion()
   const destino = {
     pathname: RUTAS.mapa,
     search: escribirSeleccion({ sectorId: arbol.sector, arbolCodigo: arbol.codigo }),
   }
   const ubicacion = [arbol.codigo, nombreSector].filter(Boolean).join(' · ')
   return (
-    <Link className="explorar-fila" to={destino}>
+    <Link className="explorar-fila" to={destino} onClick={conTransicion}>
       <span className="explorar-fila__miniatura">
         {arbol.foto_miniatura_url ? (
           <img

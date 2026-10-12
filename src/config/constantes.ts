@@ -552,3 +552,10 @@ export const ARBOL_ANIMADO = {
 // Red de seguridad de rendimiento: en falso el reposo queda en mecido y hojas (sin respiración,
 // barrido de luz ni parpadeo).
 export const ARBOL_REPOSO_COMPLETO = true
+
+// ---------- TRANSICIONES ENTRE PÁGINAS Y DE TEMA ----------
+// Atributo en <html> que dice qué transición está en curso (el CSS elige su animación)
+export const ATRIBUTO_TRANSICION = 'data-transicion'
+export const TRANSICIONES = { pagina: 'pagina', tema: 'tema' } as const
+// Si la página nueva tarda más que esto en dibujarse, la transición sigue sin esperarla
+export const TIEMPO_MAXIMO_TRANSICION_MS = 1000

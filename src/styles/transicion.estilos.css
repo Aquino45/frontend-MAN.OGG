@@ -1,0 +1,47 @@
+/* Transición del navegador entre páginas y al cambiar de tema.
+   Cambio de página: lo viejo se va en --duracion-salida y lo nuevo entra en --duracion-pagina,
+   subiendo un poco. Cambio de tema: fundido sin desplazamiento. La cabecera es igual en todas las
+   páginas: tiene su propia capa y no se funde con el resto. Con «reducir movimiento», con el
+   teclado o sin soporte no se abre ninguna transición (ver compartido/transicion.ts). */
+
+@keyframes transicion-salir {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes transicion-entrar {
+  from {
+    opacity: 0;
+    transform: translateY(var(--desplazamiento-entrada));
+  }
+}
+
+@keyframes transicion-fundir {
+  from {
+    opacity: 0;
+  }
+}
+
+::view-transition-old(root) {
+  animation: transicion-salir var(--duracion-salida) var(--curva-salida) both;
+}
+
+::view-transition-new(root) {
+  animation: transicion-entrar var(--duracion-pagina) var(--curva-salida) both;
+}
+
+:root[data-transicion='tema']::view-transition-old(root) {
+  animation: none;
+}
+
+:root[data-transicion='tema']::view-transition-new(root) {
+  animation: transicion-fundir var(--duracion-pagina) var(--curva-salida) both;
+}
+
+/* La cabecera no se mueve ni se funde al cambiar de página */
+:root[data-transicion='pagina']::view-transition-group(cabecera),
+:root[data-transicion='pagina']::view-transition-old(cabecera),
+:root[data-transicion='pagina']::view-transition-new(cabecera) {
+  animation: none;
+}

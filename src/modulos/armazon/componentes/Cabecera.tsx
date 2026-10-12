@@ -3,6 +3,7 @@ import { useId, useRef, useState, type KeyboardEvent } from 'react'
 import { Link, NavLink } from 'react-router'
 import { ENLACES_NAVEGACION, NOMBRE_PRODUCTO, RUTAS, TEXTOS_ARMAZON } from '@/config/constantes'
 import { GlifoPixelArbol } from '@/compartido/GlifoPixelArbol'
+import { useEnlaceConTransicion } from '@/compartido/useEnlaceConTransicion'
 import { InterruptorTema } from '@/modulos/tema'
 
 // Cabecera única del sitio: la marca lleva a Inicio, los enlaces de navegación y el tema.
@@ -12,6 +13,7 @@ export function Cabecera() {
   const idNavegacion = useId()
   const [abierto, setAbierto] = useState(false)
   const refBoton = useRef<HTMLButtonElement>(null)
+  const conTransicion = useEnlaceConTransicion()
 
   function alPulsarTecla(evento: KeyboardEvent) {
     if (evento.key === 'Escape' && abierto) {
@@ -22,7 +24,7 @@ export function Cabecera() {
 
   return (
     <header className="armazon-cabecera" onKeyDown={alPulsarTecla}>
-      <Link className="armazon-cabecera__marca" to={RUTAS.inicio}>
+      <Link className="armazon-cabecera__marca" to={RUTAS.inicio} onClick={conTransicion}>
         <span className="armazon-cabecera__glifo">
           <GlifoPixelArbol />
         </span>
@@ -54,7 +56,10 @@ export function Cabecera() {
                 className="armazon-cabecera__enlace"
                 to={enlace.ruta}
                 end={enlace.exacta}
-                onClick={() => setAbierto(false)}
+                onClick={(evento) => {
+                  setAbierto(false)
+                  conTransicion(evento)
+                }}
               >
                 {enlace.texto}
               </NavLink>
