@@ -32,6 +32,9 @@ export function feature(codigo: string, cambios: Partial<ArbolResumen> = {}): Ar
     demo: false,
     destacado: false,
     motivo_destacado: null,
+    co2_almacenado_kg: null,
+    co2_captura_anual_kg: null,
+    co2_simulado: false,
     ...cambios,
   }
   return { type: 'Feature', id: codigo, geometry: null, properties: propiedades } as ArbolFeature

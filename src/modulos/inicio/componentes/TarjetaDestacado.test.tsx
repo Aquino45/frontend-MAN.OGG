@@ -18,6 +18,9 @@ const ARBOL: ArbolResumen = {
   demo: false,
   destacado: true,
   motivo_destacado: 'Ejemplar de más de cien años en el patio central',
+  co2_almacenado_kg: null,
+  co2_captura_anual_kg: null,
+  co2_simulado: false,
 }
 
 function verTarjeta(

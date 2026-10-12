@@ -143,6 +143,12 @@ export interface components {
       estado_general: string | null
       /** Format: uri */
       foto_miniatura_url: string | null
+      /** @description kg de CO₂ equivalente; lo calcula el stakeholder. */
+      co2_almacenado_kg: number | null
+      /** @description kg de CO₂ por año; lo calcula el stakeholder. */
+      co2_captura_anual_kg: number | null
+      /** @description true si los valores de CO₂ de este árbol son una estimación simulada que se va a reemplazar; false si no hay CO₂ o si es el dato real */
+      co2_simulado: boolean
       demo: boolean
       /** @description Árbol destacado del sector, elegido por la administración del censo (con un tope por sector) */
       destacado: boolean
@@ -209,6 +215,8 @@ export interface components {
       co2_almacenado_kg: number | null
       /** @description kg de CO₂ por año; lo calcula el stakeholder. */
       co2_captura_anual_kg: number | null
+      /** @description true si los valores de CO₂ de este árbol son una estimación simulada que se va a reemplazar; false si no hay CO₂ o si es el dato real */
+      co2_simulado: boolean
       /** @description De dónde sale el registro (planilla */
       fuente: string
       /** Format: date */

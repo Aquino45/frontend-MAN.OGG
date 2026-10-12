@@ -19,6 +19,9 @@ function destacado(codigo: string, nombre: string): Destacado {
     demo: false,
     destacado: true,
     motivo_destacado: null,
+    co2_almacenado_kg: null,
+    co2_captura_anual_kg: null,
+    co2_simulado: false,
   }
   return { arbol, nombreSector: 'Sector 1' }
 }

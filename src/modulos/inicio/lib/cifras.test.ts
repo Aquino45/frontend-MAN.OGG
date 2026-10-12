@@ -23,6 +23,9 @@ function arbol(
       demo: propiedades.demo,
       destacado: false,
       motivo_destacado: null,
+      co2_almacenado_kg: null,
+      co2_captura_anual_kg: null,
+      co2_simulado: false,
     },
   }
 }

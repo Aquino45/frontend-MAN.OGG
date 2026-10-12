@@ -163,7 +163,9 @@ export const MEDIDAS = {
   copaM: { decimales: 1, unidad: 'm', recortarCeros: false },
   dapCm: { decimales: 1, unidad: 'cm', recortarCeros: true },
   co2AlmacenadoKg: { decimales: 0, unidad: 'kg CO₂e', recortarCeros: false },
+  co2AlmacenadoT: { decimales: 1, unidad: 't CO₂e', recortarCeros: false },
   co2CapturaAnualKg: { decimales: 1, unidad: 'kg/año', recortarCeros: false },
+  co2CapturaAnualT: { decimales: 1, unidad: 't/año', recortarCeros: false },
   grados: { decimales: 6, unidad: '', recortarCeros: false },
   utmM: { decimales: 0, unidad: '', recortarCeros: false },
 } as const
@@ -201,6 +203,8 @@ export const TEXTOS_CARTILLA = {
   notaDap: 'Diámetro del tronco medido a 1.30 m del suelo',
   co2Almacenado: 'CO₂ almacenado',
   capturaAnual: 'Captura anual',
+  co2Simulado: 'Simulado',
+  co2SimuladoAccesible: 'Valor simulado; se reemplazará con el dato real',
   estadoCopa: 'Estado de copa',
   troncoDanos: 'Tronco / daños',
   raicesBase: 'Raíces / base',
@@ -376,10 +380,56 @@ export const TEXTOS_CIFRAS = {
     columna: 'Sector',
     descripcion: 'Árboles destacados por sector, separados en datos de campo y datos de ejemplo',
   },
+  co2: {
+    titulo: 'CO₂ del campus',
+    simulado: 'Estimaciones simuladas: se reemplazarán con los datos reales',
+    sinDato: '{n} árboles sin dato de CO₂',
+    sinDatoUno: '1 árbol sin dato de CO₂',
+    campo: 'Campo',
+    ejemplo: 'Ejemplo',
+    total: 'Total',
+    arbol: 'Árbol',
+    especie: 'Especie',
+    sector: 'Sector',
+    valor: 'CO₂ almacenado',
+    verEnMapa: 'Ver la cartilla de {codigo} en el mapa',
+    almacenadoPorSector: {
+      titulo: 'CO₂ almacenado por sector',
+      columna: 'Sector',
+      descripcion: 'CO₂ almacenado por sector, separado en datos de campo y datos de ejemplo',
+    },
+    almacenadoPorEspecie: {
+      titulo: 'CO₂ almacenado por especie',
+      columna: 'Especie (nombre científico)',
+      descripcion: 'Especies con más CO₂ almacenado, separadas en datos de campo y datos de ejemplo',
+    },
+    capturaPorSector: {
+      titulo: 'Captura anual de CO₂ por sector',
+      columna: 'Sector',
+      descripcion: 'Captura anual de CO₂ por sector, separada en datos de campo y datos de ejemplo',
+    },
+    top: {
+      titulo: 'Los 10 árboles con más CO₂ almacenado',
+      descripcion: 'Árboles con más CO₂ almacenado, ordenados de mayor a menor',
+    },
+  },
 } as const
 
 // CUÁNTAS ESPECIES SE MUESTRAN POR SEPARADO EN LAS CIFRAS (las demás se agrupan en «Otras»)
 export const CANTIDAD_ESPECIES_CIFRAS = 5
+
+// CUÁNTAS ESPECIES SE MUESTRAN POR SEPARADO EN LAS CIFRAS DE CO₂ (las demás se agrupan en «Otras»)
+export const CANTIDAD_ESPECIES_CO2_CIFRAS = 5
+
+// CUÁNTOS ÁRBOLES TRAE EL RANKING DE CO₂ ALMACENADO
+export const CANTIDAD_TOP_ARBOLES_CO2 = 10
+
+// DESDE CUÁNTOS kg UNA CIFRA DE CO₂ SE MUESTRA EN TONELADAS, Y CUÁNTOS kg TIENE UNA TONELADA
+export const UMBRAL_CO2_A_TONELADAS_KG = 10_000
+export const KG_POR_TONELADA = 1_000
+
+// DURACIÓN DE LA ENTRADA DE LAS BARRAS DE LOS GRÁFICOS DE CO₂ (ms; se apaga con «reducir movimiento»)
+export const DURACION_ENTRADA_GRAFICOS_MS = 400
 
 // ---------- PÁGINA DE INICIO ----------
 
