@@ -1,8 +1,13 @@
 // Datos simulados con la forma exacta de los ejemplos del contrato (VITE_USAR_MOCKS=true).
+import type { ArbolColeccion } from '@/api/cliente'
 import type { components } from '@/api/schema'
 import arbolDemoJson from './arbol-demo.json'
 import arbolRealJson from './arbol-real.json'
 import sector1ArbolesJson from './sector-1-arboles.json'
+import sector2ArbolesJson from './sector-2-arboles.json'
+import sector3ArbolesJson from './sector-3-arboles.json'
+import sector4ArbolesJson from './sector-4-arboles.json'
+import sector5ArbolesJson from './sector-5-arboles.json'
 import sectoresJson from './sectores.json'
 
 type Esquemas = components['schemas']
@@ -21,9 +26,9 @@ export const sectoresMock = sectoresJson satisfies ComoJson<
   Esquemas['SectorColeccion']
 > as Esquemas['SectorColeccion']
 
-export const arbolesSector1Mock = sector1ArbolesJson satisfies ComoJson<
-  Esquemas['ArbolResumenColeccion']
-> as Esquemas['ArbolResumenColeccion']
+// Las listas por sector tienen la forma del contrato 0.6.0: el resumen trae DAP, altura y origen
+export const arbolesSector1Mock =
+  sector1ArbolesJson satisfies ComoJson<ArbolColeccion> as ArbolColeccion
 
 export const arbolRealMock = arbolRealJson satisfies ComoJson<
   Esquemas['Arbol']
@@ -39,6 +44,15 @@ export const arbolesMockPorCodigo: Record<string, Esquemas['Arbol']> = {
   [arbolDemoMock.codigo]: arbolDemoMock,
 }
 
-export const arbolesMockPorSector: Record<number, Esquemas['ArbolResumenColeccion']> = {
+export const arbolesMockPorSector: Record<number, ArbolColeccion> = {
   1: arbolesSector1Mock,
+}
+
+// Los 5 sectores, para recorrer el sitio con VITE_USAR_MOCKS: del 2 al 5 solo hay árboles de ejemplo (demo)
+export const arbolesMockDelCampus: Record<number, ArbolColeccion> = {
+  ...arbolesMockPorSector,
+  2: sector2ArbolesJson satisfies ComoJson<ArbolColeccion> as ArbolColeccion,
+  3: sector3ArbolesJson satisfies ComoJson<ArbolColeccion> as ArbolColeccion,
+  4: sector4ArbolesJson satisfies ComoJson<ArbolColeccion> as ArbolColeccion,
+  5: sector5ArbolesJson satisfies ComoJson<ArbolColeccion> as ArbolColeccion,
 }

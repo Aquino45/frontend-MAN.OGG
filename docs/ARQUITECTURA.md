@@ -39,7 +39,7 @@ censo-arboreo-frontend/
 │   ├── api/
 │   │   ├── schema.d.ts        ← generado con openapi-typescript (no se edita)
 │   │   └── cliente.ts         ← obtenerSectores(), obtenerArbolesDeSector(id), obtenerArbol(codigo)
-│   ├── mocks/                 ← datos de los ejemplos del contrato; se eligen con VITE_USAR_MOCKS
+│   ├── mocks/                 ← datos de los ejemplos del contrato (el resumen del árbol con la forma del contrato 0.6.0: DAP, altura y origen; los sectores 2 a 5 solo traen árboles de ejemplo); se eligen con VITE_USAR_MOCKS
 │   ├── compartido/            ← lo que usan 2 módulos o más: SelloDemo, SinDato, la marca (`marca/`: sprites pixel por especie, símbolo y wordmark del logo y la co-marca con la UPeU), los estados de carga, vacío y error, los hooks del campus con su caché (`cacheCampus`, `useSectoresDelCampus`, `useArbolesDelCampus`) y el movimiento común: `modalidadEntrada` (con el teclado no se anima), `usePideMenosMovimiento`, `transicion` (transiciones del navegador), `ProveedorTransicionDePagina` y `useEnlaceConTransicion` (cambio de página con transición)
 │   ├── lib/                   ← funciones puras que usan 2 módulos o más (formatear unidades, elegirVariante)
 │   ├── test/                  ← setup.ts de Vitest
@@ -55,7 +55,7 @@ censo-arboreo-frontend/
 │       ├── armazon/           ← cabecera, navegación, pie y página «no encontrada»: lo común a todas las rutas
 │       ├── inicio/            ← página de Inicio: portada con el árbol animado (`ArbolAnimado`; dibujo en `lib/rejillaArbol.ts`, guion en `lib/guionArbol.ts`, animación con la API de animaciones del navegador), mapa compacto de sectores, destacados y cifras del censo
 │       ├── explorar/          ← `/arboles`: lista de todos los árboles con buscador y filtros guardados en la URL; componentes/, hooks/, lib/ (filtros), vistas/
-│       └── cifras/            ← `/cifras`: cifras del censo por sector, estado y especie y 4 gráficos de CO₂ (almacenado por sector y por especie, captura anual por sector y top 10 de árboles), con campo y ejemplo separados; `lib/cifrasCenso.ts` y `lib/cifrasCo2.ts` son puros
+│       └── cifras/            ← `/cifras`: el tablero del censo. Filtros (sector y datos de campo o de ejemplo) en la URL; resumen de 6 tarjetas con mini gráfico, mapa de calor de los sectores, dona de especies, estado por sector, nativas y exóticas, dispersión DAP × altura, histograma de DAP y los gráficos de CO₂; cada gráfico con su tabla accesible. Campo y ejemplo siempre por separado. `lib/` es puro y testeado (`filtrosTablero`, `tablero`, `tableroGraficos`, `escalas`, `trazosSvg`); sin librerías de gráficos
 ├── public/                    ← estáticos sin import (favicon.svg). Las ilustraciones NO van aquí: se importan desde su módulo
 ├── scripts/                   ← verificar-colores.mjs, generar-tipos
 └── docs/                      ← ARQUITECTURA (este) y requerimientos

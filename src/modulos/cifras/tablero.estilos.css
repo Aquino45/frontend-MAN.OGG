@@ -1,0 +1,389 @@
+/* Tablero de Cifras: filtros, tarjetas de resumen, tarjetas de gráfico y tablas accesibles.
+   Los gráficos (SVG) están en graficos.estilos.css. Todo el color sale de tokens. Al filtrar, lo
+   que cambia entra con un fundido de --duracion-filtro (entre 200 y 300 ms); «reducir movimiento»
+   y el teclado lo apagan (ver base.estilos.css). Campo = relleno liso; ejemplo = borde punteado. */
+
+/* Paleta de series (especies): carmín, punto destacado, magenta oscuro, magenta y texto tenue.
+   El color nunca va solo: cada serie se nombra en su leyenda. */
+.tablero [data-serie='0'] {
+  --serie: var(--copa-carmin);
+}
+
+.tablero [data-serie='1'] {
+  --serie: var(--punto-destacado);
+}
+
+.tablero [data-serie='2'] {
+  --serie: var(--copa-magenta-oscuro);
+}
+
+.tablero [data-serie='3'] {
+  --serie: var(--copa-magenta);
+}
+
+.tablero [data-serie='4'] {
+  --serie: var(--color-texto-tenue);
+}
+
+/* ---------- Filtros ---------- */
+.tablero-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-12) var(--espacio-4);
+}
+
+.tablero-filtros__grupo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-2);
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
+.tablero-filtros__etiqueta {
+  font-size: var(--texto-xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-etiqueta);
+  text-transform: uppercase;
+  color: var(--color-texto-tenue);
+}
+
+.tablero-filtros__especie {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-2);
+  margin: 0;
+  font-size: var(--texto-sm);
+}
+
+.tablero-segmento {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 3px;
+  border: var(--grosor-borde-ui) solid color-mix(in srgb, var(--color-texto) 35%, transparent);
+  border-radius: var(--radio-pildora);
+}
+
+.tablero-segmento button {
+  min-block-size: var(--tamano-control);
+  min-inline-size: var(--tamano-control);
+  padding-inline: var(--espacio-12);
+  border: 0;
+  border-radius: var(--radio-pildora);
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    transform var(--duracion-presion) var(--curva-salida),
+    background-color var(--duracion-hover) var(--curva-hover);
+}
+
+.tablero-segmento--chico button {
+  min-block-size: var(--tamano-control);
+  padding-inline: var(--espacio-12);
+}
+
+.tablero-segmento button:active {
+  transform: scale(var(--escala-activo));
+}
+
+.tablero-segmento button[aria-pressed='true'] {
+  background: var(--copa-magenta-oscuro);
+  color: var(--blanco);
+  font-weight: 700;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tablero-segmento button[aria-pressed='false']:hover {
+    background: color-mix(in srgb, var(--color-texto) 10%, transparent);
+  }
+}
+
+/* Un botón con aspecto de enlace (quitar un filtro) */
+.tablero-enlace {
+  min-block-size: var(--tamano-control);
+  padding-inline: var(--espacio-2);
+  border: 0;
+  background: none;
+  color: var(--color-texto);
+  font: inherit;
+  font-size: var(--texto-sm);
+  text-decoration: underline;
+  text-underline-offset: var(--separacion-foco);
+  cursor: pointer;
+}
+
+.tablero-sin-resultados {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espacio-3);
+}
+
+/* ---------- Resumen ---------- */
+.tablero-kpis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espacio-12);
+}
+
+@media (width >= 48rem) {
+  .tablero-kpis {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--espacio-3);
+  }
+}
+
+.tablero-kpi {
+  min-inline-size: 0;
+  padding: var(--espacio-12);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-1);
+  border: var(--grosor-borde-ui) solid color-mix(in srgb, var(--color-texto) 12%, transparent);
+  border-radius: var(--radio-tarjeta);
+  background: var(--color-tarjeta);
+}
+
+@media (width >= 48rem) {
+  .tablero-kpi {
+    padding: var(--espacio-3) var(--espacio-4);
+  }
+}
+
+.tablero-kpi__etiqueta {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-1) var(--espacio-2);
+  font-size: var(--texto-xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-etiqueta);
+  text-transform: uppercase;
+  color: var(--color-texto-tenue);
+}
+
+.tablero-sello {
+  padding: 0.125rem var(--espacio-2);
+  border-radius: var(--radio-chip);
+  background: var(--copa-magenta-oscuro);
+  color: var(--blanco);
+  letter-spacing: 0.06em;
+}
+
+.tablero-kpi__lineas {
+  display: flex;
+  flex-direction: column;
+}
+
+.tablero-kpi__linea {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: var(--espacio-2);
+  min-inline-size: 0;
+}
+
+.tablero-kpi__valor {
+  font-family: var(--fuente-display);
+  font-weight: 800;
+  font-size: var(--texto-lg);
+  line-height: var(--interlinea-titulo);
+  letter-spacing: var(--tracking-display);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+@media (width >= 48rem) {
+  .tablero-kpi__valor {
+    font-size: var(--texto-xl);
+  }
+}
+
+.tablero-kpi__linea small {
+  font-size: var(--texto-xs);
+  font-weight: 600;
+  color: var(--color-texto-tenue);
+}
+
+.tablero-kpi__detalle {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--espacio-2);
+  font-size: var(--texto-xs);
+  color: var(--color-texto-suave);
+}
+
+.tablero-kpi__detalle a {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--tamano-control);
+  color: var(--color-texto);
+  font-weight: 700;
+  text-underline-offset: var(--separacion-foco);
+}
+
+.tablero-kpi__detalle em {
+  font-style: italic;
+}
+
+.tablero-kpi__nota {
+  margin: 0;
+  font-size: var(--texto-xs);
+  color: var(--color-texto-suave);
+}
+
+.tablero-kpi__mini {
+  margin-block-start: auto;
+  padding-block-start: var(--espacio-2);
+}
+
+/* ---------- Tarjetas de gráfico ---------- */
+.tablero-fila {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--espacio-3);
+}
+
+@media (width >= 64rem) {
+  .tablero-fila {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--espacio-4);
+  }
+
+  .tablero-fila--desigual {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  }
+}
+
+.tablero-tarjeta {
+  min-inline-size: 0;
+  padding: var(--espacio-12);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-2);
+  border: var(--grosor-borde-ui) solid color-mix(in srgb, var(--color-texto) 12%, transparent);
+  border-radius: var(--radio-tarjeta);
+  background: var(--color-tarjeta);
+  animation: tablero-entra var(--duracion-grafico) var(--curva-salida) both;
+}
+
+@media (width >= 48rem) {
+  .tablero-tarjeta {
+    padding: var(--espacio-4);
+  }
+}
+
+.tablero-tarjeta__cabeza {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espacio-1);
+}
+
+.tablero-tarjeta__titulo {
+  margin: 0;
+  font-family: var(--fuente-display);
+  font-weight: 600;
+  font-size: var(--texto-lg);
+  line-height: var(--interlinea-titulo);
+}
+
+.tablero-tarjeta__descripcion {
+  margin: 0;
+  font-size: var(--texto-sm);
+  color: var(--color-texto-tenue);
+}
+
+.tablero-tarjeta__cuerpo {
+  min-inline-size: 0;
+}
+
+@keyframes tablero-entra {
+  from {
+    opacity: 0;
+    transform: translateY(var(--desplazamiento-aparicion));
+  }
+}
+
+/* Lo que cambia al filtrar entra con un fundido (solo opacidad) */
+.tablero-aparece {
+  animation: tablero-aparece var(--duracion-filtro) var(--curva-salida) both;
+}
+
+@keyframes tablero-aparece {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ---------- Tablas accesibles ---------- */
+.tablero-tabla {
+  margin-block-start: var(--espacio-2);
+  font-size: var(--texto-sm);
+}
+
+.tablero-tabla summary {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--tamano-control);
+  color: var(--color-texto-tenue);
+  text-decoration: underline;
+  text-underline-offset: var(--separacion-foco);
+  cursor: pointer;
+}
+
+.tablero-tabla__desplazable {
+  overflow-x: auto;
+}
+
+.tablero-tabla table {
+  inline-size: 100%;
+  border-collapse: collapse;
+}
+
+.tablero-tabla th,
+.tablero-tabla td {
+  padding: var(--espacio-1) var(--espacio-2);
+  border-block-end: var(--grosor-borde-ui) solid
+    color-mix(in srgb, var(--color-texto) 15%, transparent);
+  text-align: start;
+  font-variant-numeric: tabular-nums;
+}
+
+.tablero-tabla thead th {
+  font-size: var(--texto-xs);
+  letter-spacing: var(--tracking-etiqueta);
+  text-transform: uppercase;
+  color: var(--color-texto-tenue);
+}
+
+/* Leyendas y notas bajo un gráfico */
+.tablero-apoyo {
+  margin: var(--espacio-2) 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espacio-1) var(--espacio-3);
+  font-size: var(--texto-xs);
+  color: var(--color-texto-suave);
+}
+
+.tablero-apoyo__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-2);
+}
+
+.tablero-nota {
+  margin: var(--espacio-1) 0 0;
+  font-size: var(--texto-xs);
+  color: var(--color-texto-tenue);
+}

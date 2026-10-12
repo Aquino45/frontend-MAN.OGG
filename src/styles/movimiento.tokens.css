@@ -18,6 +18,8 @@
   --duracion-fundido: 150ms;
   --duracion-pagina: 200ms;
   --duracion-grafico: 360ms;
+  /* Los gráficos del tablero al cambiar un filtro: entre 200 y 300 ms */
+  --duracion-filtro: 260ms;
   --retraso-escalonado-grafico: 30ms;
   /* Inicio con presencia: entrada de las tarjetas destacadas y dibujo del mapa chico (una vez) */
   --retraso-escalonado-destacado: 50ms;

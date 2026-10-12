@@ -1,6 +1,18 @@
 /* Estados compartidos: carga (esqueleto), vacío y error.
    El esqueleto toma el color del texto de su bloque al 14 %, así sigue al tema y a las franjas invertidas. */
 
+/* Los estados entran con un fundido corto (solo opacidad) en lugar de aparecer de golpe */
+.estado,
+.estado-carga {
+  animation: estado-funde var(--duracion-fundido) var(--curva-salida) both;
+}
+
+@keyframes estado-funde {
+  from {
+    opacity: 0;
+  }
+}
+
 .estado {
   inline-size: 100%;
   min-block-size: var(--estado-alto-minimo);

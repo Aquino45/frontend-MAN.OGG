@@ -109,6 +109,19 @@
   min-inline-size: 0;
 }
 
+/* Solo la primera vez que se ve la lista: las filas entran una tras otra, con un escalonado corto */
+.explorar__item--entra {
+  animation: explorar-entra var(--duracion-entrada) var(--curva-salida) backwards;
+  animation-delay: calc(var(--indice) * var(--retraso-escalonado-grafico));
+}
+
+@keyframes explorar-entra {
+  from {
+    opacity: 0;
+    transform: translateY(var(--desplazamiento-entrada));
+  }
+}
+
 .explorar-fila {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);

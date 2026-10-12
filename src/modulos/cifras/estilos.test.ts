@@ -32,7 +32,6 @@ describe('estilos de Cifras', () => {
   })
 
   it('los números van tabulares', () => {
-    expect(reglaDe('.cifras-resumen__valor')).toMatch(/tabular-nums/)
     expect(estilosCss).toMatch(/\.cifras-tabla__numero\s*\{[^}]*tabular-nums/)
     expect(reglaDe('.cifras-grafico__valores')).toMatch(/tabular-nums/)
   })

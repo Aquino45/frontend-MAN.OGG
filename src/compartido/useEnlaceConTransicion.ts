@@ -5,7 +5,7 @@ import { useLocation } from 'react-router'
 import { ContextoTransicion } from './contextoTransicion'
 import { puedeTransicionar } from './transicion'
 
-export function useEnlaceConTransicion(): (evento: MouseEvent<HTMLAnchorElement>) => void {
+export function useEnlaceConTransicion(): (evento: MouseEvent<Element>) => void {
   const navegar = useContext(ContextoTransicion)
   const ubicacion = useLocation()
 

@@ -1,109 +1,121 @@
 {
- "type": "FeatureCollection",
- "features": [
-  {
-   "type": "Feature",
-   "id": "S01-A001",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -76.841165,
-     -11.993641
-    ]
-   },
-   "properties": {
-    "codigo": "S01-A001",
-    "uid": "849b8bf1-aef7-540b-b63f-20ab72eee0ca",
-    "sector": 1,
-    "nombre_comun": "Molle",
-    "nombre_cientifico": "Schinus",
-    "estado_general": null,
-    "foto_miniatura_url": null,
-    "co2_almacenado_kg": 104658.7,
-    "co2_captura_anual_kg": 1593.38,
-    "co2_simulado": true,
-    "demo": false,
-    "destacado": false,
-    "motivo_destacado": null
-   }
-  },
-  {
-   "type": "Feature",
-   "id": "S01-A002",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -76.841193,
-     -11.993614
-    ]
-   },
-   "properties": {
-    "codigo": "S01-A002",
-    "uid": "48e6b386-9b6a-5770-a944-693d4c47e5da",
-    "sector": 1,
-    "nombre_comun": "Palma real",
-    "nombre_cientifico": "Roystonea",
-    "estado_general": null,
-    "foto_miniatura_url": null,
-    "co2_almacenado_kg": 96.59,
-    "co2_captura_anual_kg": 4.1,
-    "co2_simulado": true,
-    "demo": false,
-    "destacado": false,
-    "motivo_destacado": null
-   }
-  },
-  {
-   "type": "Feature",
-   "id": "S01-A012",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -76.841485,
-     -11.993413
-    ]
-   },
-   "properties": {
-    "codigo": "S01-A012",
-    "uid": "7dfe9d59-bac7-5194-9d89-17245c0d5c30",
-    "sector": 1,
-    "nombre_comun": "Huarango",
-    "nombre_cientifico": "Prosopis pallida",
-    "estado_general": "Regular",
-    "foto_miniatura_url": null,
-    "co2_almacenado_kg": 75185.25,
-    "co2_captura_anual_kg": 1459.49,
-    "co2_simulado": true,
-    "demo": true,
-    "destacado": true,
-    "motivo_destacado": "Dato de ejemplo: ejemplar de mayor copa del sector"
-   }
-  },
-  {
-   "type": "Feature",
-   "id": "S01-A015",
-   "geometry": {
-    "type": "Point",
-    "coordinates": [
-     -76.841112,
-     -11.993904
-    ]
-   },
-   "properties": {
-    "codigo": "S01-A015",
-    "uid": "39915cca-b64d-563c-863a-69562fb416de",
-    "sector": 1,
-    "nombre_comun": null,
-    "nombre_cientifico": null,
-    "estado_general": null,
-    "foto_miniatura_url": null,
-    "co2_almacenado_kg": 5394.65,
-    "co2_captura_anual_kg": 177.08,
-    "co2_simulado": true,
-    "demo": false,
-    "destacado": false,
-    "motivo_destacado": null
-   }
-  }
- ]
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "S01-A001",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.841165,
+          -11.993641
+        ]
+      },
+      "properties": {
+        "codigo": "S01-A001",
+        "uid": "849b8bf1-aef7-540b-b63f-20ab72eee0ca",
+        "sector": 1,
+        "nombre_comun": "Molle",
+        "nombre_cientifico": "Schinus",
+        "estado_general": null,
+        "foto_miniatura_url": null,
+        "co2_almacenado_kg": 104658.7,
+        "co2_captura_anual_kg": 1593.38,
+        "co2_simulado": true,
+        "demo": false,
+        "destacado": false,
+        "motivo_destacado": null,
+        "dap_cm": 392,
+        "altura_total_m": 12,
+        "origen": "Nativa"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "S01-A002",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.841193,
+          -11.993614
+        ]
+      },
+      "properties": {
+        "codigo": "S01-A002",
+        "uid": "48e6b386-9b6a-5770-a944-693d4c47e5da",
+        "sector": 1,
+        "nombre_comun": "Palma real",
+        "nombre_cientifico": "Roystonea",
+        "estado_general": null,
+        "foto_miniatura_url": null,
+        "co2_almacenado_kg": 96.59,
+        "co2_captura_anual_kg": 4.1,
+        "co2_simulado": true,
+        "demo": false,
+        "destacado": false,
+        "motivo_destacado": null,
+        "dap_cm": 75,
+        "altura_total_m": 5.5,
+        "origen": "Introducida / exótica"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "S01-A012",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.841485,
+          -11.993413
+        ]
+      },
+      "properties": {
+        "codigo": "S01-A012",
+        "uid": "7dfe9d59-bac7-5194-9d89-17245c0d5c30",
+        "sector": 1,
+        "nombre_comun": "Huarango",
+        "nombre_cientifico": "Prosopis pallida",
+        "estado_general": "Regular",
+        "foto_miniatura_url": null,
+        "co2_almacenado_kg": 75185.25,
+        "co2_captura_anual_kg": 1459.49,
+        "co2_simulado": true,
+        "demo": true,
+        "destacado": true,
+        "motivo_destacado": "Dato de ejemplo: ejemplar de mayor copa del sector",
+        "dap_cm": 310,
+        "altura_total_m": 9.4,
+        "origen": "Nativa"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "S01-A015",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.841112,
+          -11.993904
+        ]
+      },
+      "properties": {
+        "codigo": "S01-A015",
+        "uid": "39915cca-b64d-563c-863a-69562fb416de",
+        "sector": 1,
+        "nombre_comun": null,
+        "nombre_cientifico": null,
+        "estado_general": null,
+        "foto_miniatura_url": null,
+        "co2_almacenado_kg": 5394.65,
+        "co2_captura_anual_kg": 177.08,
+        "co2_simulado": true,
+        "demo": false,
+        "destacado": false,
+        "motivo_destacado": null,
+        "dap_cm": 90,
+        "altura_total_m": 7.5,
+        "origen": "Nativa"
+      }
+    }
+  ]
 }
