@@ -12,7 +12,12 @@
   pointer-events: none;
 }
 
-/* El horizonte lleva el fondo de la sección que sigue; la sombra es el borde de abajo de la copa */
+/* Detrás va el color de la sección de arriba; los lóbulos llevan el fondo de la que sigue y la
+   sombra es el borde de abajo de la copa */
+.horizonte-pixel__cielo {
+  fill: var(--horizonte-desde);
+}
+
 .horizonte-pixel__fondo {
   fill: var(--horizonte-fondo);
 }

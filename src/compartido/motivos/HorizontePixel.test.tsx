@@ -64,8 +64,24 @@ describe('horizonte de copa: el dibujo', () => {
 })
 
 describe('HorizontePixel', () => {
+  it('pinta detrás el color de la sección de arriba, así se ve igual en los dos sentidos', () => {
+    const { container } = render(
+      <HorizontePixel desde="var(--franja-contraste-fondo)" fondo="var(--franja-cifras-fondo)" />,
+    )
+    const svg = container.querySelector('svg') as SVGElement
+    expect(svg.style.getPropertyValue('--horizonte-desde')).toBe('var(--franja-contraste-fondo)')
+    // El cielo va antes que el patrón: el relleno de los lóbulos queda encima
+    const piezas = Array.from(svg.querySelectorAll('rect'))
+    expect(piezas).toHaveLength(2)
+    expect(piezas[0]).toHaveClass('horizonte-pixel__cielo')
+    expect(piezas[0]).toHaveAttribute('width', '100%')
+    expect(piezas[1]).toHaveAttribute('fill', expect.stringMatching(/^url\(#/))
+  })
+
   it('es decorativo, usa un patrón que se repite y lleva el fondo que se le da', () => {
-    const { container } = render(<HorizontePixel fondo="var(--franja-cifras-fondo)" />)
+    const { container } = render(
+      <HorizontePixel desde="var(--color-fondo)" fondo="var(--franja-cifras-fondo)" />,
+    )
     const svg = container.querySelector('svg') as SVGElement
     expect(svg).toHaveAttribute('aria-hidden', 'true')
     expect(svg).toHaveAttribute('height', String(ALTO_HORIZONTE * HORIZONTE_CELDA_PX))
@@ -80,6 +96,7 @@ describe('HorizontePixel', () => {
 
 describe('estilos del horizonte', () => {
   it('el fondo es el de la sección que sigue y la sombra es magenta oscuro, ambos por token', () => {
+    expect(motivosCss).toMatch(/\.horizonte-pixel__cielo\s*\{\s*fill:\s*var\(--horizonte-desde\)/)
     expect(motivosCss).toMatch(/\.horizonte-pixel__fondo\s*\{\s*fill:\s*var\(--horizonte-fondo\)/)
     expect(motivosCss).toMatch(
       /\.horizonte-pixel__sombra\s*\{\s*fill:\s*var\(--copa-magenta-oscuro\)/,
