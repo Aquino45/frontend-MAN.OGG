@@ -207,6 +207,13 @@
   font-size: var(--texto-sm);
 }
 
+/* El sello «Dato de ejemplo» siempre empieza su propio renglón (el margen lo saca de la línea del
+   estado), así las tarjetas no quedan unas con el sello al lado y otras con el sello debajo */
+.explorar-fila__marcas .sello-demo {
+  margin-inline-end: 100%;
+  white-space: nowrap;
+}
+
 .explorar-fila__estado {
   min-inline-size: 0;
   overflow-wrap: anywhere;

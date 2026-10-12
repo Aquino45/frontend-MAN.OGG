@@ -165,6 +165,13 @@
   gap: var(--espacio-3) var(--espacio-4);
 }
 
+/* Cuando la UPeU baja de renglón el separador vertical se queda solo: se esconde */
+@media (width < 40rem) {
+  .co-marca__separador {
+    display: none;
+  }
+}
+
 /* Área de resguardo del logo de la UPeU: la mitad de su alto por cada lado (provisional) */
 .co-marca__resguardo {
   padding: calc(var(--upeu-alto) / 2);

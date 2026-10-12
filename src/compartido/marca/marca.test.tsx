@@ -235,3 +235,11 @@ describe('wordmark', () => {
     expect(marcaCss).not.toMatch(/silkscreen/i)
   })
 })
+
+describe('co-marca en pantallas angostas', () => {
+  it('el separador vertical se esconde cuando la UPeU baja de renglón', () => {
+    expect(marcaCss).toMatch(
+      /@media \(width < 40rem\)\s*\{[^}]*\.co-marca__separador\s*\{\s*display:\s*none/,
+    )
+  })
+})

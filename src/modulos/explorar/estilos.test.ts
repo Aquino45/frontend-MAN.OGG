@@ -58,3 +58,18 @@ describe('filas vivas de Explorar', () => {
     expect(filaArbol).toContain('elevable')
   })
 })
+
+describe('sello de ejemplo en la fila', () => {
+  it('siempre empieza su propio renglón: el margen lo saca de la línea del estado', () => {
+    expect(estilosCss).toMatch(
+      /\.explorar-fila__marcas \.sello-demo\s*\{[^}]*margin-inline-end:\s*100%/,
+    )
+  })
+
+  // El margen le quita ancho disponible: sin esto el texto del sello se parte en dos líneas
+  it('y en una sola línea', () => {
+    expect(estilosCss).toMatch(
+      /\.explorar-fila__marcas \.sello-demo\s*\{[^}]*white-space:\s*nowrap/,
+    )
+  })
+})

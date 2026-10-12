@@ -72,3 +72,28 @@ describe('estilos de Inicio', () => {
     expect(estilosCss).toMatch(/\.inicio-franja\s+:focus-visible/)
   })
 })
+
+describe('escenario del árbol de la portada', () => {
+  const bloque = (selector: string) => {
+    const inicio = estilosBase.lastIndexOf(selector)
+    return inicio < 0 ? '' : estilosBase.slice(inicio, estilosBase.indexOf('}', inicio))
+  }
+  const compartido = bloque('.inicio-portada__arbol::before,')
+  const halo = bloque('.inicio-portada__arbol::before {')
+  const suelo = bloque('.inicio-portada__arbol::after {')
+
+  it('el árbol tiene un halo y una sombra de suelo hechos con tokens', () => {
+    expect(halo).toMatch(/radial-gradient/)
+    expect(halo).toMatch(/var\(--copa-magenta-oscuro\)/)
+    expect(suelo).toMatch(/radial-gradient/)
+    expect(suelo).toMatch(/var\(--color-sombra\)/)
+    expect(halo + suelo).not.toMatch(/#[0-9a-fA-F]{3,8}|rgba?\(|hsla?\(/)
+  })
+
+  it('van detrás del árbol, sin animarse y sin atrapar clics', () => {
+    expect(compartido).toMatch(/z-index:\s*-1/)
+    expect(compartido).toMatch(/pointer-events:\s*none/)
+    expect(compartido + halo + suelo).not.toMatch(/animation|transition/)
+    expect(bloque('.inicio-portada__arbol {')).toMatch(/isolation:\s*isolate/)
+  })
+})
