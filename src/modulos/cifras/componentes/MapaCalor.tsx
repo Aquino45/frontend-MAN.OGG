@@ -3,7 +3,7 @@
 // tablero; otro clic lo quita. Los nombres y valores van en el mapa con tamaño de pantalla real.
 import { useMemo, type KeyboardEvent } from 'react'
 import type { SectorFeature } from '@/api/cliente'
-import { METRICAS_MAPA_CALOR, TEXTOS_TABLERO } from '@/config/constantes'
+import { METRICAS_MAPA_CALOR, TEXTOS_TABLERO } from '@/config/tablero'
 import { formatearMedida } from '@/lib/formatear'
 import { proyectarSectores } from '@/modulos/mapa'
 import { useAnchoMedido } from '../hooks/useAnchoMedido'
@@ -12,8 +12,10 @@ import { intensidad } from '../lib/escalas'
 import type { MetricaMapa } from '../lib/filtrosTablero'
 import {
   ANCHO_POR_DEFECTO_PX,
+  BAJADA_VALOR_MAPA_ALTURAS,
   INTENSIDAD_ETIQUETA_CLARA,
   INTENSIDAD_MINIMA_MAPA,
+  SUBIDA_NOMBRE_MAPA_ALTURAS,
   TEXTO_MAPA_CALOR_PX,
 } from '../lib/medidasGraficos'
 import type { SectorDelMapa } from '../lib/tablero'
@@ -159,7 +161,7 @@ export function MapaCalor({
                   />
                   <text
                     x={proyectado.etiqueta.x}
-                    y={proyectado.etiqueta.y - tamanoTexto * 0.25}
+                    y={proyectado.etiqueta.y - tamanoTexto * SUBIDA_NOMBRE_MAPA_ALTURAS}
                     className={`tablero-mapa__nombre${clara ? ' tablero-mapa__texto--claro' : ''}`}
                     style={{ fontSize: tamanoTexto }}
                   >
@@ -167,7 +169,7 @@ export function MapaCalor({
                   </text>
                   <text
                     x={proyectado.etiqueta.x}
-                    y={proyectado.etiqueta.y + tamanoTexto * 1.1}
+                    y={proyectado.etiqueta.y + tamanoTexto * BAJADA_VALOR_MAPA_ALTURAS}
                     className={`tablero-mapa__valor${clara ? ' tablero-mapa__texto--claro' : ''}`}
                     style={{ fontSize: tamanoTexto }}
                   >

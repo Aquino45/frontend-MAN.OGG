@@ -1,7 +1,7 @@
 // Dona de especies: las más frecuentes, «Otras» con el resto y, si los hay, los árboles sin especie.
 // Un clic en un trozo (o en su renglón de la leyenda, que es lo que se usa con el teclado) elige esa
 // especie como filtro de todo el tablero; otro clic la quita. Cuenta campo y ejemplo juntos y lo dice.
-import { TEXTOS_TABLERO } from '@/config/constantes'
+import { TEXTOS_TABLERO } from '@/config/tablero'
 import { repartirAngulos, trazoAnillo } from '../lib/trazosSvg'
 import { LADO_DONA, RADIO_DONA, SEPARACION_TROZOS_RAD } from '../lib/medidasGraficos'
 import type { FilaEspecie } from '../lib/tablero'

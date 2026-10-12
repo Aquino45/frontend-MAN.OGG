@@ -5,17 +5,20 @@ import { useNavigate } from 'react-router'
 import type { MouseEvent } from 'react'
 import { SinDato } from '@/compartido/SinDato'
 import { useEnlaceConTransicion } from '@/compartido/useEnlaceConTransicion'
-import { TEXTOS_TABLERO } from '@/config/constantes'
+import { FILAS_TABLA_DISPERSION, TEXTOS_TABLERO } from '@/config/tablero'
 import { useAnchoMedido } from '../hooks/useAnchoMedido'
 import { escalaLineal, marcasRedondas, radioPorArea } from '../lib/escalas'
 import {
   ALTO_DISPERSION_ANGOSTO_PX,
   ALTO_DISPERSION_PX,
+  BAJADA_NUMEROS_EJE_X_DISPERSION_PX,
   ANCHO_ANGOSTO_PX,
   ANCHO_POR_DEFECTO_PX,
   MARCAS_EJE_X,
   MARCAS_EJE_Y,
   MARGEN_EJES,
+  MARGEN_TITULO_EJE_X_DISPERSION_PX,
+  MARGEN_TITULO_EJE_Y_PX,
   RADIO_PUNTO,
 } from '../lib/medidasGraficos'
 import type { FilaEspecie } from '../lib/tablero'
@@ -23,8 +26,6 @@ import type { Dispersion as DatosDispersion, PuntoDispersion } from '../lib/tabl
 import { formatearCo2 } from '../lib/cifrasCo2'
 import { TarjetaGrafico } from './TarjetaGrafico'
 
-const FILAS_TABLA = 10
-const DESPLAZAMIENTO_ETIQUETA_PX = 18
 const entero = new Intl.NumberFormat('es-PE', { maximumFractionDigits: 0 })
 
 interface PropsDispersion {
@@ -85,7 +86,7 @@ export function Dispersion({ dispersion, especies }: PropsDispersion) {
         ],
         filas: [...visibles]
           .sort((a, b) => (b.co2Kg ?? 0) - (a.co2Kg ?? 0))
-          .slice(0, FILAS_TABLA)
+          .slice(0, FILAS_TABLA_DISPERSION)
           .map((punto) => [
             punto.codigo,
             punto.especie ?? TEXTOS_TABLERO.sinDato,
@@ -129,7 +130,7 @@ export function Dispersion({ dispersion, especies }: PropsDispersion) {
                 key={`x${marca}`}
                 className="tablero-eje tablero-eje--medio"
                 x={x(marca)}
-                y={alto - MARGEN_EJES.abajo + DESPLAZAMIENTO_ETIQUETA_PX}
+                y={alto - MARGEN_EJES.abajo + BAJADA_NUMEROS_EJE_X_DISPERSION_PX}
               >
                 {entero.format(marca)}
               </text>
@@ -137,13 +138,13 @@ export function Dispersion({ dispersion, especies }: PropsDispersion) {
             <text
               className="tablero-eje tablero-eje--medio"
               x={(MARGEN_EJES.izquierda + ancho - MARGEN_EJES.derecha) / 2}
-              y={alto - 6}
+              y={alto - MARGEN_TITULO_EJE_X_DISPERSION_PX}
             >
               {textos.ejeX}
             </text>
             <text
               className="tablero-eje tablero-eje--medio"
-              transform={`translate(12 ${(MARGEN_EJES.arriba + alto - MARGEN_EJES.abajo) / 2}) rotate(-90)`}
+              transform={`translate(${MARGEN_TITULO_EJE_Y_PX} ${(MARGEN_EJES.arriba + alto - MARGEN_EJES.abajo) / 2}) rotate(-90)`}
             >
               {textos.ejeY}
             </text>
@@ -177,7 +178,7 @@ export function Dispersion({ dispersion, especies }: PropsDispersion) {
       </div>
       <ul className="tablero-apoyo">
         {especies.map((fila) => (
-          <li key={fila.etiqueta} className="tablero-apoyo__item">
+          <li key={fila.clave ?? fila.etiqueta} className="tablero-apoyo__item">
             <i className="tablero-leyenda__muestra" data-serie={fila.serie} aria-hidden="true" />
             {fila.comun ?? fila.etiqueta}
           </li>

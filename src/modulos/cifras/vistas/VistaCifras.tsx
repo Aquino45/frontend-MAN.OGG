@@ -5,21 +5,27 @@
 import '../estilos.css'
 import '../co2.estilos.css'
 import '../tablero.estilos.css'
+import '../tarjetas.estilos.css'
 import '../graficos.estilos.css'
-import { useMemo } from 'react'
+import '../donas.estilos.css'
+import '../barras.estilos.css'
+import { useEffect, useMemo, useRef } from 'react'
 import { EstadoCarga } from '@/compartido/EstadoCarga'
 import { EstadoError } from '@/compartido/EstadoError'
 import { EstadoVacio } from '@/compartido/EstadoVacio'
 import { useArbolesDelCampus } from '@/compartido/useArbolesDelCampus'
 import { useSectoresDelCampus } from '@/compartido/useSectoresDelCampus'
 import {
-  ANCHO_RANGO_DAP_CM,
   CANTIDAD_ESPECIES_CO2_CIFRAS,
-  CANTIDAD_ESPECIES_DONA,
   CANTIDAD_TOP_ARBOLES_CO2,
   TEXTOS_CIFRAS,
-  TEXTOS_TABLERO,
 } from '@/config/constantes'
+import {
+  ANCHO_RANGO_DAP_CM,
+  BLOQUES_ESQUELETO_TABLERO,
+  CANTIDAD_ESPECIES_DONA,
+  TEXTOS_TABLERO,
+} from '@/config/tablero'
 import { Dispersion } from '../componentes/Dispersion'
 import { DonaEspecies } from '../componentes/DonaEspecies'
 import { EstadoPorSector } from '../componentes/EstadoPorSector'
@@ -39,9 +45,6 @@ import {
   especiesPorCantidad,
 } from '../lib/tablero'
 import { calcularDispersion, calcularHistogramaDap, estadoPorSector } from '../lib/tableroGraficos'
-
-// Bloques del esqueleto mientras cargan las cifras (solo la forma, sin números)
-const BLOQUES_ESQUELETO = 4
 
 export function VistaCifras() {
   const sectores = useSectoresDelCampus()
@@ -84,6 +87,14 @@ export function VistaCifras() {
     }
   }, [sectoresListos, arbolesListos, filtros])
 
+  const botonLimpiar = useRef<HTMLButtonElement>(null)
+  const sinResultados = tablero !== null && tablero.visibles.length === 0
+  // Si el clic en un gráfico dejó la página sin resultados, el elemento enfocado desaparece: el foco
+  // pasa al botón que quita los filtros en lugar de perderse
+  useEffect(() => {
+    if (sinResultados && document.activeElement === document.body) botonLimpiar.current?.focus()
+  }, [sinResultados])
+
   const hayError = sectores.estado === 'error' || arboles.estado === 'error'
   const reintentar = sectores.estado === 'error' ? sectores.reintentar : arboles.reintentar
   const sinArboles = arbolesListos !== null && arbolesListos.length === 0
@@ -105,7 +116,11 @@ export function VistaCifras() {
       <h1 className="cifras__titulo">{TEXTOS_CIFRAS.titulo}</h1>
       {hayError && <EstadoError mensaje={TEXTOS_CIFRAS.error} onReintentar={reintentar} />}
       {!hayError && tablero === null && (
-        <EstadoCarga etiqueta={TEXTOS_CIFRAS.cargando} forma="lista" cantidad={BLOQUES_ESQUELETO} />
+        <EstadoCarga
+          etiqueta={TEXTOS_CIFRAS.cargando}
+          forma="lista"
+          cantidad={BLOQUES_ESQUELETO_TABLERO}
+        />
       )}
       {!hayError && sinArboles && <EstadoVacio mensaje={TEXTOS_CIFRAS.sinArboles} />}
       {!hayError && tablero !== null && sectoresListos && arbolesListos && !sinArboles && (
@@ -116,6 +131,7 @@ export function VistaCifras() {
             <div className="tablero-sin-resultados">
               <EstadoVacio mensaje={TEXTOS_TABLERO.filtros.sinResultados} />
               <button
+                ref={botonLimpiar}
                 type="button"
                 className="boton boton--secundario"
                 onClick={() => cambiar({ ...FILTROS_INICIALES, metrica: filtros.metrica })}

@@ -1,19 +1,20 @@
 // Histograma del DAP: árboles por rango de diámetro, de campo abajo y de ejemplo (borde punteado)
 // encima. Los rangos no cambian al filtrar; las barras crecen o se achican desde la base.
-import { TEXTOS_TABLERO } from '@/config/constantes'
+import { TEXTOS_TABLERO } from '@/config/tablero'
 import { useAnchoMedido } from '../hooks/useAnchoMedido'
 import { escalaLineal, marcasRedondas } from '../lib/escalas'
 import {
   ALTO_HISTOGRAMA_PX,
   ANCHO_POR_DEFECTO_PX,
+  BAJADA_NUMEROS_EJE_X_HISTOGRAMA_PX,
   MARCAS_EJE_Y,
   MARGEN_EJES,
+  MARGEN_TITULO_EJE_X_HISTOGRAMA_PX,
 } from '../lib/medidasGraficos'
 import type { HistogramaDap } from '../lib/tableroGraficos'
 import { TarjetaGrafico } from './TarjetaGrafico'
 
 const SEPARACION_BARRAS_PX = 4
-const DESPLAZAMIENTO_ETIQUETA_PX = 16
 const entero = new Intl.NumberFormat('es-PE', { maximumFractionDigits: 0 })
 
 export function Histograma({ histograma }: { histograma: HistogramaDap }) {
@@ -105,7 +106,7 @@ export function Histograma({ histograma }: { histograma: HistogramaDap }) {
                 <text
                   className="tablero-eje tablero-eje--medio"
                   x={x + ancha / 2}
-                  y={base + DESPLAZAMIENTO_ETIQUETA_PX}
+                  y={base + BAJADA_NUMEROS_EJE_X_HISTOGRAMA_PX}
                 >
                   {rango.desdeCm}
                 </text>
@@ -115,7 +116,7 @@ export function Histograma({ histograma }: { histograma: HistogramaDap }) {
           <text
             className="tablero-eje tablero-eje--medio"
             x={(MARGEN_EJES.izquierda + ancho - MARGEN_EJES.derecha) / 2}
-            y={alto - 4}
+            y={alto - MARGEN_TITULO_EJE_X_HISTOGRAMA_PX}
           >
             {textos.ejeX}
           </text>

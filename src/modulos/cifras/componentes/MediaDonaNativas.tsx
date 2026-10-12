@@ -1,5 +1,5 @@
 // Media dona de nativas y exóticas, una por origen del dato presente (campo y ejemplo no se mezclan).
-import { TEXTOS_TABLERO } from '@/config/constantes'
+import { TEXTOS_TABLERO } from '@/config/tablero'
 import { MEDIA_DONA } from '../lib/medidasGraficos'
 import type { Par, ProporcionNativas } from '../lib/tablero'
 import { trazoArco } from '../lib/trazosSvg'

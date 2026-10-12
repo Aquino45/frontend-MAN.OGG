@@ -1,9 +1,22 @@
 import { describe, expect, it } from 'vitest'
 import movimientoTokens from '@/styles/movimiento.tokens.css?raw'
-import graficosCss from './graficos.estilos.css?raw'
-import tableroCss from './tablero.estilos.css?raw'
+import barrasCss from './barras.estilos.css?raw'
+import donasCss from './donas.estilos.css?raw'
+import graficosParte1 from './graficos.estilos.css?raw'
+import tableroParte1 from './tablero.estilos.css?raw'
+import tarjetasCss from './tarjetas.estilos.css?raw'
 
-const HOJAS = { 'tablero.estilos.css': tableroCss, 'graficos.estilos.css': graficosCss }
+// Cada parte se revisa sola; las reglas que cruzan partes se buscan en el conjunto
+const tableroCss = tableroParte1 + tarjetasCss
+const graficosCss = graficosParte1 + donasCss + barrasCss
+
+const HOJAS = {
+  'tablero.estilos.css': tableroParte1,
+  'tarjetas.estilos.css': tarjetasCss,
+  'graficos.estilos.css': graficosParte1,
+  'donas.estilos.css': donasCss,
+  'barras.estilos.css': barrasCss,
+}
 
 // Cuerpo de las animaciones @keyframes de un archivo
 function propiedadesAnimadas(css: string): string[] {

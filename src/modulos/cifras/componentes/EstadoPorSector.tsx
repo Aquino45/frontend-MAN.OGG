@@ -1,6 +1,7 @@
 // Estado de los árboles por sector: una barra al 100 % por sector, con los colores de estado de
 // los tokens. Los segmentos de ejemplo llevan borde punteado (campo y ejemplo no se mezclan).
-import { ESTILO_ESTADO_GENERAL, ESTILO_ESTADO_OTRO, TEXTOS_TABLERO } from '@/config/constantes'
+import { ESTILO_ESTADO_GENERAL, ESTILO_ESTADO_OTRO } from '@/config/constantes'
+import { TEXTOS_TABLERO } from '@/config/tablero'
 import type { FilaEstado } from '../lib/tableroGraficos'
 import { Aparece } from './Aparece'
 import { TarjetaGrafico } from './TarjetaGrafico'

@@ -38,3 +38,15 @@ export const TEXTO_MAPA_CALOR_PX = 12
 export const INTENSIDAD_ETIQUETA_CLARA = 0.55
 // Intensidad mínima de un sector con dato: así se distingue de uno sin dato
 export const INTENSIDAD_MINIMA_MAPA = 0.14
+
+// Rótulos de los ejes (distancias en píxeles): hasta dónde baja el número de cada marca del eje X
+// y dónde queda el título de cada eje
+export const BAJADA_NUMEROS_EJE_X_DISPERSION_PX = 18
+export const BAJADA_NUMEROS_EJE_X_HISTOGRAMA_PX = 16
+export const MARGEN_TITULO_EJE_Y_PX = 12
+export const MARGEN_TITULO_EJE_X_DISPERSION_PX = 6
+export const MARGEN_TITULO_EJE_X_HISTOGRAMA_PX = 4
+
+// Etiquetas del mapa de calor: cuánto sube el nombre y cuánto baja el valor, en alturas de texto
+export const SUBIDA_NOMBRE_MAPA_ALTURAS = 0.25
+export const BAJADA_VALOR_MAPA_ALTURAS = 1.1

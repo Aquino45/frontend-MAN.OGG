@@ -1,7 +1,7 @@
 // Filtros del tablero de Cifras: qué sector, qué datos (campo o ejemplo), qué especie y qué mide el
 // mapa de calor. Viven en la URL (sin parámetro, «todos»). Funciones puras.
 import type { ArbolFeature } from '@/api/cliente'
-import { DATOS_TABLERO, METRICAS_MAPA_CALOR, PARAMETROS_TABLERO } from '@/config/constantes'
+import { DATOS_TABLERO, METRICAS_MAPA_CALOR, PARAMETROS_TABLERO } from '@/config/tablero'
 
 export type DatosFiltro = (typeof DATOS_TABLERO)[keyof typeof DATOS_TABLERO]
 export type MetricaMapa = (typeof METRICAS_MAPA_CALOR)[keyof typeof METRICAS_MAPA_CALOR]

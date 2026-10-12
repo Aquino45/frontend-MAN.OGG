@@ -1,7 +1,8 @@
 // Datos de los gráficos del tablero de Cifras: estado por sector, dispersión DAP × altura e
 // histograma de DAP. Campo y ejemplo (demo) van siempre por separado. Funciones puras.
 import type { ArbolFeature, SectorFeature } from '@/api/cliente'
-import { ESTILO_ESTADO_GENERAL, ESTILO_ESTADO_OTRO, TEXTOS_TABLERO } from '@/config/constantes'
+import { ESTILO_ESTADO_GENERAL, ESTILO_ESTADO_OTRO } from '@/config/constantes'
+import { TEXTOS_TABLERO } from '@/config/tablero'
 import { listarSectores } from './sectores'
 import { enlaceDeCartilla } from './cifrasCo2'
 import { especiesPorCantidad } from './tablero'
@@ -105,7 +106,7 @@ export function calcularDispersion(
   let sinMedidas = 0
   for (const { properties } of todos) {
     const visible = visibles.has(properties.codigo)
-    if (properties.dap_cm === null || properties.altura_total_m === null) {
+    if (typeof properties.dap_cm !== 'number' || typeof properties.altura_total_m !== 'number') {
       if (visible) sinMedidas += 1
       continue
     }
@@ -170,7 +171,7 @@ export function calcularHistogramaDap(
   let sinDap = 0
   for (const { properties } of todos) {
     if (!visibles.has(properties.codigo)) continue
-    if (properties.dap_cm === null) {
+    if (typeof properties.dap_cm !== 'number') {
       sinDap += 1
       continue
     }

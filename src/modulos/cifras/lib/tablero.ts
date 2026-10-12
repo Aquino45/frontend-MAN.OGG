@@ -1,8 +1,9 @@
-// Cifras del tablero de Cifras: resumen, especies y mapa de calor. Todo se calcula de lo que entrega
+// Cifras del tablero de Cifras: resumen, especies y mapa de calor. Un campo que la API no trae (la
+// versión anterior a la que suma DAP, altura y origen al resumen) cuenta igual que uno sin dato. Todo se calcula de lo que entrega
 // la API, nunca a mano, y los árboles de campo y los de ejemplo (demo) van SIEMPRE por separado.
 // Funciones puras.
 import type { ArbolFeature, SectorFeature } from '@/api/cliente'
-import { METRICAS_MAPA_CALOR, ORIGEN_NATIVO, TEXTOS_TABLERO } from '@/config/constantes'
+import { METRICAS_MAPA_CALOR, ORIGEN_NATIVO, TEXTOS_TABLERO } from '@/config/tablero'
 import { enlaceDeCartilla } from './cifrasCo2'
 import { listarSectores } from './sectores'
 import type { MetricaMapa } from './filtrosTablero'
@@ -56,7 +57,7 @@ const especiesDistintas = (lista: readonly Propiedades[]): number =>
   new Set(lista.map(nombreCientifico).filter((nombre) => nombre !== null)).size
 
 function mayorDapDe(lista: readonly Propiedades[]): MayorDap | null {
-  const conDap = lista.filter((propiedades) => propiedades.dap_cm !== null)
+  const conDap = lista.filter((propiedades) => typeof propiedades.dap_cm === 'number')
   if (conDap.length === 0) return null
   const mayor = conDap.reduce((ganador, actual) =>
     (actual.dap_cm ?? 0) > (ganador.dap_cm ?? 0) ||
@@ -75,7 +76,7 @@ function mayorDapDe(lista: readonly Propiedades[]): MayorDap | null {
 function nativasDe(lista: readonly Propiedades[]): ProporcionNativas | null {
   if (lista.length === 0) return null
   const nativas = lista.filter((propiedades) => propiedades.origen === ORIGEN_NATIVO).length
-  const sinDato = lista.filter((propiedades) => propiedades.origen === null).length
+  const sinDato = lista.filter((propiedades) => typeof propiedades.origen !== 'string').length
   return {
     nativas,
     exoticas: lista.length - nativas - sinDato,
@@ -209,7 +210,7 @@ function medida(lista: readonly Propiedades[], metrica: MetricaMapa): number | n
   if (metrica === METRICAS_MAPA_CALOR.arboles) return lista.length
   const valores = lista
     .map((p) => (metrica === METRICAS_MAPA_CALOR.co2 ? p.co2_almacenado_kg : p.dap_cm))
-    .filter((valor) => valor !== null)
+    .filter((valor) => typeof valor === 'number')
   if (valores.length === 0) return null
   const total = valores.reduce((suma, valor) => suma + valor, 0)
   return metrica === METRICAS_MAPA_CALOR.co2 ? total : total / valores.length

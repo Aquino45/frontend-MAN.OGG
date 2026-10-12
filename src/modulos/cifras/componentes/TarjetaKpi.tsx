@@ -1,7 +1,7 @@
 // Una tarjeta del resumen: su etiqueta, uno o dos valores grandes (campo y ejemplo, nunca sumados sin
 // decirlo), una nota y un mini gráfico.
 import type { ReactNode } from 'react'
-import { TEXTOS_TABLERO } from '@/config/constantes'
+import { TEXTOS_TABLERO } from '@/config/tablero'
 
 export type OrigenDeLinea = 'campo' | 'ejemplo'
 

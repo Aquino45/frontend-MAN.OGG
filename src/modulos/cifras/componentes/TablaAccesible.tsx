@@ -1,6 +1,6 @@
 // La tabla de un gráfico: sus mismos datos en texto, plegada bajo el gráfico. Se desplaza hacia los
 // lados en pantallas angostas (y se puede enfocar para hacerlo con el teclado).
-import { TEXTOS_TABLERO } from '@/config/constantes'
+import { TEXTOS_TABLERO } from '@/config/tablero'
 
 export interface DatosDeTabla {
   // Nombre del gráfico, para «Ver <gráfico> como tabla»

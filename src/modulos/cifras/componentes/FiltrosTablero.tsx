@@ -1,7 +1,7 @@
 // Filtros del tablero: el sector (los de la API), si se miran los datos de campo, los de ejemplo o
 // todos, y la especie elegida en la dona (con su botón para quitarla). Son botones con
 // `aria-pressed`: se usan con el teclado y no animan nada.
-import { DATOS_TABLERO, TEXTOS_TABLERO } from '@/config/constantes'
+import { DATOS_TABLERO, TEXTOS_TABLERO } from '@/config/tablero'
 import { hayFiltros, type DatosFiltro, type FiltrosTablero } from '../lib/filtrosTablero'
 
 export interface OpcionSector {

@@ -4,7 +4,7 @@ import { Link } from 'react-router'
 import type { ArbolFeature, SectorFeature } from '@/api/cliente'
 import { SinDato } from '@/compartido/SinDato'
 import { useEnlaceConTransicion } from '@/compartido/useEnlaceConTransicion'
-import { CANTIDAD_ESPECIES_DONA, TEXTOS_TABLERO } from '@/config/constantes'
+import { CANTIDAD_ESPECIES_DONA, TEXTOS_TABLERO } from '@/config/tablero'
 import { formatearMedida } from '@/lib/formatear'
 import { formatearCo2 } from '../lib/cifrasCo2'
 import {
@@ -119,7 +119,7 @@ export function GrupoKpis({
   })
   const resaltados = new Set(ORIGENES.map((origen) => kpis.mayorDap[origen]?.codigo))
   const puntosDap = visibles
-    .filter(({ properties }) => properties.dap_cm !== null)
+    .filter(({ properties }) => typeof properties.dap_cm === 'number')
     .map(({ properties }) => ({
       dapCm: properties.dap_cm ?? 0,
       ejemplo: properties.demo,
