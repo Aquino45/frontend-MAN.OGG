@@ -1,48 +1,54 @@
-// Árbol pixel de la portada: crece al abrir el sitio, se mece en reposo, suelta hojas y responde
-// al cursor. Es adorno (aria-hidden). Con «reducir movimiento» queda completo y quieto.
-import { useEffect, useId, useRef, useState, type CSSProperties } from 'react'
+// Árbol pixel de la portada: sus piezas brotan una tras otra, la copa respira por cuadros, suelta
+// hojas y responde al cursor, todo en saltos de una celda. Es adorno (aria-hidden). Con «reducir
+// movimiento» queda completo y quieto.
+import { useEffect, useRef, useState } from 'react'
 import { useEntradaTerminada } from '@/modulos/entrada'
-import { ARBOL_ANIMADO as G, ARBOL_REPOSO_COMPLETO, CONSULTA_HOVER_FINO } from '@/config/constantes'
+import { ARBOL_ANIMADO as G } from '@/config/constantes'
 import { useAnimacionArbol } from '../hooks/useAnimacionArbol'
+import { useDesplazamientoAlPuntero } from '../hooks/useDesplazamientoAlPuntero'
 import { useHojasQueCaen } from '../hooks/useHojasQueCaen'
-import { useInclinacionAlPuntero } from '../hooks/useInclinacionAlPuntero'
 import { usePausaDelArbol } from '../hooks/usePausaDelArbol'
-import { claveFila, claveTronco, ORIGEN_COPA } from '../lib/guionArbol'
+import { LADO_REJILLA_ARBOL } from '../lib/dibujoArbol'
 import {
-  ANCHO_DESTELLO,
-  BASE_TRONCO_Y,
-  CELDA_PARPADEO,
-  FILAS_COPA,
-  FILAS_POR_PASO_TRONCO,
-  LADO_PARPADEO,
-  LADO_REJILLA_ARBOL,
-  PASOS_TRONCO,
-  TRONCO,
-} from '../lib/rejillaArbol'
+  COPA_BASE,
+  COPAS_REPOSO,
+  PIEZAS_CUERPO,
+  type CapaArbol,
+  type PiezaArbol,
+} from '../lib/piezasArbol'
 import { HojaCayendo } from './HojaCayendo'
 
 interface PropsArbolAnimado {
   // Fuente de azar de las hojas; propia, separada de la del sorteo de la entrada
   aleatorioHojas?: () => number
-  // Reposo completo o simple (la red de seguridad de rendimiento)
-  reposoCompleto?: boolean
 }
 
-const ORIGEN_BASE = `${LADO_REJILLA_ARBOL / 2}px ${BASE_TRONCO_Y}px`
-const ESTILO_COPA: CSSProperties = { transformOrigin: ORIGEN_COPA }
-
-function pasosDelTronco() {
-  return Array.from({ length: PASOS_TRONCO }, (_, paso) => ({
-    paso,
-    y: TRONCO.y + TRONCO.alto - (paso + 1) * FILAS_POR_PASO_TRONCO,
-  }))
+function Capa({ capa, forma }: { capa: CapaArbol; forma: 'entera' | 'chica' }) {
+  const trazo = (
+    <path className={`arbol-animado__capa arbol-animado__capa--${capa.clase}`} d={capa[forma]} />
+  )
+  return capa.arriba ? <g data-parte="arriba">{trazo}</g> : trazo
 }
 
-export function ArbolAnimado({
-  aleatorioHojas = Math.random,
-  reposoCompleto = ARBOL_REPOSO_COMPLETO,
-}: PropsArbolAnimado) {
-  const idSilueta = useId().replace(/:/g, '')
+// Una pieza del crecimiento: su versión chica (solo mientras brota) y la entera
+function PiezaQueBrota({ pieza }: { pieza: PiezaArbol }) {
+  return (
+    <g data-pieza={pieza.clave}>
+      <g data-forma="chica" className="arbol-animado__chica">
+        {pieza.capas.map((capa, indice) => (
+          <Capa key={indice} capa={capa} forma="chica" />
+        ))}
+      </g>
+      <g data-forma="entera">
+        {pieza.capas.map((capa, indice) => (
+          <Capa key={indice} capa={capa} forma="entera" />
+        ))}
+      </g>
+    </g>
+  )
+}
+
+export function ArbolAnimado({ aleatorioHojas = Math.random }: PropsArbolAnimado) {
   const refEnvoltura = useRef<HTMLDivElement>(null)
   const refRaiz = useRef<SVGSVGElement>(null)
   const entradaTerminada = useEntradaTerminada()
@@ -57,18 +63,14 @@ export function ArbolAnimado({
     return () => window.clearTimeout(temporizador)
   }, [entradaTerminada])
 
-  const { fase, sacudir, respirarRapido } = useAnimacionArbol(refRaiz, {
-    activo: arranco,
-    pausado,
-    reposoCompleto,
-  })
+  const { fase, sacudir } = useAnimacionArbol(refRaiz, { activo: arranco, pausado })
   const enReposo = fase === 'reposo'
   const { hojas, soltarAbanico, quitar } = useHojasQueCaen({
     activa: enReposo,
     pausado,
     aleatorio: aleatorioHojas,
   })
-  useInclinacionAlPuntero(refRaiz, refEnvoltura, enReposo && !pausado)
+  useDesplazamientoAlPuntero(refRaiz, refEnvoltura, enReposo && !pausado)
 
   const alPresionar = () => {
     const ahora = performance.now()
@@ -78,9 +80,6 @@ export function ArbolAnimado({
     soltarAbanico()
   }
 
-  const hayCursorFino = () =>
-    typeof window.matchMedia === 'function' && window.matchMedia(CONSULTA_HOVER_FINO).matches
-
   return (
     <div
       ref={refEnvoltura}
@@ -88,88 +87,33 @@ export function ArbolAnimado({
       data-fase={fase}
       aria-hidden="true"
       onPointerDown={alPresionar}
-      onPointerEnter={() => hayCursorFino() && respirarRapido(true)}
-      onPointerLeave={() => respirarRapido(false)}
     >
       <svg
         ref={refRaiz}
-        className="glifo-pixel arbol-animado__svg"
+        className="arbol-animado__svg"
         aria-hidden="true"
         viewBox={`0 0 ${LADO_REJILLA_ARBOL} ${LADO_REJILLA_ARBOL}`}
         focusable="false"
       >
-        <defs>
-          <clipPath id={idSilueta}>
-            {FILAS_COPA.map(({ y, tramo }) => (
-              <rect key={y} x={tramo.x} y={y} width={tramo.ancho} height={1} />
-            ))}
-            <rect x={TRONCO.x} y={TRONCO.y} width={TRONCO.ancho} height={TRONCO.alto} />
-          </clipPath>
-        </defs>
-
-        {pasosDelTronco().map(({ paso, y }) => (
-          <g
-            key={paso}
-            data-parte={claveTronco(paso)}
-            style={paso === 0 ? { transformOrigin: ORIGEN_BASE } : undefined}
-          >
-            <rect
-              className="glifo-pixel__tronco"
-              x={TRONCO.x}
-              y={y}
-              width={TRONCO.ancho}
-              height={FILAS_POR_PASO_TRONCO}
-            />
-          </g>
+        {PIEZAS_CUERPO.map((pieza) => (
+          <PiezaQueBrota key={pieza.clave} pieza={pieza} />
         ))}
-
-        <g data-parte="inclina" style={ESTILO_COPA}>
-          <g data-parte="rebote">
-            <g data-parte="respira" style={ESTILO_COPA}>
-              {FILAS_COPA.map(({ y, tramo, motas }) => (
-                <g key={y} data-parte={claveFila(y)}>
-                  <rect
-                    className={`glifo-pixel__${tramo.parte}`}
-                    x={tramo.x}
-                    y={y}
-                    width={tramo.ancho}
-                    height={1}
-                  />
-                  {motas.map((mota) => (
-                    <rect
-                      key={mota.x}
-                      className={`glifo-pixel__${mota.parte}`}
-                      x={mota.x}
-                      y={y}
-                      width={1}
-                      height={1}
-                    />
-                  ))}
-                </g>
-              ))}
-              <rect
-                data-parte="parpadeo"
-                className="glifo-pixel__copa-media arbol-animado__parpadeo"
-                x={CELDA_PARPADEO.x}
-                y={CELDA_PARPADEO.y}
-                width={LADO_PARPADEO}
-                height={LADO_PARPADEO}
-              />
-            </g>
+        <g data-parte="copa">
+          <g data-cuadro="0">
+            {COPA_BASE.map((pieza) => (
+              <PiezaQueBrota key={pieza.clave} pieza={pieza} />
+            ))}
           </g>
+          {COPAS_REPOSO.map((copa, indice) => (
+            <g key={indice} data-cuadro={indice + 1} className="arbol-animado__cuadro">
+              {copa.flatMap((pieza) =>
+                pieza.capas.map((capa, orden) => (
+                  <Capa key={`${pieza.clave}-${orden}`} capa={capa} forma="entera" />
+                )),
+              )}
+            </g>
+          ))}
         </g>
-
-        <g clipPath={`url(#${idSilueta})`}>
-          <rect
-            data-parte="destello"
-            className="arbol-animado__destello"
-            x={-ANCHO_DESTELLO - 1}
-            y={0}
-            width={ANCHO_DESTELLO}
-            height={LADO_REJILLA_ARBOL}
-          />
-        </g>
-
         <g>
           {hojas.map((hoja) => (
             <HojaCayendo key={hoja.id} hoja={hoja} pausado={pausado} onTermina={quitar} />

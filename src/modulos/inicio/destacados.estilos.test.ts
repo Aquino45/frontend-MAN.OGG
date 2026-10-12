@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import estilosBase from './estilos.css?raw'
 import estilosCss from './destacados.estilos.css?raw'
+import movimientoCss from '@/styles/movimiento.tokens.css?raw'
 
 // Cuerpo de la primera regla cuyo selector es exactamente `selector`
 function reglaDe(selector: string): string {
@@ -53,10 +54,23 @@ describe('estilos del bloque de destacados', () => {
     expect(reglaDe('.destacado-tarjeta__estrella')).toMatch(/fill:\s*var\(--punto-destacado\)/)
   })
 
-  it('usa solo tokens: sin colores literales, sin fuente pixel y sin animaciones propias', () => {
+  it('usa solo tokens: sin colores literales ni fuente pixel', () => {
     expect(estilosCss).not.toMatch(/#[0-9a-fA-F]{3,8}|rgba?\(|hsla?\(/)
     expect(estilosCss).not.toContain('--fuente-pixel')
-    expect(estilosCss).not.toContain('@keyframes')
+  })
+
+  it('las tarjetas entran escalonadas (40 a 60 ms) solo con opacidad y transform, una vez', () => {
+    expect(estilosCss).toMatch(
+      /@keyframes inicio-destacado-entra\s*\{\s*from\s*\{[^}]*opacity:\s*0/,
+    )
+    expect(estilosCss).not.toMatch(
+      /inicio-destacado-entra[^}]*(scale|rotate|height|width|top|left)/,
+    )
+    expect(estilosCss).toContain("[data-visible='true']")
+    expect(estilosCss).toContain('var(--retraso-escalonado-destacado)')
+    const retraso = Number(/--retraso-escalonado-destacado:\s*(\d+)ms/.exec(movimientoCss)?.[1])
+    expect(retraso).toBeGreaterThanOrEqual(40)
+    expect(retraso).toBeLessThanOrEqual(60)
   })
 
   it('el título del bloque no dibuja anillo de foco', () => {

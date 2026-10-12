@@ -1,217 +1,117 @@
-// Guion del árbol de la portada: qué se anima, cuándo y cómo. Son planes puros (datos para la
-// API de animaciones del navegador); quien los ejecuta es el hook del árbol.
-// Solo se animan transform, opacity y clip-path. Los tiempos y las medidas salen de constantes.ts.
+// El guion del árbol, como datos puros: en qué momento brota cada pieza, cuándo se ve cada cuadro
+// del reposo y cómo cae una hoja. Los fotogramas son de opacidad y transform, en saltos enteros
+// (steps): ninguna pieza se escala, se gira ni se recorta.
 import { ARBOL_ANIMADO as G } from '@/config/constantes'
-import {
-  FILAS_COPA,
-  LADO_REJILLA_ARBOL,
-  PASOS_TRONCO,
-  PIVOTE_COPA,
-  SUELO_HOJA_Y,
-} from './rejillaArbol'
+import { COPAS_REPOSO, ORDEN_CRECIMIENTO, type ClavePieza } from './piezasArbol'
 
-// Las mismas curvas de movimiento.tokens.css (la API de animaciones no lee variables CSS)
-const CURVA_SALIDA = 'cubic-bezier(0.23, 1, 0.32, 1)'
-const CURVA_MOVIMIENTO = 'cubic-bezier(0.77, 0, 0.175, 1)'
+export interface OpcionesAnimacion {
+  duration: number
+  delay?: number
+  iterations?: number
+  fill?: FillMode
+  easing?: string
+}
 
 export interface PlanAnimacion {
-  // Elemento del dibujo al que se aplica (atributo data-parte)
-  clave: string
   fotogramas: Keyframe[]
-  opciones: KeyframeAnimationOptions
+  opciones: OpcionesAnimacion
 }
 
-export const claveTronco = (paso: number) => `tronco-${paso}`
-export const claveFila = (y: number) => `fila-${y}`
-export const CLAVE_DESTELLO = 'destello'
-export const CLAVE_PARPADEO = 'parpadeo'
-export const CLAVE_RESPIRA = 'respira'
+// ---------- Crecimiento ----------
 
-const px = (valor: number) => `${valor}px`
+export function inicioDePiezaMs(clave: ClavePieza): number {
+  return ORDEN_CRECIMIENTO.indexOf(clave) * G.escalonPiezaMs
+}
 
-// Crecimiento: semilla, tronco en pasos, copa fila por fila de abajo hacia arriba y un destello.
-export function planCrecimiento(): PlanAnimacion[] {
-  const plan: PlanAnimacion[] = []
+// Cuándo termina de verse la última pieza entera
+export const DURACION_CRECIMIENTO_MS = (ORDEN_CRECIMIENTO.length - 1) * G.escalonPiezaMs + G.broteMs
 
-  for (let paso = 0; paso < PASOS_TRONCO; paso++) {
-    const retraso = paso === 0 ? 0 : G.troncoPrimerPasoMs + (paso - 1) * G.troncoPasoMs
-    plan.push({
-      clave: claveTronco(paso),
-      fotogramas:
-        paso === 0
-          ? [
-              { opacity: 0, transform: 'scale(0.9)' },
-              { opacity: 1, transform: 'scale(1)' },
-            ]
-          : [{ opacity: 0 }, { opacity: 1 }],
-      opciones: {
-        delay: retraso,
-        duration: paso === 0 ? G.semillaMs : G.troncoFundidoMs,
-        easing: CURVA_SALIDA,
-        fill: 'both',
-      },
-    })
+// Primer cuadro de una pieza: la versión chica, solo mientras brota
+export function planPiezaChica(inicioMs: number): PlanAnimacion {
+  return {
+    fotogramas: [{ opacity: 1 }, { opacity: 1 }],
+    opciones: { duration: G.broteMs, delay: inicioMs, fill: 'none', easing: 'steps(1, end)' },
   }
+}
 
-  const ultima = FILAS_COPA.length - 1
-  for (const { y } of FILAS_COPA) {
-    plan.push({
-      clave: claveFila(y),
-      fotogramas: [
-        { clipPath: 'inset(0 50% 0 50%)', opacity: 0 },
-        { clipPath: 'inset(0 0 0 0)', opacity: 1 },
-      ],
-      opciones: {
-        delay: G.copaInicioMs + (ultima - y) * G.copaEscalonadoMs,
-        duration: G.copaFilaMs,
-        easing: CURVA_SALIDA,
-        fill: 'both',
-      },
-    })
+// La pieza entera no se ve hasta que termina de brotar
+export function planPiezaEntera(inicioMs: number): PlanAnimacion {
+  return {
+    fotogramas: [{ opacity: 0 }, { opacity: 0 }],
+    opciones: { duration: inicioMs + G.broteMs, fill: 'none', easing: 'steps(1, end)' },
   }
+}
 
-  plan.push({
-    clave: CLAVE_DESTELLO,
-    fotogramas: [
-      { transform: `translateX(${px(0)})` },
-      { transform: `translateX(${px(LADO_REJILLA_ARBOL + 6)})` },
-    ],
-    opciones: {
-      delay: G.destelloInicialMs,
-      duration: G.destelloInicialDuracionMs,
-      easing: 'linear',
-      fill: 'backwards',
-    },
+// ---------- Reposo ----------
+
+// Orden en que se ven los cuadros del reposo en un ciclo: va y vuelve (1, 2, 3, 2, 1)
+export function secuenciaReposo(): number[] {
+  const cuadros = COPAS_REPOSO.map((_, indice) => indice + 1)
+  return [...cuadros, ...cuadros.slice(0, -1).reverse()]
+}
+
+export const CICLO_REPOSO_MS = G.pausaBaseMs + secuenciaReposo().length * G.cuadroMs
+
+// El cuadro 0 es el base; se ve siempre salvo cuando le toca a otro
+export function planCuadro(cuadro: number): PlanAnimacion {
+  const secuencia = secuenciaReposo()
+  const visible = cuadro === 0 ? 1 : 0
+  const fotogramas: Keyframe[] = [{ opacity: visible, offset: 0 }]
+  secuencia.forEach((delCiclo, posicion) => {
+    const desde = (G.pausaBaseMs + posicion * G.cuadroMs) / CICLO_REPOSO_MS
+    const hasta = (G.pausaBaseMs + (posicion + 1) * G.cuadroMs) / CICLO_REPOSO_MS
+    const ahora = delCiclo === cuadro ? 1 : 0
+    fotogramas.push({ opacity: visible, offset: desde }, { opacity: ahora, offset: desde })
+    fotogramas.push({ opacity: ahora, offset: hasta }, { opacity: visible, offset: hasta })
   })
-  return plan
-}
-
-// Cuándo termina el último paso del crecimiento (ms desde el arranque)
-export function duracionTotalCrecimiento(): number {
-  return Math.max(
-    ...planCrecimiento().map(({ opciones }) => Number(opciones.delay) + Number(opciones.duration)),
-  )
-}
-
-// Vida en reposo. Con «completo» en falso queda solo el mecido.
-export function planReposo(completo: boolean): PlanAnimacion[] {
-  const plan: PlanAnimacion[] = []
-  const ultima = FILAS_COPA.length - 1
-
-  // Mecido: cada fila oscila más cuanto más arriba, con un pequeño desfase entre filas
-  for (const { y } of FILAS_COPA) {
-    const altura = (ultima - y) / ultima
-    const amplitud =
-      G.meceoCeldas * (G.meceoMinimoProporcion + (1 - G.meceoMinimoProporcion) * altura)
-    plan.push({
-      clave: claveFila(y),
-      fotogramas: [
-        { transform: `translateX(${px(-amplitud)})` },
-        { transform: `translateX(${px(amplitud)})` },
-      ],
-      opciones: {
-        duration: G.meceoSentidoMs,
-        delay: -(ultima - y) * G.meceoDesfaseMs,
-        direction: 'alternate',
-        iterations: Infinity,
-        easing: 'ease-in-out',
-      },
-    })
+  fotogramas.push({ opacity: visible, offset: 1 })
+  return {
+    fotogramas,
+    opciones: { duration: CICLO_REPOSO_MS, iterations: Number.POSITIVE_INFINITY, easing: 'linear' },
   }
-
-  if (!completo) return plan
-
-  plan.push({
-    clave: CLAVE_RESPIRA,
-    fotogramas: [{ transform: 'scale(1)' }, { transform: `scale(${G.respiracionEscala})` }],
-    opciones: {
-      duration: G.respiracionSentidoMs,
-      direction: 'alternate',
-      iterations: Infinity,
-      easing: 'ease-in-out',
-    },
-  })
-
-  plan.push({
-    clave: CLAVE_DESTELLO,
-    fotogramas: [
-      { transform: `translateX(${px(0)})` },
-      { transform: `translateX(${px(LADO_REJILLA_ARBOL + 6)})` },
-    ],
-    opciones: {
-      delay: G.barridoRetrasoMs,
-      duration: G.barridoDuracionMs,
-      endDelay: G.barridoCicloMs - G.barridoDuracionMs,
-      iterations: Infinity,
-      easing: CURVA_MOVIMIENTO,
-    },
-  })
-
-  plan.push({
-    clave: CLAVE_PARPADEO,
-    fotogramas: [{ opacity: 0 }, { opacity: 1, offset: 0.5 }, { opacity: 0 }],
-    opciones: {
-      delay: G.parpadeoRetrasoMs,
-      duration: G.parpadeoDuracionMs,
-      endDelay: G.parpadeoCicloMs - G.parpadeoDuracionMs,
-      iterations: Infinity,
-      easing: 'ease-in-out',
-    },
-  })
-  return plan
 }
 
-// Una hoja que se desprende. «deriva» es cuánto se desplaza de lado (en celdas) hasta el suelo.
+// ---------- Hojas ----------
+
 export interface EspecificacionHoja {
   x: number
   y: number
-  deriva: number
-  duracionMs: number
-  // Vaivén de lado a lado mientras cae (las hojas sueltas); las de la ráfaga caen en abanico
-  vaiven: boolean
+  clase: 'carmin' | 'oscuro'
+  // Cuántas celdas baja, de a una por paso
+  pasos: number
+  // Cuánto se corre de lado por cada paso, además del zigzag de 1 celda
+  derivaPorPaso: number
+  retrasoMs: number
 }
 
-export function fotogramasHoja({ y, deriva, vaiven }: EspecificacionHoja): Keyframe[] {
-  const recorrido = SUELO_HOJA_Y - y
-  const posicion = (avance: number, lado: number): string =>
-    `translate(${px(lado)}, ${px(recorrido * avance)})`
-  if (!vaiven) {
-    return [
-      { transform: posicion(0, 0), opacity: 1 },
-      { transform: posicion(0.7, deriva * 0.7), opacity: 1, offset: 0.7 },
-      { transform: posicion(1, deriva), opacity: 0 },
-    ]
+// De lado a lado: 0, 0, 1, 1, 0, 0, 1, 1…
+export function zigzag(paso: number): number {
+  return Math.floor(paso / 2) % 2
+}
+
+export function planHoja(hoja: EspecificacionHoja): PlanAnimacion {
+  const fotogramas: Keyframe[] = Array.from({ length: hoja.pasos + 1 }, (_, paso) => ({
+    transform: `translate(${zigzag(paso) + Math.round(paso * hoja.derivaPorPaso)}px, ${paso}px)`,
+    opacity: paso === hoja.pasos ? 0 : 1,
+    offset: paso / hoja.pasos,
+    easing: 'steps(1, end)',
+  }))
+  return {
+    fotogramas,
+    opciones: { duration: hoja.pasos * G.hojaPasoMs, delay: hoja.retrasoMs, fill: 'both' },
   }
-  const lado = G.hojaVaivenCeldas
-  return [
-    { transform: posicion(0, 0), opacity: 1 },
-    { transform: posicion(0.25, lado), opacity: 1, offset: 0.25 },
-    { transform: posicion(0.5, -lado), opacity: 1, offset: 0.5 },
-    { transform: posicion(0.7, lado), opacity: 1, offset: 0.7 },
-    { transform: posicion(1, deriva), opacity: 0 },
-  ]
 }
 
-// Sacudida corta de la copa al presionar: de lado a lado y de vuelta
-export function fotogramasSacudida(): Keyframe[] {
-  const c = G.sacudidaCeldas
-  return [
-    { transform: 'translateX(0px)' },
-    { transform: `translateX(${px(-c)})`, offset: 0.25 },
-    { transform: `translateX(${px(c)})`, offset: 0.55 },
-    { transform: `translateX(${px(-c / 2)})`, offset: 0.8 },
-    { transform: 'translateX(0px)' },
-  ]
-}
+// ---------- Sacudida al presionar: una celda a la derecha, una a la izquierda y de vuelta ----------
 
-export const OPCIONES_SACUDIDA: KeyframeAnimationOptions = {
-  duration: G.sacudidaMs,
-  easing: CURVA_SALIDA,
+export function planSacudida(): PlanAnimacion {
+  const desplazamientos = [0, 1, -1, 1, 0]
+  return {
+    fotogramas: desplazamientos.map((dx, paso) => ({
+      transform: `translate(${dx}px, 0px)`,
+      offset: paso / (desplazamientos.length - 1),
+      easing: 'steps(1, end)',
+    })),
+    opciones: { duration: (desplazamientos.length - 1) * G.sacudidaPasoMs },
+  }
 }
-
-// Inclinación de la copa hacia el puntero: «cuanto» va de -1 (izquierda) a 1 (derecha)
-export function transformInclinacion(cuanto: number): string {
-  return `translateX(${px(cuanto * G.inclinacionCeldas)}) rotate(${cuanto * G.inclinacionGrados}deg)`
-}
-
-export const ORIGEN_COPA = `${px(PIVOTE_COPA.x)} ${px(PIVOTE_COPA.y)}`

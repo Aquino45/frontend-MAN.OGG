@@ -1,11 +1,17 @@
 /* Árbol animado de la portada. El movimiento lo lleva el código (animaciones del navegador sobre
-   transform, opacity y clip-path); aquí solo viven el aspecto y el estado de espera. */
+   opacity y transform, en saltos de una celda); aquí viven el aspecto y el estado de espera. */
 
 .arbol-animado {
+  /* El relleno del tronco: un paso más claro que el fondo en oscuro; en claro, el tronco de la paleta */
+  --arbol-tronco: var(--sombra-violeta);
   display: flex;
   justify-content: center;
   inline-size: 100%;
   min-inline-size: 0;
+}
+
+:root[data-tema='claro'] .arbol-animado {
+  --arbol-tronco: var(--tronco-noche);
 }
 
 /* Hasta que termina la entrada del sitio el árbol no se ve; con «reducir movimiento» no hay espera */
@@ -13,15 +19,36 @@
   opacity: 0;
 }
 
-/* Barrido de luz: una franja clara recortada a la silueta; en reposo queda fuera del dibujo */
-.arbol-animado__destello {
-  fill: var(--texto-lectura);
-  opacity: 0.35;
-  pointer-events: none;
+/* Cada celda mide un número entero de píxeles (--arbol-celda): sin celdas a medias ni líneas finas */
+.arbol-animado__svg {
+  display: block;
+  inline-size: calc(var(--arbol-celda) * 40);
+  block-size: auto;
+  max-inline-size: 100%;
+  overflow: visible;
+  shape-rendering: crispEdges;
 }
 
-/* Celda que parpadea en la copa alta: solo se ve cuando la animación la enciende */
-.arbol-animado__parpadeo {
+.arbol-animado__capa--carmin {
+  fill: var(--copa-carmin);
+}
+
+.arbol-animado__capa--oscuro {
+  fill: var(--copa-magenta-oscuro);
+}
+
+/* Brillos y borde del tronco: el borde de 1 celda evita que el tronco se pierda sobre el fondo */
+.arbol-animado__capa--magenta,
+.arbol-animado__capa--borde {
+  fill: var(--copa-magenta);
+}
+
+.arbol-animado__capa--tronco {
+  fill: var(--arbol-tronco);
+}
+
+/* La versión chica de cada pieza y los cuadros del reposo solo se ven cuando la animación los enciende */
+.arbol-animado__chica,
+.arbol-animado__cuadro {
   opacity: 0;
-  pointer-events: none;
 }

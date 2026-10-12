@@ -2,8 +2,9 @@
 // el árbol, cinco caen en abanico. El azar de las hojas es propio y no depende del sorteo de la entrada.
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ARBOL_ANIMADO as G } from '@/config/constantes'
+import { LADO_REJILLA_ARBOL } from '../lib/dibujoArbol'
 import type { EspecificacionHoja } from '../lib/guionArbol'
-import { FILA_ABANICO, ORIGENES_HOJA, PIVOTE_COPA } from '../lib/rejillaArbol'
+import { ORIGENES_HOJA } from '../lib/piezasArbol'
 
 export interface HojaCayendo extends EspecificacionHoja {
   id: number
@@ -14,6 +15,11 @@ interface OpcionesHojas {
   activa: boolean
   pausado: boolean
   aleatorio: () => number
+}
+
+// Cuántas celdas baja una hoja que sale de la fila `y`: hasta cerca del suelo del dibujo
+function pasosDesde(y: number): number {
+  return Math.min(G.hojaPasosMax, LADO_REJILLA_ARBOL - 2 - y)
 }
 
 export function useHojasQueCaen({ activa, pausado, aleatorio }: OpcionesHojas) {
@@ -33,23 +39,23 @@ export function useHojasQueCaen({ activa, pausado, aleatorio }: OpcionesHojas) {
   }, [])
 
   const soltarUna = useCallback(() => {
-    const sueltas = hojasAhora.current.filter((hoja) => hoja.vaiven).length
-    if (sueltas >= G.hojasSimultaneas) return
-    const [x, y] = ORIGENES_HOJA[Math.floor(aleatorio() * ORIGENES_HOJA.length)]
-    agregar([{ x, y, deriva: 0, duracionMs: G.hojaCaidaMs, vaiven: true }])
+    if (hojasAhora.current.length >= G.hojasSimultaneas) return
+    const origen = ORIGENES_HOJA[Math.floor(aleatorio() * ORIGENES_HOJA.length)]
+    agregar([{ ...origen, pasos: pasosDesde(origen.y), derivaPorPaso: 0, retrasoMs: 0 }])
   }, [agregar, aleatorio])
 
+  // Cinco hojas repartidas a lo ancho de la copa, que se abren en abanico al caer
   const soltarAbanico = useCallback(() => {
     const mitad = (G.abanicoHojas - 1) / 2
     agregar(
       Array.from({ length: G.abanicoHojas }, (_, indice) => {
-        const lado = indice - mitad
+        const origen =
+          ORIGENES_HOJA[Math.floor(((indice + 0.5) / G.abanicoHojas) * ORIGENES_HOJA.length)]
         return {
-          x: PIVOTE_COPA.x - 1 + Math.round(lado * 2),
-          y: FILA_ABANICO,
-          deriva: lado * G.abanicoDerivaCeldas,
-          duracionMs: G.abanicoCaidaMs,
-          vaiven: false,
+          ...origen,
+          pasos: pasosDesde(origen.y),
+          derivaPorPaso: ((indice - mitad) / mitad) * G.abanicoDerivaPorPaso,
+          retrasoMs: indice * G.abanicoEscalonMs,
         }
       }),
     )

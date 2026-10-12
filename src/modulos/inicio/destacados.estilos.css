@@ -154,3 +154,20 @@
   border-radius: var(--radio-chip);
   background: color-mix(in srgb, currentColor var(--esqueleto-mezcla), transparent);
 }
+
+/* Las tarjetas entran una tras otra la primera vez que el bloque se ve (50 ms de escalón) */
+@keyframes inicio-destacado-entra {
+  from {
+    opacity: 0;
+    transform: translateY(var(--desplazamiento-entrada));
+  }
+}
+
+.inicio-destacados__lista[data-visible='false'] .inicio-destacados__item {
+  opacity: 0;
+}
+
+.inicio-destacados__lista[data-visible='true'] .inicio-destacados__item {
+  animation: inicio-destacado-entra var(--duracion-entrada) var(--curva-salida) backwards;
+  animation-delay: calc(var(--indice) * var(--retraso-escalonado-destacado));
+}

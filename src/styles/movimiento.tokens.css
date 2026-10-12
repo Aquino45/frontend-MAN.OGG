@@ -19,6 +19,12 @@
   --duracion-pagina: 200ms;
   --duracion-grafico: 360ms;
   --retraso-escalonado-grafico: 30ms;
+  /* Inicio con presencia: entrada de las tarjetas destacadas y dibujo del mapa chico (una vez) */
+  --retraso-escalonado-destacado: 50ms;
+  --duracion-dibujo-mapa: 280ms;
+  --retraso-dibujo-mapa: 90ms;
+  /* Cuánto suben las tarjetas al entrar */
+  --desplazamiento-entrada: 8px;
   /* Cuánto sube el menú del celular al abrirse */
   --desplazamiento-menu: 4px;
   --curva-movimiento: cubic-bezier(0.77, 0, 0.175, 1);

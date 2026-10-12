@@ -86,19 +86,10 @@
 }
 
 .inicio-portada__arbol {
-  flex: 1 1 22.5rem;
+  flex: 1 1 22rem;
   min-inline-size: 0;
   display: flex;
   justify-content: center;
-}
-
-.inicio-portada__arbol .glifo-pixel {
-  inline-size: var(--glifo-portada);
-}
-
-/* El tronco se aclara para que se vea sobre el fondo del sitio. */
-.inicio-portada__arbol .glifo-pixel__tronco {
-  fill: var(--color-texto-tenue);
 }
 
 /* ---------- Franja de sectores (contraste) ---------- */

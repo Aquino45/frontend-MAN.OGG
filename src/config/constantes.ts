@@ -501,57 +501,43 @@ export const MAPA_INICIO_INTERLINEA_EM = 1.25
 // CUÁNTO SUBE EL NOMBRE DEL SECTOR POR CADA LÍNEA DE CONTEO, EN em (así el bloque queda centrado)
 export const MAPA_INICIO_SUBIDA_POR_LINEA_EM = 0.5
 
+// ---------- CONTEO DE CIFRAS AL ENTRAR EN PANTALLA ----------
+export const CONTEO_ANIMADO = {
+  // Lo que tarda un número en contar de 0 a su valor
+  duracionMs: 900,
+} as const
+
+// Cuántas tarjetas destacadas escalonan su entrada; las demás entran con la última
+export const DESTACADOS_PASOS_ESCALONADO = 6
+
 // ---------- ÁRBOL ANIMADO DE LA PORTADA ----------
-// Tiempos en milisegundos y medidas en celdas de la rejilla del árbol (ver inicio/lib/rejillaArbol.ts).
+// Todo va en cuadros enteros, como pixel art: nada gira ni se escala, y lo que se mueve se mueve
+// de a una celda de la rejilla del árbol (ver inicio/lib/dibujoArbol.ts). Tiempos en milisegundos.
 export const ARBOL_ANIMADO = {
   // Espera tras terminar la entrada del sitio
   retrasoInicioMs: 120,
-  // Crecimiento: una semilla, el tronco en pasos y la copa fila por fila de abajo hacia arriba
-  semillaMs: 120,
-  troncoPrimerPasoMs: 120,
-  troncoPasoMs: 100,
-  troncoFundidoMs: 80,
-  copaInicioMs: 480,
-  copaEscalonadoMs: 50,
-  copaFilaMs: 160,
-  destelloInicialMs: 1380,
-  destelloInicialDuracionMs: 120,
-  // Vida en reposo
-  respiracionSentidoMs: 2000,
-  respiracionEscala: 1.025,
-  respiracionRapida: 1.3,
-  meceoSentidoMs: 3000,
-  meceoCeldas: 1,
-  meceoMinimoProporcion: 0.25,
-  meceoDesfaseMs: 80,
-  barridoDuracionMs: 900,
-  barridoCicloMs: 10000,
-  barridoRetrasoMs: 5000,
-  parpadeoDuracionMs: 600,
-  parpadeoCicloMs: 6500,
-  parpadeoRetrasoMs: 3000,
-  // Hojas que caen solas y ráfaga al presionar
+  // Crecimiento: cada pieza brota en 2 cuadros (primero chica, después entera); entre una pieza y
+  // la siguiente pasa el escalonado
+  escalonPiezaMs: 120,
+  broteMs: 180,
+  // Reposo: cada cuadro de la copa dura esto; entre ciclos, el cuadro base descansa
+  cuadroMs: 220,
+  pausaBaseMs: 3800,
+  // Hojas que caen solas (de a una celda por paso) y ráfaga al presionar
+  hojaPasoMs: 150,
+  hojaPasosMax: 16,
   hojaIntervaloMinMs: 7000,
   hojaIntervaloMaxMs: 11000,
   hojasSimultaneas: 2,
-  hojaCaidaMs: 2200,
-  hojaVaivenCeldas: 1,
   abanicoHojas: 5,
-  abanicoCaidaMs: 1400,
-  abanicoDerivaCeldas: 3,
-  // Respuesta al puntero
-  inclinacionGrados: 2,
-  inclinacionCeldas: 1,
-  inclinacionSuavizado: 0.12,
-  inclinacionAlcanceAnchos: 2,
-  sacudidaMs: 240,
-  sacudidaCeldas: 1,
+  abanicoEscalonMs: 70,
+  abanicoDerivaPorPaso: 0.5,
+  // Respuesta al puntero: los lóbulos de arriba se corren una celda hacia el cursor
+  punteroZonaMuertaAnchos: 0.12,
+  punteroAlcanceAnchos: 1.5,
+  sacudidaPasoMs: 60,
   enfriamientoPulsacionMs: 600,
 } as const
-
-// Red de seguridad de rendimiento: en falso el reposo queda en mecido y hojas (sin respiración,
-// barrido de luz ni parpadeo).
-export const ARBOL_REPOSO_COMPLETO = true
 
 // ---------- TRANSICIONES ENTRE PÁGINAS Y DE TEMA ----------
 // Atributo en <html> que dice qué transición está en curso (el CSS elige su animación)

@@ -1,8 +1,8 @@
-// Una hoja que se desprende de la copa y cae. Se quita sola al llegar al suelo.
+// Una hoja suelta: una celda de la copa que baja de a un paso, con un zigzag de 1 celda, y se
+// quita sola al llegar al suelo.
 import { useEffect, useRef } from 'react'
-import { fotogramasHoja } from '../lib/guionArbol'
 import type { HojaCayendo as DatosHoja } from '../hooks/useHojasQueCaen'
-import { LADO_HOJA } from '../lib/rejillaArbol'
+import { planHoja } from '../lib/guionArbol'
 
 interface PropsHojaCayendo {
   hoja: DatosHoja
@@ -13,16 +13,13 @@ interface PropsHojaCayendo {
 export function HojaCayendo({ hoja, pausado, onTermina }: PropsHojaCayendo) {
   const refHoja = useRef<SVGRectElement>(null)
   const refAnimacion = useRef<Animation | null>(null)
-  const { id, x, y, duracionMs } = hoja
+  const { id, x, y, clase } = hoja
 
   useEffect(() => {
     const elemento = refHoja.current
     if (!elemento) return
-    const animacion = elemento.animate(fotogramasHoja(hoja), {
-      duration: duracionMs,
-      easing: 'linear',
-      fill: 'both',
-    })
+    const plan = planHoja(hoja)
+    const animacion = elemento.animate(plan.fotogramas, plan.opciones)
     refAnimacion.current = animacion
     animacion.finished.then(() => onTermina(id)).catch(() => undefined)
     return () => animacion.cancel()
@@ -40,11 +37,11 @@ export function HojaCayendo({ hoja, pausado, onTermina }: PropsHojaCayendo) {
   return (
     <rect
       ref={refHoja}
-      className="glifo-pixel__copa-media"
+      className={`arbol-animado__capa arbol-animado__capa--${clase}`}
       x={x}
       y={y}
-      width={LADO_HOJA}
-      height={LADO_HOJA}
+      width={1}
+      height={1}
       opacity={0}
     />
   )

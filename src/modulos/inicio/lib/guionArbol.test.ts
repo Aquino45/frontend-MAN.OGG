@@ -1,127 +1,155 @@
 import { describe, expect, it } from 'vitest'
 import { ARBOL_ANIMADO as G } from '@/config/constantes'
 import {
-  CLAVE_DESTELLO,
-  CLAVE_PARPADEO,
-  CLAVE_RESPIRA,
-  claveFila,
-  claveTronco,
-  duracionTotalCrecimiento,
-  fotogramasHoja,
-  fotogramasSacudida,
-  planCrecimiento,
-  planReposo,
-  transformInclinacion,
-  type PlanAnimacion,
+  CICLO_REPOSO_MS,
+  DURACION_CRECIMIENTO_MS,
+  inicioDePiezaMs,
+  planCuadro,
+  planHoja,
+  planPiezaChica,
+  planPiezaEntera,
+  planSacudida,
+  secuenciaReposo,
+  zigzag,
+  type EspecificacionHoja,
 } from './guionArbol'
-import { FILAS_COPA, PASOS_TRONCO, SUELO_HOJA_Y } from './rejillaArbol'
+import { COPAS_REPOSO, ORDEN_CRECIMIENTO } from './piezasArbol'
 
-const PROPIEDADES_PERMITIDAS = new Set(['transform', 'opacity', 'clipPath', 'offset'])
-
-function propiedadesUsadas(planes: PlanAnimacion[], extra: Keyframe[] = []): string[] {
-  const fotogramas = [...planes.flatMap(({ fotogramas }) => fotogramas), ...extra]
-  return [...new Set(fotogramas.flatMap((fotograma) => Object.keys(fotograma)))]
+// Valor de la opacidad de un plan en un instante del ciclo (los saltos duplican el offset: el
+// último valor con ese offset manda)
+function opacidadEn(fotogramas: Keyframe[], instante: number): number {
+  let valor = Number(fotogramas[0].opacity)
+  for (const fotograma of fotogramas) {
+    if (Number(fotograma.offset) <= instante) valor = Number(fotograma.opacity)
+  }
+  return valor
 }
 
-describe('crecimiento del árbol', () => {
-  const plan = planCrecimiento()
-  const porClave = new Map(plan.map((paso) => [paso.clave, paso]))
-
-  it('dura como máximo 1,6 s', () => {
-    expect(duracionTotalCrecimiento()).toBeLessThanOrEqual(1600)
+describe('crecimiento', () => {
+  it('termina en 1,6 s o menos y el escalonado va de 80 a 120 ms', () => {
+    expect(DURACION_CRECIMIENTO_MS).toBeLessThanOrEqual(1600)
+    expect(G.escalonPiezaMs).toBeGreaterThanOrEqual(80)
+    expect(G.escalonPiezaMs).toBeLessThanOrEqual(120)
   })
 
-  it('el tronco sube en pasos, de la base hacia arriba', () => {
-    const retrasos = Array.from({ length: PASOS_TRONCO }, (_, paso) =>
-      Number(porClave.get(claveTronco(paso))?.opciones.delay),
-    )
-    expect(retrasos).toEqual([...retrasos].sort((a, b) => a - b))
-    expect(new Set(retrasos).size).toBe(PASOS_TRONCO)
+  it('las piezas brotan en el orden pedido', () => {
+    expect([...ORDEN_CRECIMIENTO]).toEqual([
+      'raices',
+      'tronco',
+      'ramas',
+      'atras',
+      'frente',
+      'brillos',
+      'nube',
+    ])
+    expect(inicioDePiezaMs('raices')).toBe(0)
+    expect(inicioDePiezaMs('nube')).toBe(6 * G.escalonPiezaMs)
   })
 
-  it('la copa se arma de abajo hacia arriba con un escalonado de 30 a 80 ms', () => {
-    const retrasos = FILAS_COPA.map(({ y }) => Number(porClave.get(claveFila(y))?.opciones.delay))
-    for (let y = 1; y < retrasos.length; y++) {
-      const diferencia = retrasos[y - 1] - retrasos[y]
-      expect(diferencia).toBeGreaterThanOrEqual(30)
-      expect(diferencia).toBeLessThanOrEqual(80)
-    }
+  it('cada pieza brota en 2 cuadros: la chica y después la entera, en saltos', () => {
+    const chica = planPiezaChica(240)
+    const entera = planPiezaEntera(240)
+    expect(chica.opciones.delay).toBe(240)
+    expect(chica.opciones.duration).toBe(G.broteMs)
+    expect(chica.opciones.easing).toBe('steps(1, end)')
+    expect(entera.opciones.duration).toBe(240 + G.broteMs)
+    expect(entera.opciones.easing).toBe('steps(1, end)')
+    expect(entera.fotogramas.every((fotograma) => fotograma.opacity === 0)).toBe(true)
   })
 
-  it('la copa empieza cuando el tronco ya casi llegó arriba', () => {
-    const ultimoTronco = porClave.get(claveTronco(PASOS_TRONCO - 1))?.opciones
-    const primeraFila = porClave.get(claveFila(FILAS_COPA.length - 1))?.opciones
-    expect(Number(primeraFila?.delay)).toBeGreaterThanOrEqual(Number(ultimoTronco?.delay))
-  })
-
-  it('solo anima transform, opacity y clip-path', () => {
-    for (const propiedad of propiedadesUsadas(plan)) {
-      expect(PROPIEDADES_PERMITIDAS.has(propiedad), propiedad).toBe(true)
-    }
-  })
-})
-
-describe('reposo del árbol', () => {
-  it('completo: mecido de cada fila, respiración, barrido de luz y parpadeo', () => {
-    const claves = planReposo(true).map(({ clave }) => clave)
-    for (const { y } of FILAS_COPA) expect(claves).toContain(claveFila(y))
-    expect(claves).toEqual(expect.arrayContaining([CLAVE_RESPIRA, CLAVE_DESTELLO, CLAVE_PARPADEO]))
-  })
-
-  it('simple (red de seguridad): solo el mecido', () => {
-    const claves = planReposo(false).map(({ clave }) => clave)
-    expect(claves).toHaveLength(FILAS_COPA.length)
-    expect(claves.every((clave) => clave.startsWith('fila-'))).toBe(true)
-  })
-
-  it('el mecido mueve más la punta que la base y nunca más de una celda', () => {
-    const mecido = planReposo(false)
-    const amplitud = (y: number) => {
-      const fotograma = mecido.find(({ clave }) => clave === claveFila(y))?.fotogramas[1]
-      return Math.abs(parseFloat(String(fotograma?.transform).replace('translateX(', '')))
-    }
-    expect(amplitud(0)).toBeCloseTo(G.meceoCeldas)
-    expect(amplitud(FILAS_COPA.length - 1)).toBeCloseTo(G.meceoCeldas * G.meceoMinimoProporcion)
-  })
-
-  it('los ciclos son de 4 a 6 s en el mecido y de 10 s en el barrido', () => {
-    const ciclo = ({ opciones }: PlanAnimacion) =>
-      Number(opciones.duration) * 2 + (Number(opciones.endDelay) || 0)
-    const mecido = planReposo(true).find(({ clave }) => clave === claveFila(0))
-    expect(ciclo(mecido!)).toBe(G.meceoSentidoMs * 2)
-    const barrido = planReposo(true).find(({ clave }) => clave === CLAVE_DESTELLO)
-    expect(Number(barrido?.opciones.duration) + Number(barrido?.opciones.endDelay)).toBe(
-      G.barridoCicloMs,
-    )
-  })
-
-  it('solo anima transform, opacity y clip-path', () => {
-    const extra = [
-      ...fotogramasSacudida(),
-      ...fotogramasHoja({ x: 3, y: 11, deriva: 0, duracionMs: 1, vaiven: true }),
-    ]
-    for (const propiedad of propiedadesUsadas(planReposo(true), extra)) {
-      expect(PROPIEDADES_PERMITIDAS.has(propiedad), propiedad).toBe(true)
+  it('solo anima opacidad: nada de clip-path, giro ni escala', () => {
+    for (const plan of [planPiezaChica(0), planPiezaEntera(0)]) {
+      for (const fotograma of plan.fotogramas) {
+        expect(Object.keys(fotograma)).toEqual(['opacity'])
+      }
     }
   })
 })
 
-describe('hojas y respuesta', () => {
-  it('una hoja suelta cae hasta el suelo y se desvanece', () => {
-    const fotogramas = fotogramasHoja({ x: 3, y: 11, deriva: 0, duracionMs: 1, vaiven: true })
-    const ultimo = fotogramas[fotogramas.length - 1]
-    expect(ultimo.opacity).toBe(0)
-    expect(ultimo.transform).toContain(`${SUELO_HOJA_Y - 11}px`)
+describe('reposo por cuadros', () => {
+  it('cada cuadro dura de 180 a 250 ms y el base descansa más que cualquiera', () => {
+    expect(G.cuadroMs).toBeGreaterThanOrEqual(180)
+    expect(G.cuadroMs).toBeLessThanOrEqual(250)
+    expect(G.pausaBaseMs).toBeGreaterThan(G.cuadroMs * 5)
   })
 
-  it('una hoja de la ráfaga se desvía hacia su lado', () => {
-    const fotogramas = fotogramasHoja({ x: 12, y: 12, deriva: 6, duracionMs: 1, vaiven: false })
-    expect(fotogramas[fotogramas.length - 1].transform).toContain('translate(6px')
+  it('la secuencia va y vuelve por los cuadros', () => {
+    expect(secuenciaReposo()).toEqual([1, 2, 3, 2, 1])
+    expect(CICLO_REPOSO_MS).toBe(G.pausaBaseMs + 5 * G.cuadroMs)
   })
 
-  it('la inclinación llega a su máximo en los extremos y es simétrica', () => {
-    expect(transformInclinacion(0)).toContain('rotate(0deg)')
-    expect(transformInclinacion(1)).toContain(`rotate(${G.inclinacionGrados}deg)`)
-    expect(transformInclinacion(-1)).toContain(`rotate(${-G.inclinacionGrados}deg)`)
+  it('en cada instante se ve exactamente un cuadro de la copa', () => {
+    const planes = Array.from({ length: COPAS_REPOSO.length + 1 }, (_, cuadro) =>
+      planCuadro(cuadro),
+    )
+    for (let paso = 0; paso <= 1000; paso++) {
+      const instante = paso / 1000
+      const visibles = planes.reduce(
+        (suma, plan) => suma + opacidadEn(plan.fotogramas, instante),
+        0,
+      )
+      expect(visibles, `instante ${instante}`).toBe(1)
+    }
+  })
+
+  it('los fotogramas van de menor a mayor offset y el ciclo se repite sin fin', () => {
+    for (let cuadro = 0; cuadro <= COPAS_REPOSO.length; cuadro++) {
+      const plan = planCuadro(cuadro)
+      const offsets = plan.fotogramas.map((fotograma) => Number(fotograma.offset))
+      expect(offsets[0]).toBe(0)
+      expect(offsets[offsets.length - 1]).toBe(1)
+      for (let i = 1; i < offsets.length; i++)
+        expect(offsets[i]).toBeGreaterThanOrEqual(offsets[i - 1])
+      expect(plan.opciones.iterations).toBe(Number.POSITIVE_INFINITY)
+      expect(plan.opciones.duration).toBe(CICLO_REPOSO_MS)
+    }
+  })
+})
+
+describe('hojas', () => {
+  const hoja: EspecificacionHoja = {
+    x: 12,
+    y: 20,
+    clase: 'carmin',
+    pasos: 10,
+    derivaPorPaso: 0,
+    retrasoMs: 0,
+  }
+
+  it('el zigzag es de 1 celda', () => {
+    const lados = Array.from({ length: 8 }, (_, paso) => zigzag(paso))
+    expect(lados).toEqual([0, 0, 1, 1, 0, 0, 1, 1])
+  })
+
+  it('baja de a una celda por paso, en saltos, y el último paso la quita', () => {
+    const plan = planHoja(hoja)
+    expect(plan.fotogramas).toHaveLength(hoja.pasos + 1)
+    plan.fotogramas.forEach((fotograma, paso) => {
+      expect(fotograma.transform).toMatch(new RegExp(`, ${paso}px\\)$`))
+      expect(fotograma.easing).toBe('steps(1, end)')
+    })
+    expect(plan.fotogramas[hoja.pasos].opacity).toBe(0)
+    expect(plan.opciones.duration).toBe(hoja.pasos * G.hojaPasoMs)
+  })
+
+  it('todos los desplazamientos son de celdas enteras', () => {
+    const plan = planHoja({ ...hoja, derivaPorPaso: 0.5 })
+    for (const fotograma of plan.fotogramas) {
+      const numeros = String(fotograma.transform).match(/-?\d+(\.\d+)?/g) ?? []
+      for (const numero of numeros) expect(Number.isInteger(Number(numero))).toBe(true)
+    }
+  })
+})
+
+describe('sacudida', () => {
+  it('es de 1 celda a cada lado, en saltos y sin girar', () => {
+    const plan = planSacudida()
+    const desplazamientos = plan.fotogramas.map((fotograma) =>
+      Number(/translate\((-?\d+)px/.exec(String(fotograma.transform))?.[1]),
+    )
+    expect(desplazamientos).toEqual([0, 1, -1, 1, 0])
+    for (const fotograma of plan.fotogramas) {
+      expect(String(fotograma.transform)).not.toMatch(/rotate|scale/)
+    }
   })
 })

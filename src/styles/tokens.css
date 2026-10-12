@@ -204,13 +204,12 @@
   --boton-secundario-borde: var(--color-texto-tenue);
 
   /* Tamaños de Inicio. En 360 px: portada ≈ 45 px, título de franja ≈ 36 px, cifra ≈ 44 px. */
-  --texto-portada: var(--texto-display);
+  --texto-portada: var(--texto-portada-grande);
   --texto-franja-titulo: clamp(2.25rem, 0.75rem + 5.4vw, 5rem);
   --texto-cifra: clamp(2.75rem, 1.5rem + 3.5vw, 4rem);
   --texto-antetitulo: var(--texto-xs);
   --texto-frase: var(--texto-cuerpo);
   --inicio-ancho-maximo: 77.5rem;
-  --glifo-portada: min(26rem, 100%);
   --glifo-marca: 2rem;
   --alto-boton-grande: 3.25rem;
   --radio-pildora: 999px;

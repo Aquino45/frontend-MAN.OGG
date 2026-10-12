@@ -53,7 +53,7 @@ describe('Portada', () => {
     expect(enlace).toHaveAttribute('href', RUTAS.mapa)
     expect(enlace.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
     // El árbol pixel grande es decorativo
-    const arbol = container.querySelector('.inicio-portada__arbol svg.glifo-pixel')
+    const arbol = container.querySelector('.inicio-portada__arbol svg.arbol-animado__svg')
     expect(arbol).toHaveAttribute('aria-hidden', 'true')
   })
 
