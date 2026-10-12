@@ -83,3 +83,10 @@ npm run dev
 - Instalar y verificar todo (pasos 1 a 3) y clonar (paso 4).
 - Leer `docs/requerimientos.md`: qué pide el stakeholder, la cartilla de 19 campos y la paleta.
 - **Datos del censo:** llenar la plantilla la plantilla `plantilla-censo-arboreo.xlsx` con los árboles del sector que ya tiene datos. Es el formato de entrada que va a importar el back (la plantilla te la entrega el director; no está en este repo).
+
+## 8. Documentación del proceso
+- [AGENTS.md](AGENTS.md): reglas del repo (también para Claude Code, vía [CLAUDE.md](CLAUDE.md)).
+- [docs/ESTADO.md](docs/ESTADO.md): estado actual y siguiente ticket.
+- [docs/CANARIOS.md](docs/CANARIOS.md): registro de canarios.
+- [docs/tickets/](docs/tickets/): un archivo por ticket.
+- [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md) y [docs/requerimientos.md](docs/requerimientos.md): también son las docs públicas del repo.

@@ -1,6 +1,6 @@
 # ESTADO — frontend-MAN.OGG
 
-Actualizado: 11/10/2026 (ticket FE-008, en revisión).
+Actualizado: 11/10/2026 (ticket DOC-003, en revisión).
 
 ## Dónde estamos
 - **Rutas** con `react-router`: `/` Inicio, `/mapa` el mapa y la cartilla (con `?sector=&arbol=`), `/arboles` Explorar, `/cifras` Cifras y una página «no encontrada» para lo demás. Los enlaces viejos `/?sector=…` o `/?arbol=…` redirigen a `/mapa` con la misma consulta. Una sola cabecera (marca, Inicio · Mapa · Árboles · Cifras, con «Menú» en celular, y el tema) y un pie con la nota de los datos —calculada con la API, sin afirmar nada mientras carga o si falla— y el crédito de OpenStreetMap (ODbL).
@@ -20,6 +20,7 @@ Actualizado: 11/10/2026 (ticket FE-008, en revisión).
 - Hito M0 (disciplina) en curso.
 
 ## Último ticket
+- DOC-003 — docs públicas neutras y marcas de exportación para la entrega limpia (Issue #15): `export-ignore` de los archivos del proceso, `docs/requerimientos.md` v0.3 literal, README con enlaces solo a lo que se exporta y `.codex/` en `.gitignore`. Resumen en `docs/tickets/DOC-003.md`.
 - FE-008 — remake del front v1 (Issue #13, PR #14 en borrador): sistema de diseño, Inicio completo, cápsulas «?» y «Sobre este árbol», Explorar y Cifras. Resumen en `docs/tickets/FE-008.md`.
 - FE-006 — árboles destacados (Issue #11): estrella en el mapa (más grande y por encima), orden y leyenda en el panel del sector, texto accesible con el motivo e insignia en la cartilla. Resumen en `docs/tickets/FE-006.md`.
 - FE-007 — rutas y página de Inicio (Issue #9). Resumen en `docs/tickets/FE-007.md`.
@@ -27,7 +28,7 @@ Actualizado: 11/10/2026 (ticket FE-008, en revisión).
 - Antes: FE-002 — mapa de sectores, tema y variantes (mergeado, #6); DOC-002 — arquitectura escrita (mergeado, #4); FE-001 — base del front (mergeado, #2).
 
 ## Siguiente ticket
-- DOC-003 + DOC-004 del front («peridotita»), después de FE-008.
+- DOC-004 del front: nombre público y docs neutras, hasta que el exportador de la entrega salga con código 0.
 - Cuando el back publique cápsulas y fichas de especie, comprobar la cartilla con la API real.
 - FE-005, fase D: cierre, con `build` + `preview` y la revisión final (FE-003 y FE-004 quedan como anexos).
 
