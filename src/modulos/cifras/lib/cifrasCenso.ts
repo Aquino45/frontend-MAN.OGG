@@ -1,6 +1,6 @@
-// Cifras de la página «Cifras del censo»: conteos de los árboles que entrega la API.
-// Función pura. Regla dura: campo (demo = false) y ejemplo (demo = true) van SIEMPRE separados;
-// no hay medidas ni CO₂ porque el resumen del árbol no los trae.
+// Cifras de la página «Cifras del censo»: conteos de los árboles que entrega la API (el CO₂ se
+// suma en cifrasCo2.ts). Función pura. Regla dura: campo (demo = false) y ejemplo (demo = true)
+// van SIEMPRE separados.
 import type { ArbolFeature, SectorFeature } from '@/api/cliente'
 import { REGION_INTERFAZ, TEXTOS_CARTILLA, TEXTOS_CIFRAS } from '@/config/constantes'
 
@@ -59,27 +59,42 @@ function agrupar(
 
 // Un renglón por sector de la API (también los que no tienen árboles) y, al final, por cada sector
 // con árboles que la API no lista, un renglón con su número.
-function conteoPorSector(
+export interface SectorListado {
+  clave: string
+  etiqueta: string
+}
+
+// Los sectores de la API por id y, al final, los que solo aparecen en los árboles
+export function listarSectores(
   sectores: readonly SectorFeature[],
   arboles: readonly ArbolFeature[],
-): FilaConteo[] {
-  const grupos = agrupar(arboles, (arbol) => String(arbol.sector))
+): SectorListado[] {
   const conocidos = [...sectores].sort((a, b) => a.properties.id - b.properties.id)
   const filas = conocidos.map((sector) => ({
     clave: String(sector.properties.id),
     etiqueta: sector.properties.nombre,
-    conteo: grupos.get(String(sector.properties.id)) ?? vacio(),
   }))
-  const idsConocidos = new Set(conocidos.map((sector) => String(sector.properties.id)))
-  const extra = [...grupos.keys()]
+  const idsConocidos = new Set(filas.map(({ clave }) => clave))
+  const extra = [...new Set(arboles.map(({ properties }) => String(properties.sector)))]
     .filter((clave) => !idsConocidos.has(clave))
     .sort((a, b) => Number(a) - Number(b))
     .map((clave) => ({
       clave,
       etiqueta: TEXTOS_CIFRAS.sectorSinNombre.replace('{id}', clave),
-      conteo: grupos.get(clave) ?? vacio(),
     }))
   return [...filas, ...extra]
+}
+
+function conteoPorSector(
+  sectores: readonly SectorFeature[],
+  arboles: readonly ArbolFeature[],
+): FilaConteo[] {
+  const grupos = agrupar(arboles, (arbol) => String(arbol.sector))
+  return listarSectores(sectores, arboles).map(({ clave, etiqueta }) => ({
+    clave,
+    etiqueta,
+    conteo: grupos.get(clave) ?? vacio(),
+  }))
 }
 
 function conteoPorEstado(arboles: readonly ArbolFeature[]): FilaConteo[] {

@@ -55,7 +55,7 @@ censo-arboreo-frontend/
 │       ├── armazon/           ← cabecera, navegación, pie y página «no encontrada»: lo común a todas las rutas
 │       ├── inicio/            ← página de Inicio: portada, mapa compacto de sectores, destacados y cifras del censo
 │       ├── explorar/          ← `/arboles`: lista de todos los árboles con buscador y filtros guardados en la URL; componentes/, hooks/, lib/ (filtros), vistas/
-│       └── cifras/            ← `/cifras`: cifras del censo por sector, estado y especie, con campo y ejemplo separados; `lib/cifrasCenso.ts` es puro
+│       └── cifras/            ← `/cifras`: cifras del censo por sector, estado y especie y 4 gráficos de CO₂ (almacenado por sector y por especie, captura anual por sector y top 10 de árboles), con campo y ejemplo separados; `lib/cifrasCenso.ts` y `lib/cifrasCo2.ts` son puros
 ├── public/                    ← estáticos sin import (favicon). Las ilustraciones NO van aquí: se importan desde su módulo
 ├── scripts/                   ← verificar-colores.mjs, generar-tipos
 └── docs/                      ← ARQUITECTURA (este) y requerimientos

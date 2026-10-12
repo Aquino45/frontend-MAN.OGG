@@ -10,7 +10,7 @@ import {
   type ArbolResumen,
 } from '@/api/cliente'
 import { invalidarCacheCampus } from '@/compartido/cacheCampus'
-import { TEXTOS_CIFRAS, TEXTOS_ESTADOS } from '@/config/constantes'
+import { SEPARADOR_MILES, TEXTOS_CIFRAS, TEXTOS_ESTADOS } from '@/config/constantes'
 import { sectoresMock } from '@/mocks'
 import { VistaCifras } from './VistaCifras'
 
@@ -35,6 +35,9 @@ function feature(codigo: string, cambios: Partial<ArbolResumen> = {}): ArbolFeat
     demo: false,
     destacado: false,
     motivo_destacado: null,
+    co2_almacenado_kg: null,
+    co2_captura_anual_kg: null,
+    co2_simulado: false,
     ...cambios,
   }
   return { type: 'Feature', id: codigo, geometry: null, properties: propiedades } as ArbolFeature
@@ -42,8 +45,20 @@ function feature(codigo: string, cambios: Partial<ArbolResumen> = {}): ArbolFeat
 
 const ARBOLES_POR_SECTOR: Record<number, ArbolFeature[]> = {
   1: [
-    feature('S01-A001', { nombre_cientifico: 'Schinus molle', estado_general: 'Bueno' }),
-    feature('S01-A002', { nombre_cientifico: 'Schinus molle', estado_general: 'Regular' }),
+    feature('S01-A001', {
+      nombre_cientifico: 'Schinus molle',
+      estado_general: 'Bueno',
+      co2_almacenado_kg: 800,
+      co2_captura_anual_kg: 40,
+      co2_simulado: true,
+    }),
+    feature('S01-A002', {
+      nombre_cientifico: 'Schinus molle',
+      estado_general: 'Regular',
+      co2_almacenado_kg: 200,
+      co2_captura_anual_kg: 10,
+      co2_simulado: true,
+    }),
     feature('S01-A003'),
   ],
   2: [
@@ -52,6 +67,9 @@ const ARBOLES_POR_SECTOR: Record<number, ArbolFeature[]> = {
       estado_general: 'Regular',
       demo: true,
       destacado: true,
+      co2_almacenado_kg: 30_000,
+      co2_captura_anual_kg: 300,
+      co2_simulado: true,
     }),
     feature('S02-A002', { demo: true }),
   ],
@@ -68,6 +86,10 @@ function ver() {
     </MemoryRouter>,
   )
 }
+
+// Cuatro bloques de conteos y cuatro de CO₂, cada uno con su tabla; siete son gráficos de barras (el ranking es una lista)
+const TABLAS_TOTALES = 8
+const GRAFICOS_DE_BARRAS = 7
 
 const filasDe = (nombreTabla: string) =>
   [...screen.getByRole('table', { name: nombreTabla }).querySelectorAll('tbody tr')].map((fila) =>
@@ -96,6 +118,7 @@ describe('VistaCifras', () => {
       TEXTOS_CIFRAS.porEstado.titulo,
       TEXTOS_CIFRAS.porEspecie.titulo,
       TEXTOS_CIFRAS.destacados.titulo,
+      TEXTOS_CIFRAS.co2.titulo,
     ])
   })
 
@@ -137,8 +160,45 @@ describe('VistaCifras', () => {
   it('cada bloque tiene un gráfico decorativo y su tabla accesible', async () => {
     const { container } = ver()
     await screen.findByRole('table', { name: TEXTOS_CIFRAS.porSector.descripcion })
-    expect(screen.getAllByRole('table')).toHaveLength(4)
-    expect(container.querySelectorAll('.cifras-grafico[aria-hidden="true"]')).toHaveLength(4)
+    expect(screen.getAllByRole('table')).toHaveLength(TABLAS_TOTALES)
+    expect(container.querySelectorAll('.cifras-grafico[aria-hidden="true"]')).toHaveLength(
+      GRAFICOS_DE_BARRAS,
+    )
+  })
+
+  it('el CO₂ se suma por sector con campo y ejemplo aparte y dice que es simulado', async () => {
+    ver()
+    await screen.findByRole('table', { name: TEXTOS_CIFRAS.co2.almacenadoPorSector.descripcion })
+    expect(screen.getByText(TEXTOS_CIFRAS.co2.simulado)).toBeVisible()
+    const sectores = filasDe(TEXTOS_CIFRAS.co2.almacenadoPorSector.descripcion)
+    expect(sectores[0]).toEqual([
+      'Sector 1',
+      `1${SEPARADOR_MILES}000 kg CO₂e`,
+      '0 kg CO₂e',
+      `1${SEPARADOR_MILES}000 kg CO₂e`,
+    ])
+    expect(sectores[1]).toEqual(['Sector 2', '0 kg CO₂e', '30.0 t CO₂e', '30.0 t CO₂e'])
+    expect(screen.getAllByText(TEXTOS_CIFRAS.co2.sinDato.replace('{n}', '2'))).not.toHaveLength(0)
+  })
+
+  it('el ranking enlaza a la cartilla de cada árbol', async () => {
+    ver()
+    const enlace = await screen.findByRole('link', {
+      name: TEXTOS_CIFRAS.co2.verEnMapa.replace('{codigo}', 'S02-A001'),
+    })
+    expect(enlace).toHaveAttribute('href', '/mapa?sector=2&arbol=S02-A001')
+  })
+
+  it('sin valores simulados no aparece el encabezado de estimaciones simuladas', async () => {
+    obtenerArbolesFalso.mockImplementation(async (sectorId) => ({
+      type: 'FeatureCollection',
+      features: coleccion(sectorId).features.map((arbol) =>
+        feature(arbol.properties.codigo, { ...arbol.properties, co2_simulado: false }),
+      ),
+    }))
+    ver()
+    await screen.findByRole('table', { name: TEXTOS_CIFRAS.co2.almacenadoPorSector.descripcion })
+    expect(screen.queryByText(TEXTOS_CIFRAS.co2.simulado)).not.toBeInTheDocument()
   })
 
   it('cargando muestra el esqueleto compartido y ningún número', () => {
@@ -154,7 +214,7 @@ describe('VistaCifras', () => {
     ver()
     expect(await screen.findByRole('alert')).toHaveTextContent(TEXTOS_CIFRAS.error)
     fireEvent.click(screen.getByRole('button', { name: TEXTOS_ESTADOS.reintentar }))
-    expect(await screen.findAllByRole('table')).toHaveLength(4)
+    expect(await screen.findAllByRole('table')).toHaveLength(TABLAS_TOTALES)
   })
 
   it('sin árboles muestra el estado vacío y ninguna cifra', async () => {
