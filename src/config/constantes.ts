@@ -237,6 +237,12 @@ export const MARCADOR_FUENTE = '{fuente}'
 // CONSULTA DE MEDIOS: SOLO ASÍ UNA CÁPSULA SE ABRE AL PASAR EL CURSOR (en pantallas táctiles, con toque)
 export const CONSULTA_HOVER_FINO = '(hover: hover) and (pointer: fine)'
 
+// ---------- ATAJO AL PANEL ----------
+// Cuánto hay que mantener presionado el árbol de la portada para ir al panel, en ms
+export const ACCESO_PANEL_RETENCION_MS = 10_000
+// Cuántas celdas del árbol puede moverse el puntero sin que se cancele la pulsación
+export const ACCESO_PANEL_TOLERANCIA_CELDAS = 3
+
 // TEXTOS DE LAS CÁPSULAS «?» (la explicación de cada dato sale solo de la API)
 export const TEXTOS_CAPSULA = {
   etiquetaBoton: 'Qué significa {titulo}',

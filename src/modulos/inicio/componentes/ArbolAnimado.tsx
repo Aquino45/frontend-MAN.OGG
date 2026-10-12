@@ -4,6 +4,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useEntradaTerminada } from '@/modulos/entrada'
 import { ARBOL_ANIMADO as G } from '@/config/constantes'
+import { useAccesoAlPanel } from '../hooks/useAccesoAlPanel'
 import { useAnimacionArbol } from '../hooks/useAnimacionArbol'
 import { useDesplazamientoAlPuntero } from '../hooks/useDesplazamientoAlPuntero'
 import { useHojasQueCaen } from '../hooks/useHojasQueCaen'
@@ -15,6 +16,9 @@ import { HojaCayendo } from './HojaCayendo'
 interface PropsArbolAnimado {
   // Fuente de azar de las hojas; propia, separada de la del sorteo de la entrada
   aleatorioHojas?: () => number
+  // Dirección del panel y cómo se va a ella; se inyectan en los tests
+  urlPanel?: string | null
+  irAlPanel?: (direccion: string) => void
 }
 
 function Capa({ capa }: { capa: CapaArbol }) {
@@ -24,7 +28,11 @@ function Capa({ capa }: { capa: CapaArbol }) {
   return capa.arriba ? <g data-parte="arriba">{trazo}</g> : trazo
 }
 
-export function ArbolAnimado({ aleatorioHojas = Math.random }: PropsArbolAnimado) {
+export function ArbolAnimado({
+  aleatorioHojas = Math.random,
+  urlPanel,
+  irAlPanel,
+}: PropsArbolAnimado) {
   const refEnvoltura = useRef<HTMLDivElement>(null)
   const refRaiz = useRef<SVGSVGElement>(null)
   const entradaTerminada = useEntradaTerminada()
@@ -43,8 +51,10 @@ export function ArbolAnimado({ aleatorioHojas = Math.random }: PropsArbolAnimado
   const enReposo = fase === 'reposo'
   // Los cuadros del reposo se arman y se dibujan solo cuando van a verse
   const conReposo = arranco && fase !== 'quieto'
+  // Mientras se mantiene presionado, el árbol deja de soltar hojas
+  const retenido = useAccesoAlPanel(refEnvoltura, { urlPanel, ir: irAlPanel })
   const { hojas, soltarAbanico, quitar } = useHojasQueCaen({
-    activa: enReposo,
+    activa: enReposo && !retenido,
     pausado,
     aleatorio: aleatorioHojas,
   })
@@ -65,6 +75,7 @@ export function ArbolAnimado({ aleatorioHojas = Math.random }: PropsArbolAnimado
       data-fase={fase}
       aria-hidden="true"
       onPointerDown={alPresionar}
+      onContextMenu={(evento) => evento.preventDefault()}
     >
       <svg
         ref={refRaiz}

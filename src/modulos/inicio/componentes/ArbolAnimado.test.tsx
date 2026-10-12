@@ -1,4 +1,4 @@
-import { act, fireEvent, render } from '@testing-library/react'
+import { act, createEvent, fireEvent, render } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ARBOL_ANIMADO as G } from '@/config/constantes'
 import { CUADROS_REPOSO } from '../lib/dibujoArbol'
@@ -166,5 +166,30 @@ describe('ArbolAnimado', () => {
     expect(llamadas).toHaveLength(0)
     expect(container.querySelectorAll('[data-pieza]')).toHaveLength(7)
     expect(container.querySelector('[data-cuadro="1"]')).toBeNull()
+  })
+
+  it('no abre el menú de pulsación larga sobre el árbol', () => {
+    const { container } = render(<ArbolAnimado />)
+    const alPulsar = createEvent.contextMenu(container.firstElementChild as Element)
+    fireEvent(container.firstElementChild as Element, alPulsar)
+    expect(alPulsar.defaultPrevented).toBe(true)
+  })
+
+  it('con el árbol retenido deja de soltar hojas solas', async () => {
+    const aleatorio = vi.fn(() => 0.5)
+    const { container } = render(
+      <ArbolAnimado
+        aleatorioHojas={aleatorio}
+        urlPanel="https://panel.prueba.invalid/"
+        irAlPanel={() => {}}
+      />,
+    )
+    await arrancar()
+    fireEvent.pointerDown(container.firstElementChild as Element, { pointerId: 1 })
+    const antes = aleatorio.mock.calls.length
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(G.hojaIntervaloMaxMs * 3)
+    })
+    expect(aleatorio.mock.calls.length).toBe(antes)
   })
 })
