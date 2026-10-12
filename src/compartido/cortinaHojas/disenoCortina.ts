@@ -1,7 +1,7 @@
-// Cómo se reparten las hojas de la cortina de desbloqueo sobre la pantalla: cuántas, de qué tamaño,
+// Cómo se reparten las hojas de la cortina de hojas sobre la pantalla: cuántas, de qué tamaño,
 // dónde y con qué retraso. Todo es cuenta (sin azar), así que el mismo tamaño de pantalla da siempre
 // la misma cortina. Función pura.
-import { DESBLOQUEO_ANIMACION } from '@/config/constantes'
+import { CORTINA_HOJAS } from '@/config/constantes'
 
 export interface HojaDeCortina {
   // Esquina de arriba a la izquierda de la hoja, en píxeles de pantalla
@@ -22,7 +22,7 @@ export interface DisenoDeCortina {
   hojas: HojaDeCortina[]
 }
 
-type Configuracion = typeof DESBLOQUEO_ANIMACION
+type Configuracion = typeof CORTINA_HOJAS
 
 const VARIANTES_POR_DEFECTO = 3
 // Las variaciones fijas que salen de las posiciones: la cuenta reparte, no sortea
@@ -39,7 +39,7 @@ function cuantas(ancho: number, alto: number, lado: number, paso: number) {
 export function disenarCortina(
   ancho: number,
   alto: number,
-  configuracion: Configuracion = DESBLOQUEO_ANIMACION,
+  configuracion: Configuracion = CORTINA_HOJAS,
   variantes = VARIANTES_POR_DEFECTO,
 ): DisenoDeCortina {
   const { hojasMax, celdasPorHoja, celdaMinimaPx, solape } = configuracion

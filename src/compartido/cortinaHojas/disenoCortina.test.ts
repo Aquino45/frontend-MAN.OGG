@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { DESBLOQUEO_ANIMACION as D } from '@/config/constantes'
-import { disenarCortina } from './cortinaDesbloqueo'
-import { HOJAS_DE_DESBLOQUEO, LADO_HOJA_EN_CELDAS } from './hojaDesbloqueo'
+import { CORTINA_HOJAS as D } from '@/config/constantes'
+import { disenarCortina } from './disenoCortina'
+import { HOJAS_DE_CORTINA, LADO_HOJA_EN_CELDAS } from './hojasCortina'
 
 const PANTALLAS: readonly [number, number][] = [
   [360, 800],
@@ -72,15 +72,9 @@ describe('disenarCortina', () => {
       const { hojas } = disenarCortina(ancho, alto)
       const ultimo = Math.max(...hojas.map((h) => h.retrasoMs))
       expect(ultimo).toBeLessThanOrEqual(D.retrasoMaximoHojaMs)
-      expect(ultimo + D.caidaHojaMs).toBeLessThanOrEqual(D.duracionTotalMs)
+      expect(ultimo + D.caidaHojaMs).toBeLessThanOrEqual(D.cubrirMs)
       expect(Math.min(...hojas.map((h) => h.retrasoMs))).toBe(0)
     }
-  })
-
-  it('el texto entra cuando ya casi toda la pantalla está cubierta, no antes del primer tercio', () => {
-    expect(D.textoRetrasoMs + D.textoDuracionMs).toBeLessThanOrEqual(D.duracionTotalMs)
-    expect(D.fondoRetrasoMs + D.fondoDuracionMs).toBeLessThanOrEqual(D.duracionTotalMs)
-    expect(D.textoRetrasoMs).toBeGreaterThan(D.duracionTotalMs / 3)
   })
 
   it('es reproducible: el mismo tamaño da la misma cortina (nada de azar)', () => {
@@ -101,8 +95,8 @@ describe('disenarCortina', () => {
 describe('hoja pixel', () => {
   it('es de 5 x 5 celdas con letras de la paleta en cada variante', () => {
     expect(LADO_HOJA_EN_CELDAS).toBe(5)
-    expect(HOJAS_DE_DESBLOQUEO).toHaveLength(3)
-    for (const filas of HOJAS_DE_DESBLOQUEO) {
+    expect(HOJAS_DE_CORTINA).toHaveLength(3)
+    for (const filas of HOJAS_DE_CORTINA) {
       expect(filas).toHaveLength(5)
       for (const fila of filas) {
         expect(fila).toHaveLength(5)
@@ -112,15 +106,15 @@ describe('hoja pixel', () => {
   })
 
   it('las variantes cambian los tonos pero no la forma', () => {
-    const vacias = HOJAS_DE_DESBLOQUEO.map((filas) => filas.map((f) => f.replace(/[^.]/g, 'x')))
+    const vacias = HOJAS_DE_CORTINA.map((filas) => filas.map((f) => f.replace(/[^.]/g, 'x')))
     expect(vacias[1]).toEqual(vacias[0])
     expect(vacias[2]).toEqual(vacias[0])
-    expect(HOJAS_DE_DESBLOQUEO[1]).not.toEqual(HOJAS_DE_DESBLOQUEO[0])
-    expect(HOJAS_DE_DESBLOQUEO[2]).not.toEqual(HOJAS_DE_DESBLOQUEO[0])
+    expect(HOJAS_DE_CORTINA[1]).not.toEqual(HOJAS_DE_CORTINA[0])
+    expect(HOJAS_DE_CORTINA[2]).not.toEqual(HOJAS_DE_CORTINA[0])
   })
 
   it('cada hoja tiene nervio (otro tono dentro del cuerpo) y celdas vacías en las esquinas', () => {
-    for (const filas of HOJAS_DE_DESBLOQUEO) {
+    for (const filas of HOJAS_DE_CORTINA) {
       const todas = filas.join('')
       expect(new Set(todas.replace(/\./g, '')).size).toBe(2)
       expect(filas[0][0]).toBe('.')

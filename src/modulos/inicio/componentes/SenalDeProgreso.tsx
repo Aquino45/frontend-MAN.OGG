@@ -8,12 +8,12 @@ import {
   ACCESO_PANEL_SENAL_DESDE_MS,
   ACCESO_PANEL_SENAL_OPACIDAD,
   ACCESO_PANEL_SENAL_SALIDA_MS,
-  DESBLOQUEO_CURVA,
+  CORTINA_CURVA,
 } from '@/config/constantes'
 import { usePideMenosMovimiento } from '@/compartido/usePideMenosMovimiento'
 import { SILUETA_ARBOL } from '../lib/siluetaArbol'
 
-const CURVA_SALIDA = `cubic-bezier(${DESBLOQUEO_CURVA.join(', ')})`
+const CURVA_SALIDA = `cubic-bezier(${CORTINA_CURVA.join(', ')})`
 const SIN_CLIP = 'inset(0 0 0 0)'
 const CLIP_DESDE_LA_BASE = 'inset(100% 0 0 0)'
 

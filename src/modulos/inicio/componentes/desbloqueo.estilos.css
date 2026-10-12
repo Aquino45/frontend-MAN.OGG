@@ -1,62 +1,39 @@
-/* Cortina de desbloqueo: una capa fija sobre toda la pantalla. El movimiento lo lleva el código
-   (animaciones del navegador sobre `transform` y `opacity`); aquí viven el aspecto y el estado
-   inicial: todo empieza invisible para que no haya un destello antes de la primera animación.
-   Los colores salen de tokens (las hojas, de los de la marca). */
+/* Segunda fase del desbloqueo: sobre la cortina de hojas, un velo de noche, un candado pixel y el
+   texto. El movimiento lo lleva el código (animaciones del navegador sobre `transform` y `opacity`);
+   aquí viven el aspecto y el estado inicial: todo empieza invisible para que no haya destellos.
+   El estado estático es el final (candado abierto), que es lo que ve quien pide menos movimiento. */
 
 .desbloqueo {
-  position: fixed;
-  inset: 0;
-  z-index: var(--capa-desbloqueo);
-  overflow: hidden;
-  /* Mientras dura, nada de lo de abajo se puede pulsar ni desplazar */
-  touch-action: none;
-  user-select: none;
-}
-
-/* Montada pero sin activar: oculta y sin recibir el puntero (ya tiene sus hojas armadas) */
-.desbloqueo:not([data-activa]) {
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.desbloqueo__decoracion {
-  position: absolute;
-  inset: 0;
-}
-
-.desbloqueo__simbolos {
-  position: absolute;
-}
-
-.desbloqueo__fondo {
-  position: absolute;
-  inset: 0;
-  background: var(--tronco-noche);
-  opacity: 0;
-}
-
-.desbloqueo__hoja {
-  position: absolute;
-  opacity: 0;
-  shape-rendering: crispEdges;
-}
-
-.desbloqueo__chapa {
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
   padding: var(--espacio-3);
+}
+
+.desbloqueo__atenuado {
+  position: absolute;
+  inset: 0;
+  background: var(--tronco-noche);
   opacity: 0;
 }
 
-/* La chapa da contraste al texto sobre las hojas: lectura sobre noche, con un borde de 1 celda */
+.desbloqueo__contenido {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: var(--espacio-4);
+  max-inline-size: 100%;
+}
+
+.desbloqueo__candado {
+  opacity: 0;
+  shape-rendering: crispEdges;
+  overflow: visible;
+}
+
 .desbloqueo__texto {
   margin: 0;
-  max-inline-size: 100%;
-  padding: var(--espacio-4) var(--espacio-5);
-  border: var(--desbloqueo-borde-chapa) solid var(--copa-magenta);
-  background: var(--tronco-noche);
   color: var(--texto-lectura);
   font-family: var(--fuente-display);
   font-weight: 800;
@@ -67,12 +44,30 @@
   overflow-wrap: anywhere;
 }
 
-/* «Reducir movimiento»: sin hojas ni transiciones; el texto se ve fijo sobre el fondo */
-.desbloqueo[data-reducido] .desbloqueo__fondo,
-.desbloqueo[data-reducido] .desbloqueo__chapa {
+.desbloqueo__palabra {
+  display: inline-block;
+  margin-inline: 0.15em;
+  opacity: 0;
+}
+
+.desbloqueo__linea {
+  inline-size: 100%;
+  block-size: var(--desbloqueo-borde-chapa);
+  background: var(--copa-magenta);
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+
+/* «Reducir movimiento»: todo a la vista y fijo; el velo no hace falta (el fondo de la cortina ya tapa) */
+.cortina-hojas[data-reducido] .desbloqueo__candado,
+.cortina-hojas[data-reducido] .desbloqueo__palabra {
   opacity: 1;
 }
 
-.desbloqueo[data-reducido] .desbloqueo__hoja {
+.cortina-hojas[data-reducido] .desbloqueo__linea {
+  transform: none;
+}
+
+.cortina-hojas[data-reducido] .desbloqueo__atenuado {
   display: none;
 }

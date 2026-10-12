@@ -267,41 +267,70 @@ export const ACCESO_PANEL_SENAL_SALIDA_MS = 200
 // Cuánto se ilumina el árbol al llegar la señal a la copa (0 a 1)
 export const ACCESO_PANEL_SENAL_OPACIDAD = 0.14
 
-// ANIMACIÓN DE DESBLOQUEO (UNA CORTINA DE HOJAS PIXEL QUE CUBRE LA PANTALLA). Todo en ms. Es una pieza
-// de presentación que se ve muy pocas veces: puede pasar de los 300 ms de la interfaz de todos los días.
-export const DESBLOQUEO_ANIMACION = {
-  // Cuánto dura la cortina completa; al terminar se navega
-  duracionTotalMs: 1_400,
+// CORTINA DE HOJAS PIXEL (la comparten el desbloqueo y la variante alterna de la entrada). Todo en ms.
+// Es una pieza de presentación que se ve muy pocas veces: puede pasar de los 300 ms de la interfaz
+// de todos los días. Las hojas caen en diagonal hacia la derecha, en una ola de izquierda a derecha.
+export const CORTINA_HOJAS = {
+  // Cuánto tarda en quedar toda la pantalla cubierta
+  cubrirMs: 1_000,
   // Cada hoja cae en este tiempo
   caidaHojaMs: 640,
-  // Escalonado: por columna y una variación fija por hoja (sin azar, para que se pueda reproducir)
+  // Cuánto se corre hacia la derecha mientras cae, por cada píxel de caída (la diagonal)
+  diagonal: 0.35,
+  // Escalonado: por columna, por fila y una variación fija por hoja (sin azar, reproducible)
   retrasoColumnaMs: 30,
-  variacionHojaMs: 60,
-  // El fondo detrás de las hojas asegura la cobertura total
-  fondoRetrasoMs: 500,
+  retrasoFilaMs: 14,
+  variacionHojaMs: 40,
+  // Tope del retraso de cualquier hoja: la última asienta justo al terminar de cubrir
+  retrasoMaximoHojaMs: 360,
+  // El fondo detrás de las hojas cubre lo que queda entre ellas
+  fondoRetrasoMs: 400,
   fondoDuracionMs: 400,
-  // El texto entra cuando casi toda la pantalla ya está cubierta
-  textoRetrasoMs: 760,
-  textoDuracionMs: 280,
-  textoDesplazamientoPx: 8,
+  // Cuánto tarda en retirarse (fundido) cuando otra capa toma la pantalla
+  retiradaMs: 500,
   // Tope de hojas: sostiene los 60 fps también con la CPU 4× más lenta
-  hojasMax: 72,
+  hojasMax: 96,
   // Cada hoja mide 5 x 5 celdas y la celda es de píxeles enteros
   celdasPorHoja: 5,
   celdaMinimaPx: 4,
-  // Cuánto se solapan las hojas vecinas (fracción del lado): lo justo para que se lea cada hoja; el
-  // fondo cubre lo que quede entre ellas
-  solape: 0.12,
-  // Cuánto se suma de retraso por fila de hojas y tope del retraso de cualquier hoja
-  retrasoFilaMs: 20,
-  retrasoMaximoHojaMs: 480,
+  // Cuánto se solapan las hojas vecinas (fracción del lado): ninguna, así se lee cada hoja
+  solape: 0,
+} as const
+// Misma curva fuerte de salida que --curva-salida (un test las compara)
+export const CORTINA_CURVA = [0.23, 1, 0.32, 1] as const
+
+// ANIMACIÓN DE DESBLOQUEO: cuando la cortina de hojas ya cubre, las hojas se apagan, un candado pixel se
+// abre y entra el texto. Todo en ms; los tiempos corren desde que se activa.
+export const DESBLOQUEO_ANIMACION = {
+  // Cuánto dura todo; al terminar se navega
+  duracionTotalMs: 2_300,
+  // Las hojas se apagan hasta esta opacidad para que el texto se lea limpio
+  atenuadoRetrasoMs: 1_000,
+  atenuadoDuracionMs: 300,
+  atenuadoOpacidad: 0.78,
+  // El candado entra (opacidad + 8 px) y luego su arco sube y queda abierto
+  candadoRetrasoMs: 1_150,
+  candadoDuracionMs: 280,
+  arcoRetrasoMs: 1_450,
+  arcoDuracionMs: 240,
+  arcoCeldasQueSube: 1,
+  candadoCeldaPx: 8,
+  // El texto entra palabra por palabra, desde 8 px más abajo
+  textoRetrasoMs: 1_300,
+  textoEscalonadoMs: 70,
+  textoDuracionMs: 280,
+  textoDesplazamientoPx: 8,
+  // La línea bajo el texto se dibuja de izquierda a derecha
+  lineaRetrasoMs: 1_700,
+  lineaDuracionMs: 300,
   // Con «reducir movimiento» se ve el texto un instante y se navega
   demoraReducidaMs: 700,
 } as const
-// Misma curva fuerte de salida que --curva-salida (un test las compara)
-export const DESBLOQUEO_CURVA = [0.23, 1, 0.32, 1] as const
 
-export const TEXTOS_DESBLOQUEO = { anuncio: 'Modo admin desbloqueado' } as const
+export const TEXTOS_DESBLOQUEO = {
+  anuncio: 'Modo admin desbloqueado',
+  palabras: ['Modo', 'admin', 'desbloqueado'],
+} as const
 
 // TEXTOS DE LAS CÁPSULAS «?» (la explicación de cada dato sale solo de la API)
 export const TEXTOS_CAPSULA = {
