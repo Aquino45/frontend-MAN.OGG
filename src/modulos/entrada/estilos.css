@@ -1,15 +1,15 @@
 /* Estilos de la entrada al mapa. */
 
-/* Entrada estándar: la vista aparece con opacidad y una escala mínima. */
+/* Entrada estándar: la vista aparece con un fundido de opacidad. Sin escala: mover la página entera
+   desplazaría la cabecera y rompería lo que está fijo mientras dura. */
 @keyframes aparecer-vista {
   from {
     opacity: 0;
-    transform: scale(var(--entrada-escala-inicial));
   }
 }
 
 .entrada--estandar {
-  animation: aparecer-vista var(--duracion-media) var(--curva-salida);
+  animation: aparecer-vista var(--duracion-pagina) var(--curva-salida);
 }
 
 /* Mientras se ve la ilustración, la vista pedida ya está dibujada pero no se ve. */
@@ -30,7 +30,7 @@
 .entrada-alterna__imagen {
   inline-size: var(--entrada-ilustracion-lado);
   max-inline-size: 80vw;
-  max-block-size: 80vh;
+  max-block-size: 80dvh;
   object-fit: contain;
   image-rendering: pixelated;
 }
@@ -42,7 +42,7 @@
 }
 
 .entrada-alterna--saliendo {
-  animation: desvanecer-entrada var(--duracion-media) var(--curva-salida) forwards;
+  animation: desvanecer-entrada var(--duracion-pagina) var(--curva-salida) forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {

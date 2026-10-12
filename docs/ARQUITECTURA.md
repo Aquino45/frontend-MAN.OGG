@@ -51,9 +51,9 @@ censo-arboreo-frontend/
 │       │   └── index.ts       ← API pública del módulo
 │       ├── tema/              ← modo claro/oscuro: useTema + InterruptorTema
 │       ├── cartilla/          ← cartilla del árbol: componentes/ (incluye las cápsulas «?» y «Sobre este árbol»), hooks/ (useArbol), lib/, vistas/, index.ts
-│       ├── entrada/           ← animación de entrada al mapa, con variantes
+│       ├── entrada/           ← animación de entrada al mapa, con variantes; `hooks/contextoEntrada.ts` dice a quien está debajo si la entrada sigue en curso (lo usa el árbol de Inicio)
 │       ├── armazon/           ← cabecera, navegación, pie y página «no encontrada»: lo común a todas las rutas
-│       ├── inicio/            ← página de Inicio: portada, mapa compacto de sectores, destacados y cifras del censo
+│       ├── inicio/            ← página de Inicio: portada con el árbol animado (`ArbolAnimado`; dibujo en `lib/rejillaArbol.ts`, guion en `lib/guionArbol.ts`, animación con la API de animaciones del navegador), mapa compacto de sectores, destacados y cifras del censo
 │       ├── explorar/          ← `/arboles`: lista de todos los árboles con buscador y filtros guardados en la URL; componentes/, hooks/, lib/ (filtros), vistas/
 │       └── cifras/            ← `/cifras`: cifras del censo por sector, estado y especie y 4 gráficos de CO₂ (almacenado por sector y por especie, captura anual por sector y top 10 de árboles), con campo y ejemplo separados; `lib/cifrasCenso.ts` y `lib/cifrasCo2.ts` son puros
 ├── public/                    ← estáticos sin import (favicon). Las ilustraciones NO van aquí: se importan desde su módulo

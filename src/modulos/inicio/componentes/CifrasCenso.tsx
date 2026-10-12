@@ -2,6 +2,7 @@ import { useId } from 'react'
 import { EstadoCarga } from '@/compartido/EstadoCarga'
 import { EstadoError } from '@/compartido/EstadoError'
 import { CANTIDAD_CIFRAS_INICIO, REGION_INTERFAZ, TEXTOS_INICIO } from '@/config/constantes'
+import { useAparicion } from '../hooks/useAparicion'
 import type { Cifras } from '../lib/cifras'
 
 interface PropsCifrasCenso {
@@ -23,9 +24,11 @@ const CIFRAS_EN_ORDEN = [
 // «El censo hoy»: 4 cifras que salen de la API, con esqueleto mientras cargan y error con reintento.
 export function CifrasCenso({ estado, cifras, onReintentar }: PropsCifrasCenso) {
   const idTitulo = useId()
+  const [anclarAparicion, claseAparicion] = useAparicion('alEntrar')
   return (
     <section
-      className="inicio-cifras inicio-aparece inicio-aparece--tarde"
+      ref={anclarAparicion}
+      className={`inicio-cifras ${claseAparicion}`}
       aria-labelledby={idTitulo}
     >
       <div className="inicio-cifras__contenido">

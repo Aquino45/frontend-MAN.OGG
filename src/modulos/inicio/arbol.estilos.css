@@ -1,0 +1,27 @@
+/* Árbol animado de la portada. El movimiento lo lleva el código (animaciones del navegador sobre
+   transform, opacity y clip-path); aquí solo viven el aspecto y el estado de espera. */
+
+.arbol-animado {
+  display: flex;
+  justify-content: center;
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+/* Hasta que termina la entrada del sitio el árbol no se ve; con «reducir movimiento» no hay espera */
+.arbol-animado[data-fase='esperando'] .arbol-animado__svg {
+  opacity: 0;
+}
+
+/* Barrido de luz: una franja clara recortada a la silueta; en reposo queda fuera del dibujo */
+.arbol-animado__destello {
+  fill: var(--texto-lectura);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* Celda que parpadea en la copa alta: solo se ve cuando la animación la enciende */
+.arbol-animado__parpadeo {
+  opacity: 0;
+  pointer-events: none;
+}

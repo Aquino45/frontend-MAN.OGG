@@ -4,11 +4,13 @@
 @import './mapa.estilos.css';
 @import './cifras.estilos.css';
 @import './destacados.estilos.css';
+@import './arbol.estilos.css';
 .inicio {
   min-inline-size: 0;
 }
 
-/* ---------- Aparición (200 ms, ease-out, desde scale 0.98 y opacidad 0) ---------- */
+/* ---------- Aparición (200 ms, ease-out, desde scale 0.98 y opacidad 0) ----------
+   Solo al llegar navegando; las secciones bajo el pliegue esperan a entrar en pantalla. */
 @keyframes inicio-aparecer {
   from {
     opacity: 0;
@@ -20,8 +22,8 @@
   animation: inicio-aparecer var(--duracion-aparicion) var(--curva-salida) both;
 }
 
-.inicio-aparece--tarde {
-  animation-delay: calc(var(--retraso-escalonado) * 3);
+.inicio-aparece--oculta {
+  opacity: 0;
 }
 
 /* ---------- Portada ---------- */

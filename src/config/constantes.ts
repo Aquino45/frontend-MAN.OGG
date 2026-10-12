@@ -9,7 +9,9 @@ export type VarianteEntrada = keyof typeof PESOS_ENTRADA
 export const DURACION_ENTRADA_ALTERNA_MS = 3000
 
 // CUÁNTO TARDA EN DESVANECERSE LA ILUSTRACIÓN DE LA ENTRADA ALTERNA, EN ms
-export const DURACION_SALIDA_ENTRADA_MS = 300
+export const DURACION_SALIDA_ENTRADA_MS = 200
+// Lo que dura el fundido de la entrada estándar (lo que Inicio espera antes de animar su árbol)
+export const DURACION_APARICION_ENTRADA_MS = 200
 
 // ---------- TEMA CLARO Y OSCURO ----------
 
@@ -498,3 +500,55 @@ export const MAPA_INICIO_INTERLINEA_EM = 1.25
 
 // CUÁNTO SUBE EL NOMBRE DEL SECTOR POR CADA LÍNEA DE CONTEO, EN em (así el bloque queda centrado)
 export const MAPA_INICIO_SUBIDA_POR_LINEA_EM = 0.5
+
+// ---------- ÁRBOL ANIMADO DE LA PORTADA ----------
+// Tiempos en milisegundos y medidas en celdas de la rejilla del árbol (ver inicio/lib/rejillaArbol.ts).
+export const ARBOL_ANIMADO = {
+  // Espera tras terminar la entrada del sitio
+  retrasoInicioMs: 120,
+  // Crecimiento: una semilla, el tronco en pasos y la copa fila por fila de abajo hacia arriba
+  semillaMs: 120,
+  troncoPrimerPasoMs: 120,
+  troncoPasoMs: 100,
+  troncoFundidoMs: 80,
+  copaInicioMs: 480,
+  copaEscalonadoMs: 50,
+  copaFilaMs: 160,
+  destelloInicialMs: 1380,
+  destelloInicialDuracionMs: 120,
+  // Vida en reposo
+  respiracionSentidoMs: 2000,
+  respiracionEscala: 1.025,
+  respiracionRapida: 1.3,
+  meceoSentidoMs: 3000,
+  meceoCeldas: 1,
+  meceoMinimoProporcion: 0.25,
+  meceoDesfaseMs: 80,
+  barridoDuracionMs: 900,
+  barridoCicloMs: 10000,
+  barridoRetrasoMs: 5000,
+  parpadeoDuracionMs: 600,
+  parpadeoCicloMs: 6500,
+  parpadeoRetrasoMs: 3000,
+  // Hojas que caen solas y ráfaga al presionar
+  hojaIntervaloMinMs: 7000,
+  hojaIntervaloMaxMs: 11000,
+  hojasSimultaneas: 2,
+  hojaCaidaMs: 2200,
+  hojaVaivenCeldas: 1,
+  abanicoHojas: 5,
+  abanicoCaidaMs: 1400,
+  abanicoDerivaCeldas: 3,
+  // Respuesta al puntero
+  inclinacionGrados: 2,
+  inclinacionCeldas: 1,
+  inclinacionSuavizado: 0.12,
+  inclinacionAlcanceAnchos: 2,
+  sacudidaMs: 240,
+  sacudidaCeldas: 1,
+  enfriamientoPulsacionMs: 600,
+} as const
+
+// Red de seguridad de rendimiento: en falso el reposo queda en mecido y hojas (sin respiración,
+// barrido de luz ni parpadeo).
+export const ARBOL_REPOSO_COMPLETO = true

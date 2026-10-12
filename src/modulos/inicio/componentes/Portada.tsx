@@ -1,6 +1,7 @@
 import type { MouseEvent } from 'react'
 import { ID_TITULO_DESTACADOS, NOMBRE_CAMPUS, TEXTOS_INICIO } from '@/config/constantes'
-import { GlifoPixelArbol } from '@/compartido/GlifoPixelArbol'
+import { useAparicion } from '../hooks/useAparicion'
+import { ArbolAnimado } from './ArbolAnimado'
 import { EnlaceMapa } from './EnlaceMapa'
 
 interface PropsPortada {
@@ -28,10 +29,11 @@ function irADestacados(evento: MouseEvent<HTMLAnchorElement>) {
 
 // Portada de Inicio: el h1 único de la página, la frase, el enlace al mapa y el árbol pixel.
 export function Portada({ cantidadSectores }: PropsPortada) {
+  const [anclarAparicion, claseAparicion] = useAparicion('inmediata')
   return (
     <section className="inicio-portada">
       <div className="inicio-portada__contenido">
-        <div className="inicio-portada__texto inicio-aparece">
+        <div ref={anclarAparicion} className={`inicio-portada__texto ${claseAparicion}`}>
           <p className="inicio-portada__antetitulo">{antetitulo(cantidadSectores)}</p>
           <h1 className="inicio-portada__titulo">
             {TEXTOS_INICIO.tituloPortada}
@@ -49,8 +51,8 @@ export function Portada({ cantidadSectores }: PropsPortada) {
             </a>
           </div>
         </div>
-        <div className="inicio-portada__arbol inicio-aparece inicio-aparece--tarde">
-          <GlifoPixelArbol />
+        <div className="inicio-portada__arbol">
+          <ArbolAnimado />
         </div>
       </div>
     </section>
