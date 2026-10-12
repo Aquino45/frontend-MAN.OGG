@@ -1,6 +1,6 @@
-# frontend-MAN.OGG
+# Censo arbóreo UPeU Lima — front
 
-Interfaz de **MAN.OGG**, sistema web de censo arbóreo del campus UPeU Ñaña con un mapa dividido en sectores. Este repo es el front: React + Vite + TypeScript + Framer Motion (+ MapLibre GL opcional). Consume la API del repo `backend-MAN.OGG` y genera sus tipos desde `contrato/openapi.yaml`.
+Interfaz del **Censo arbóreo UPeU Lima**, sistema web de censo arbóreo del campus UPeU Ñaña con un mapa dividido en sectores. Este repo es el front: React + Vite + TypeScript + Framer Motion (+ MapLibre GL opcional). Consume la API del repo del back y genera sus tipos desde `contrato/openapi.yaml`.
 
 ## Levantar
 Requiere Node 22 o más y npm.
@@ -21,7 +21,7 @@ npm run contrato:tipos
 Con `VITE_USAR_MOCKS=true` el front usa los ejemplos del contrato (`src/mocks/`); con `false`, la API de `VITE_API_URL`.
 
 ### Correr el front contra el back
-1. Levanta el back y carga sus datos (en `backend-MAN.OGG`, ver su README): `docker compose up -d`, `migrate`, `importar_sectores` e `importar_planilla`.
+1. Levanta el back y carga sus datos (ver el README del repo del back): `docker compose up -d`, `migrate`, `importar_sectores` e `importar_planilla`.
 2. En el `.env` del front, apunta a la API y apaga los mocks:
 
 ```ini

@@ -1,6 +1,6 @@
 # ESTADO — frontend-MAN.OGG
 
-Actualizado: 11/10/2026 (ticket DOC-003, en revisión).
+Actualizado: 11/10/2026 (ticket DOC-004, en revisión).
 
 ## Dónde estamos
 - **Rutas** con `react-router`: `/` Inicio, `/mapa` el mapa y la cartilla (con `?sector=&arbol=`), `/arboles` Explorar, `/cifras` Cifras y una página «no encontrada» para lo demás. Los enlaces viejos `/?sector=…` o `/?arbol=…` redirigen a `/mapa` con la misma consulta. Una sola cabecera (marca, Inicio · Mapa · Árboles · Cifras, con «Menú» en celular, y el tema) y un pie con la nota de los datos —calculada con la API, sin afirmar nada mientras carga o si falla— y el crédito de OpenStreetMap (ODbL).
@@ -20,6 +20,7 @@ Actualizado: 11/10/2026 (ticket DOC-003, en revisión).
 - Hito M0 (disciplina) en curso.
 
 ## Último ticket
+- DOC-004 — nombre público y docs neutras (Issue #16): «Censo arbóreo UPeU Lima» en lo que se exporta, ARQUITECTURA sin rastros del proceso (la tabla de estado pasó a este archivo) y el exportador de la entrega en código 0. Resumen en `docs/tickets/DOC-004.md`.
 - DOC-003 — docs públicas neutras y marcas de exportación para la entrega limpia (Issue #15): `export-ignore` de los archivos del proceso, `docs/requerimientos.md` v0.3 literal, README con enlaces solo a lo que se exporta y `.codex/` en `.gitignore`. Resumen en `docs/tickets/DOC-003.md`.
 - FE-008 — remake del front v1 (Issue #13, PR #14 en borrador): sistema de diseño, Inicio completo, cápsulas «?» y «Sobre este árbol», Explorar y Cifras. Resumen en `docs/tickets/FE-008.md`.
 - FE-006 — árboles destacados (Issue #11): estrella en el mapa (más grande y por encima), orden y leyenda en el panel del sector, texto accesible con el motivo e insignia en la cartilla. Resumen en `docs/tickets/FE-006.md`.
@@ -28,9 +29,19 @@ Actualizado: 11/10/2026 (ticket DOC-003, en revisión).
 - Antes: FE-002 — mapa de sectores, tema y variantes (mergeado, #6); DOC-002 — arquitectura escrita (mergeado, #4); FE-001 — base del front (mergeado, #2).
 
 ## Siguiente ticket
-- DOC-004 del front: nombre público y docs neutras, hasta que el exportador de la entrega salga con código 0.
+- Exportar a `Aquino45/censo-arboreo-frontend` con el exportador del contexto (la hace una persona).
 - Cuando el back publique cápsulas y fichas de especie, comprobar la cartilla con la API real.
 - FE-005, fase D: cierre, con `build` + `preview` y la revisión final (FE-003 y FE-004 quedan como anexos).
+
+## Estado actual frente al objetivo (11/10/2026)
+| Pieza | Hoy |
+|---|---|
+| `src/config/`, `src/styles/` (tema oscuro y claro, escala, movimiento y botones), `App.tsx`, `src/test/`, `scripts/verificar-colores.mjs` | existen |
+| `src/api/` (cliente y tipos generados del contrato 0.4.0), `src/mocks/`, `npm run contrato:tipos` | existen |
+| `modulos/mapa/`, `modulos/tema/`, `compartido/` (estados, hooks y caché del campus), regla de ESLint de fronteras | existen |
+| `modulos/cartilla/` (19 campos, cápsulas «?» y «Sobre este árbol») | existe |
+| `modulos/entrada/`, `lib/elegirVariante` y las tablas de pesos | existen |
+| `modulos/armazon/`, `modulos/inicio/`, `modulos/explorar/`, `modulos/cifras/` | existen |
 
 ## Pendiente fuera de este repo
 - Protección de `main` (PR obligatorio con aprobación de Code Owner, solo squash) y agregar `lint`, `tests` y `build` como checks obligatorios.

@@ -1,6 +1,6 @@
-# Arquitectura del front — MAN.OGG
+# Arquitectura del front — Censo arbóreo UPeU Lima
 
-Este archivo manda sobre dónde va cada cosa en `frontend-MAN.OGG`. **Antes de crear un archivo, ubícalo aquí.** Si no encaja en ninguna capa, el agente se detiene y pregunta; nunca inventa una carpeta nueva.
+Este archivo manda sobre dónde va cada cosa en este repo (el front). **Antes de crear un archivo, ubícalo aquí.** Si no encaja en ninguna capa, el agente se detiene y pregunta; nunca inventa una carpeta nueva.
 
 ## 1. Idea en una línea
 SPA React + Vite + TypeScript, **modular por funcionalidad** (cada pantalla o pieza del producto es un módulo en `src/modulos/`) y **en capas dentro de cada módulo: vista → hook → cliente de la API → contrato**. Los datos tienen la forma de `contrato/openapi.yaml` (en el back). Los tipos se generan desde el contrato y nunca se escriben a mano.
@@ -22,7 +22,7 @@ SPA React + Vite + TypeScript, **modular por funcionalidad** (cada pantalla o pi
 
 ## 3. Árbol
 ```text
-frontend-MAN.OGG/
+censo-arboreo-frontend/
 ├── src/
 │   ├── main.tsx, App.tsx      ← arranque, rutas y proveedor del tema
 │   ├── vite-env.d.ts          ← tipos de Vite
@@ -44,21 +44,21 @@ frontend-MAN.OGG/
 │   ├── lib/                   ← funciones puras que usan 2 módulos o más (formatear unidades, elegirVariante)
 │   ├── test/                  ← setup.ts de Vitest
 │   └── modulos/               ← una carpeta por funcionalidad
-│       ├── mapa/              ← mapa ilustrado, hover y selección de sector (FE-002)
+│       ├── mapa/              ← mapa ilustrado, hover y selección de sector
 │       │   ├── componentes/   ← MapaSectores, PanelSector…
 │       │   ├── hooks/         ← useSectores, useArbolesDeSector
 │       │   ├── vistas/        ← VistaMapa
 │       │   └── index.ts       ← API pública del módulo
-│       ├── tema/              ← modo claro/oscuro: useTema + InterruptorTema (FE-002)
-│       ├── cartilla/          ← cartilla del árbol: componentes/ (incluye las cápsulas «?» y «Sobre este árbol»), hooks/ (useArbol), lib/, vistas/, index.ts (FE-003, FE-008)
-│       ├── entrada/           ← animación de entrada al mapa, con variantes (FE-004)
-│       ├── armazon/           ← cabecera, navegación, pie y página «no encontrada»: lo común a todas las rutas (FE-007)
-│       ├── inicio/            ← página de Inicio: portada, mapa compacto de sectores, destacados y cifras del censo (FE-007, FE-008)
-│       ├── explorar/          ← `/arboles`: lista de todos los árboles con buscador y filtros guardados en la URL; componentes/, hooks/, lib/ (filtros), vistas/ (FE-008)
-│       └── cifras/            ← `/cifras`: cifras del censo por sector, estado y especie, con campo y ejemplo separados; `lib/cifrasCenso.ts` es puro (FE-008)
+│       ├── tema/              ← modo claro/oscuro: useTema + InterruptorTema
+│       ├── cartilla/          ← cartilla del árbol: componentes/ (incluye las cápsulas «?» y «Sobre este árbol»), hooks/ (useArbol), lib/, vistas/, index.ts
+│       ├── entrada/           ← animación de entrada al mapa, con variantes
+│       ├── armazon/           ← cabecera, navegación, pie y página «no encontrada»: lo común a todas las rutas
+│       ├── inicio/            ← página de Inicio: portada, mapa compacto de sectores, destacados y cifras del censo
+│       ├── explorar/          ← `/arboles`: lista de todos los árboles con buscador y filtros guardados en la URL; componentes/, hooks/, lib/ (filtros), vistas/
+│       └── cifras/            ← `/cifras`: cifras del censo por sector, estado y especie, con campo y ejemplo separados; `lib/cifrasCenso.ts` es puro
 ├── public/                    ← estáticos sin import (favicon). Las ilustraciones NO van aquí: se importan desde su módulo
 ├── scripts/                   ← verificar-colores.mjs, generar-tipos
-└── docs/                      ← ARQUITECTURA (este), ESTADO, CANARIOS, tickets
+└── docs/                      ← ARQUITECTURA (este) y requerimientos
 ```
 Cada módulo usa solo las subcarpetas que necesita (`componentes/`, `hooks/`, `vistas/`, `lib/`, `recursos/` para sus imágenes) y siempre tiene `index.ts`. **Módulo nuevo (replicable):** se agrega primero a este árbol, se crea con la misma forma que `modulos/mapa/` y entra a la regla de fronteras de ESLint, que se arma recorriendo `src/modulos/` y no con una lista escrita a mano.
 
@@ -75,7 +75,7 @@ Cada módulo usa solo las subcarpetas que necesita (`componentes/`, `hooks/`, `v
 - Ningún color, tamaño ni duración escrito a mano: siempre `var(--token)`. Lo vigila `npm run verificar:colores`.
 - Un campo sin dato se muestra «Sin dato»; un registro con `demo: true` lleva el sello «Dato de ejemplo».
 - Los tests van junto al archivo (`*.test.ts(x)`). Un archivo de más de ~300 líneas se parte.
-- **Fronteras entre módulos:** un módulo importa de otro **solo** por su `index.ts`, nunca desde `modulos/<otro>/componentes/…`. `compartido/`, `lib/`, `api/` y `config/` nunca importan de `modulos/`. Lo vigila ESLint con `no-restricted-imports` (lo configura FE-002). Un componente pasa a `compartido/` cuando lo usan 2 módulos, no antes.
+- **Fronteras entre módulos:** un módulo importa de otro **solo** por su `index.ts`, nunca desde `modulos/<otro>/componentes/…`. `compartido/`, `lib/`, `api/` y `config/` nunca importan de `modulos/`. Lo vigila ESLint con `no-restricted-imports`. Un componente pasa a `compartido/` cuando lo usan 2 módulos, no antes.
 - **Variantes de adorno:** las frases de carga, las ilustraciones decorativas del mapa y la animación de entrada eligen su variante con `lib/elegirVariante(pesos, aleatorio)` y una tabla de pesos en `config/constantes.ts` (`PESOS_…`). Cada vista se sortea de nuevo; no hay contadores. Las ilustraciones se importan desde su módulo (`recursos/`, con nombre de archivo neutro y hash de Vite) y toda variante que no sea la estándar se carga con `import()` solo cuando sale. El aleatorio se inyecta, así que los tests no dependen de la suerte.
 - **Tema claro y oscuro:** arranca según `prefers-color-scheme` y un interruptor manual lo cambia; la elección se recuerda en el navegador (con `try/catch`, y sin ella la página sigue andando). El tema solo pone un atributo en `<html>`, y `tokens.css` redefine los alias semánticos (`--color-fondo`, `--color-texto`…). Los componentes no saben qué tema hay. El nombre del atributo, los valores de tema y la clave de almacenamiento son constantes de `config/constantes.ts` (por ejemplo `ATRIBUTO_TEMA`, `TEMAS`, `CLAVE_TEMA_GUARDADO`), nunca texto suelto.
 
@@ -92,14 +92,3 @@ Cada módulo usa solo las subcarpetas que necesita (`componentes/`, `hooks/`, `v
 - Nada secreto en el front: todo lo `VITE_*` es público.
 - Las URLs salen de `VITE_API_URL`; ningún `localhost` escrito a mano.
 - Nada de `dangerouslySetInnerHTML` con datos de la API.
-
-## 7. Estado actual frente al objetivo (09/10/2026)
-| Pieza | Hoy | Se ajusta en |
-|---|---|---|
-| `src/config/`, `src/styles/` (solo tema oscuro), `App.tsx`, `src/test/`, `scripts/verificar-colores.mjs` | FE-001 (PR #2) | — |
-| Tema claro en `tokens.css` + `modulos/tema/` | no existe | FE-002 |
-| `src/api/` (cliente y tipos generados), `src/mocks/`, `npm run contrato:tipos` | no existen | FE-002 |
-| `modulos/mapa/`, `compartido/`, regla de ESLint de fronteras | no existen | FE-002 |
-| `modulos/cartilla/` | existe (con cápsulas y «Sobre este árbol») | FE-003, FE-008 |
-| `modulos/explorar/`, `modulos/cifras/` y los hooks del campus en `compartido/` | existen | FE-008 |
-| `modulos/entrada/`, `lib/elegirVariante` y las tablas de pesos | no existen | FE-002 (frases de carga e ilustraciones) y FE-004 (entrada) |
