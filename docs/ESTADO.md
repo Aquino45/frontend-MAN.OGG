@@ -1,6 +1,7 @@
 # ESTADO — frontend-MAN.OGG
 
 Actualizado: 12/10/2026 (ticket FE-011, en revisión).
+Actualizado: 12/10/2026 (ticket FE-016, en revisión).
 
 ## Dónde estamos
 - **Mapa real (RF-10):** junto al mapa ilustrado, las vistas «Calles» (teselas de OpenStreetMap, sin clave) y «Satélite» (Esri World Imagery, solo con `VITE_ESRI_CLAVE`), con los mismos sectores y árboles: límite continuo si el sector es real y punteado si es provisional, nombre de cada sector, árboles como puntos y destacados como estrellas, y el clic abre la cartilla. Sin clave no hay satélite ni errores. Va en su propio chunk (`MapaReal`, MapLibre 6.11.2) y solo se descarga al activar una de las dos vistas; con «reducir movimiento» la cámara salta. Atribución visible: «© OpenStreetMap» en las dos vistas y la de Esri en el satélite.
@@ -23,6 +24,7 @@ Actualizado: 12/10/2026 (ticket FE-011, en revisión).
 - Hito M0 (disciplina) en curso.
 
 ## Último ticket
+- FE-016 — la variante alterna de la entrada es interactiva (Issue #30): cada frase espera a que la persona avance (o avanza sola a los 4 s), una pregunta con dos opciones (sin respuesta a los 9 s se toma la opción por defecto), cursor propio con puntero fino, tipeo sintetizado y una celebración al elegir la primera opción. Resumen en `docs/tickets/FE-016.md`.
 - FE-009 — CO₂ simulado y gráficos de CO₂ en Cifras (Issue #19): contrato 0.5.0, etiqueta «Simulado» en la cartilla y 4 gráficos en `/cifras`. Resumen en `docs/tickets/FE-009.md`.
 - DOC-004 — nombre público y docs neutras (Issue #16): «Censo arbóreo UPeU Lima» en lo que se exporta, ARQUITECTURA sin rastros del proceso (la tabla de estado pasó a este archivo) y el exportador de la entrega en código 0. Resumen en `docs/tickets/DOC-004.md`.
 - DOC-003 — docs públicas neutras y marcas de exportación para la entrega limpia (Issue #15): `export-ignore` de los archivos del proceso, `docs/requerimientos.md` v0.3 literal, README con enlaces solo a lo que se exporta y `.codex/` en `.gitignore`. Resumen en `docs/tickets/DOC-003.md`.
