@@ -30,7 +30,7 @@
   --texto-2xl: 2.25rem;
   --texto-display: clamp(2.75rem, 1.25rem + 7vw, 6rem);
   /* Título de la portada de Inicio: un paso más grande que el display del resto del sitio */
-  --texto-portada-grande: clamp(3.25rem, 1.25rem + 8vw, 6.5rem);
+  --texto-portada-grande: clamp(3.25rem, 1.25rem + 5vw, 5.25rem);
   --interlinea-cuerpo: 1.5;
   --interlinea-display: 1;
   --interlinea-titulo: 1.05;
@@ -64,5 +64,14 @@
 @media (min-width: 64rem) {
   :root {
     --arbol-celda: 12px;
+  }
+}
+
+/* Árbol protagonista: 70 % del alto de la ventana (tope de 640 px) o 85 % del ancho en el celular.
+   Con round() la celda sale entera, así el árbol llena el objetivo sin líneas a medias */
+@supports (width: round(down, 10px, 1px)) {
+  :root {
+    --arbol-lado-objetivo: min(85vw, 70vh, 640px);
+    --arbol-celda: round(down, calc(var(--arbol-lado-objetivo) / 40), 1px);
   }
 }

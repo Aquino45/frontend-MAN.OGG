@@ -86,7 +86,7 @@
 }
 
 .inicio-portada__arbol {
-  flex: 1 1 22rem;
+  flex: 1 0 auto;
   min-inline-size: 0;
   display: flex;
   justify-content: center;
