@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-12T00:00:00Z",
+  "title": "Design System: Censo arbóreo UPeU Lima",
+  "extensions": {
+    "colorMeta": {
+      "copa-carmin": { "role": "primary", "displayName": "Carmín de copa", "canonical": "#e02040" },
+      "copa-magenta": { "role": "secondary", "displayName": "Magenta", "canonical": "#c00080" },
+      "copa-magenta-oscuro": {
+        "role": "secondary",
+        "displayName": "Magenta profundo",
+        "canonical": "#a00080"
+      },
+      "tronco-noche": {
+        "role": "neutral",
+        "displayName": "Noche de tronco",
+        "canonical": "#202040"
+      },
+      "texto-lectura": {
+        "role": "neutral",
+        "displayName": "Neutro de lectura",
+        "canonical": "#f6eef2"
+      }
+    },
+    "shadows": [
+      {
+        "name": "flotante",
+        "value": "0 -8px 24px color-mix(in srgb, #202040 55%, transparent)",
+        "purpose": "Hoja inferior y menú."
+      },
+      {
+        "name": "elevada",
+        "value": "0 10px 22px color-mix(in srgb, #202040 55%, transparent)",
+        "purpose": "Tarjeta viva con el cursor; aparece con opacidad."
+      }
+    ],
+    "motion": [
+      {
+        "name": "curva-salida",
+        "value": "cubic-bezier(0.23, 1, 0.32, 1)",
+        "purpose": "Entradas y presión."
+      },
+      {
+        "name": "curva-movimiento",
+        "value": "cubic-bezier(0.77, 0, 0.175, 1)",
+        "purpose": "Movimiento en pantalla: zoom del mapa y gráficos."
+      },
+      {
+        "name": "curva-hoja",
+        "value": "cubic-bezier(0.32, 0.72, 0, 1)",
+        "purpose": "Hoja inferior del celular."
+      },
+      {
+        "name": "duraciones",
+        "value": "presión 120 · hover 160 · entrada 200 · hoja 240 · zoom 280 · salidas 150 · gráficos 360",
+        "purpose": "Nada de la interfaz llega a 300 ms salvo el zoom y el árbol."
+      }
+    ],
+    "breakpoints": [
+      { "name": "celular-ancho", "value": "40rem" },
+      { "name": "tableta", "value": "48rem" },
+      { "name": "panel-lateral", "value": "56rem" },
+      { "name": "escritorio", "value": "64rem" }
+    ]
+  },
+  "components": [],
+  "narrative": {
+    "northStar": "El vivero de píxeles",
+    "overview": "Un vivero digital: un árbol pixel crece sobre un fondo noche y alrededor se ordena un censo de datos sobrios y vectoriales.",
+    "keyCharacteristics": [
+      "Tema oscuro y claro que redefinen solo los alias semánticos.",
+      "Un solo protagonista visual: el árbol pixel.",
+      "Movimiento corto; reducir movimiento apaga todo.",
+      "Gráficos vectoriales, nunca pixelados."
+    ],
+    "rules": [
+      {
+        "name": "The Cinco Colores Rule",
+        "body": "Todo color sale de tokens.css; los valores de la paleta no cambian.",
+        "section": "colors"
+      },
+      {
+        "name": "The Carmín Rule",
+        "body": "El carmín va en títulos grandes y acentos, nunca en texto corrido.",
+        "section": "colors"
+      },
+      {
+        "name": "The Una Sombra Rule",
+        "body": "No se agregan sombras nuevas; no se anima ninguna sombra.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do mantener la paleta, el sprite del árbol y el glifo pixel sin rediseñarlos.",
+      "Do conservar el horizonte de copa igual en todos los cortes, en los dos sentidos y en los 2 temas.",
+      "Do apagar todo el movimiento con «reducir movimiento»."
+    ],
+    "donts": [
+      "Don't cambiar un valor de color de tokens.css ni escribir un hex fuera de él.",
+      "Don't pixelar gráficos de datos.",
+      "Don't inventar datos del censo ni poner la clave de Esri en git."
+    ]
+  }
+}

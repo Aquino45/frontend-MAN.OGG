@@ -12,3 +12,7 @@ CONTRIBUTING.md export-ignore
 docs/CANARIOS.md export-ignore
 docs/ESTADO.md export-ignore
 docs/tickets/ export-ignore
+PRODUCT.md export-ignore
+DESIGN.md export-ignore
+DESIGN.json export-ignore
+.impeccable/ export-ignore
