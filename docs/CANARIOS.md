@@ -25,3 +25,4 @@ rocas metamórficas. Libres: gneis, esquisto, filita, anfibolita, milonita, corn
 | 11/10/2026 | DOC-003 | galena | ORQ-CA | migmatita |
 | 11/10/2026 | DOC-004 | malaquita | ORQ-CA | migmatita |
 | 11/10/2026 | FE-009 | filita | ORQ-CA | latita |
+| 12/10/2026 | FE-013 | tilita | ORQ-CA | basanita |

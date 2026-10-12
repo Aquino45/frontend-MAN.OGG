@@ -52,3 +52,11 @@
 .arbol-animado__cuadro {
   opacity: 0;
 }
+
+/* Señal de progreso al mantener presionado el árbol: su silueta, tenue, sube de la base a la copa.
+   Empieza invisible; el movimiento y la opacidad los lleva el código. */
+.arbol-animado__senal {
+  fill: var(--texto-lectura);
+  opacity: 0;
+  pointer-events: none;
+}
