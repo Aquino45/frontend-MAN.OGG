@@ -1,0 +1,157 @@
+/* Marca del producto: los dibujos pixel (cada letra del dibujo es un color de la paleta), el logo y la
+   co-marca con la UPeU. Todo el color sale de tokens. */
+
+.marca-px--C {
+  fill: var(--copa-carmin);
+}
+
+.marca-px--O {
+  fill: var(--copa-magenta-oscuro);
+}
+
+/* Brillos y bordes: el borde de 1 celda evita que un tronco se pierda sobre el fondo */
+.marca-px--M,
+.marca-px--B {
+  fill: var(--copa-magenta);
+}
+
+.marca-px--N {
+  fill: var(--tronco-noche);
+}
+
+.marca-px--V {
+  fill: var(--sombra-violeta);
+}
+
+.marca-px--W {
+  fill: var(--blanco);
+}
+
+/* El color del fondo separa la insignia de lo que tiene debajo */
+.marca-px--F {
+  fill: var(--color-fondo);
+}
+
+.marca-px--T {
+  fill: var(--arbol-tronco);
+}
+
+/* El relleno del tronco: un paso más claro que el fondo en oscuro; en claro, el tronco de la paleta */
+.sprite-arbol,
+.simbolo-logo {
+  --arbol-tronco: var(--sombra-violeta);
+  display: block;
+  shape-rendering: crispEdges;
+}
+
+:root[data-tema='claro'] .sprite-arbol,
+:root[data-tema='claro'] .simbolo-logo {
+  --arbol-tronco: var(--tronco-noche);
+}
+
+/* El sprite llena el espacio que le da su contenedor */
+.sprite-arbol {
+  inline-size: 100%;
+  block-size: auto;
+}
+
+.simbolo-logo {
+  flex: none;
+  block-size: var(--marca-alto);
+  inline-size: auto;
+}
+
+/* ---------- Wordmark: «CENSO» en mayúsculas espaciadas sobre «Arbóreo» grande ---------- */
+.wordmark {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  font-family: var(--fuente-display);
+}
+
+.wordmark__censo {
+  margin-block-end: 0.08em;
+  font-weight: 700;
+  font-size: calc(var(--marca-alto) * 0.22);
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--color-texto);
+}
+
+.wordmark__arboreo {
+  font-weight: 800;
+  font-size: calc(var(--marca-alto) * 0.45);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--color-acento);
+}
+
+/* ---------- Logo oficial de la UPeU: el azul sobre claro y el blanco sobre oscuro ---------- */
+.logo-upeu {
+  display: block;
+}
+
+.logo-upeu__imagen {
+  display: none;
+  block-size: calc(var(--marca-alto) * 0.55);
+  inline-size: auto;
+}
+
+.logo-upeu__imagen--oscuro {
+  display: block;
+}
+
+:root[data-tema='claro'] .logo-upeu__imagen--claro {
+  display: block;
+}
+
+:root[data-tema='claro'] .logo-upeu__imagen--oscuro {
+  display: none;
+}
+
+/* ---------- Logo horizontal (cabecera) ---------- */
+.logo-marca {
+  --marca-alto: var(--marca-cabecera-alto);
+  display: flex;
+  align-items: center;
+  gap: var(--espacio-3);
+  min-inline-size: 0;
+}
+
+.logo-nuestro {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--marca-alto) * 0.25);
+  min-inline-size: 0;
+}
+
+.logo-marca__separador,
+.co-marca__separador {
+  flex: none;
+  inline-size: var(--grosor-borde-ui);
+  block-size: calc(var(--marca-alto) * 0.7);
+  background: var(--color-texto-tenue);
+  opacity: 0.5;
+}
+
+/* Bajo 64rem la cabecera no lleva la co-marca: su leyenda no se lee a ese tamaño */
+@media (width < 64rem) {
+  .logo-marca__separador,
+  .logo-marca .logo-upeu {
+    display: none;
+  }
+}
+
+/* ---------- Co-marca completa (pie e Inicio) ---------- */
+.co-marca {
+  --marca-alto: var(--marca-completa-alto);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espacio-3) var(--espacio-4);
+}
+
+/* Área de resguardo del logo de la UPeU: la mitad de su alto por cada lado (provisional) */
+.co-marca__resguardo {
+  padding: calc(var(--marca-alto) * 0.55 / 2);
+}

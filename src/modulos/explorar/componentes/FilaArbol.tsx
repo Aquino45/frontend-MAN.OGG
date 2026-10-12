@@ -3,7 +3,7 @@
 import { memo } from 'react'
 import { Link } from 'react-router'
 import type { ArbolResumen } from '@/api/cliente'
-import { GlifoPixelArbol } from '@/compartido/GlifoPixelArbol'
+import { SpriteArbol } from '@/compartido/marca/SpriteArbol'
 import { SelloDemo } from '@/compartido/SelloDemo'
 import { SinDato } from '@/compartido/SinDato'
 import { useEnlaceConTransicion } from '@/compartido/useEnlaceConTransicion'
@@ -40,7 +40,10 @@ function FilaArbolSinMemo({ arbol, nombreSector }: PropsFilaArbol) {
             loading="lazy"
           />
         ) : (
-          <GlifoPixelArbol />
+          <SpriteArbol
+            nombreCientifico={arbol.nombre_cientifico}
+            nombreComun={arbol.nombre_comun}
+          />
         )}
       </span>
       <span className="explorar-fila__cuerpo">

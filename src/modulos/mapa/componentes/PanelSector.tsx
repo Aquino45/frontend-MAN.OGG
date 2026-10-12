@@ -4,7 +4,7 @@ import type { ArbolFeature, SectorPropiedades } from '@/api/cliente'
 import { EstadoCarga } from '@/compartido/EstadoCarga'
 import { EstadoError } from '@/compartido/EstadoError'
 import { EstadoVacio } from '@/compartido/EstadoVacio'
-import { GlifoPixelArbol } from '@/compartido/GlifoPixelArbol'
+import { SpriteArbol } from '@/compartido/marca/SpriteArbol'
 import { SelloDemo } from '@/compartido/SelloDemo'
 import { SinDato } from '@/compartido/SinDato'
 import { TEXTOS_DESTACADO, TEXTOS_MAPA, TEXTOS_PANEL } from '@/config/constantes'
@@ -57,7 +57,11 @@ function FilaArbol({
         onBlur={() => onResaltar(null)}
       >
         <span className="mapa-fila__miniatura" aria-hidden="true">
-          {foto_miniatura_url ? <img src={foto_miniatura_url} alt="" /> : <GlifoPixelArbol />}
+          {foto_miniatura_url ? (
+            <img src={foto_miniatura_url} alt="" />
+          ) : (
+            <SpriteArbol nombreCientifico={nombre_cientifico} nombreComun={nombre_comun} />
+          )}
         </span>
         <span className="mapa-fila__texto">
           <span className="mapa-fila__nombre">{nombre_comun ?? TEXTOS_PANEL.sinDatoNombre}</span>

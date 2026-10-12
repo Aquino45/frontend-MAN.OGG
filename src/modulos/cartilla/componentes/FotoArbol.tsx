@@ -2,7 +2,7 @@
 // la reemplaza al llegar; sin foto, muestra un árbol pixelado y «Foto pendiente».
 import { useState } from 'react'
 import type { Arbol } from '@/api/cliente'
-import { GlifoPixelArbol } from '@/compartido/GlifoPixelArbol'
+import { SpriteArbol } from '@/compartido/marca/SpriteArbol'
 import { SelloDemo } from '@/compartido/SelloDemo'
 import { TEXTOS_CARTILLA } from '@/config/constantes'
 import { CapsulaAyuda } from './CapsulaAyuda'
@@ -45,7 +45,11 @@ export function FotoArbol({ arbol }: PropsFotoArbol) {
           </>
         ) : (
           <div className="foto-arbol__pendiente">
-            <GlifoPixelArbol />
+            <SpriteArbol
+              nombreCientifico={arbol.nombre_cientifico}
+              nombreComun={arbol.nombre_comun}
+              lado={32}
+            />
             <span className="foto-arbol__pendiente-texto">{TEXTOS_CARTILLA.fotoPendiente}</span>
           </div>
         )}

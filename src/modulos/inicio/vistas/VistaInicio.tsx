@@ -12,7 +12,7 @@ import { useMedidasDeDestacados } from '../hooks/useMedidasDeDestacados'
 import { calcularCifras, conteoPorSector } from '../lib/cifras'
 import { elegirDestacados } from '../lib/destacados'
 
-// Página de Inicio: portada, franja de sectores, cifras del censo y árboles destacados.
+// Página de Inicio: portada, franja de sectores, cifras del censo, árboles destacados.
 // Cada bloque maneja su propio estado de carga y de error.
 export function VistaInicio() {
   const sectores = useSectoresDelCampus()

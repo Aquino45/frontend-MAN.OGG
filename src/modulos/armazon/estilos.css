@@ -22,11 +22,15 @@
   gap: var(--espacio-3);
 }
 
+/* El logo y, desde 64rem, la co-marca de la UPeU: en el celular ocupan el ancho que dejan las acciones */
+.armazon-cabecera__identidad {
+  flex: 1 1 0;
+  min-inline-size: 0;
+}
+
 .armazon-cabecera__marca {
   display: flex;
   align-items: center;
-  flex: 1 1 0;
-  gap: var(--espacio-12);
   min-inline-size: 0;
   min-block-size: var(--tamano-control);
   color: var(--color-texto);
@@ -36,28 +40,6 @@
 
 .armazon-cabecera__marca:active {
   transform: scale(var(--escala-activo));
-}
-
-.armazon-cabecera__glifo {
-  flex: none;
-  display: block;
-}
-
-.armazon-cabecera__glifo .glifo-pixel {
-  inline-size: var(--glifo-marca);
-}
-
-/* El tronco del glifo se aclara para que se vea sobre el fondo del sitio. */
-.armazon-cabecera__glifo .glifo-pixel__tronco {
-  fill: var(--color-texto-tenue);
-}
-
-.armazon-cabecera__nombre {
-  min-inline-size: 0;
-  font-weight: 600;
-  font-size: var(--texto-sm);
-  line-height: var(--interlinea-titulo);
-  overflow-wrap: anywhere;
 }
 
 .armazon-cabecera__acciones {
@@ -117,13 +99,9 @@
     display: none;
   }
 
-  .armazon-cabecera__marca {
+  .armazon-cabecera__identidad {
     flex: 0 1 auto;
     margin-inline-end: auto;
-  }
-
-  .armazon-cabecera__nombre {
-    font-size: var(--texto-base);
   }
 }
 

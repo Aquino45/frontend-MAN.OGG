@@ -70,10 +70,10 @@ describe('cartilla a 360 px: reglas que evitan el desborde', () => {
     expect(reglaDe('.foto-arbol__estado')).toMatch(/min-inline-size:\s*0/)
   })
 
-  it('«Foto pendiente» deja sitio al sello: glifo más chico y desplazado hacia abajo', () => {
+  it('«Foto pendiente» deja sitio al sello: sprite más chico y desplazado hacia abajo', () => {
     expect(reglaDe('.foto-arbol__pendiente')).toMatch(/padding-block-start:/)
     expect(estilosCss).toMatch(
-      /\.foto-arbol__pendiente \.glifo-pixel\s*\{[^}]*var\(--foto-glifo-pendiente\)/,
+      /\.foto-arbol__pendiente .sprite-arbol\s*\{[^}]*var\(--foto-glifo-pendiente\)/,
     )
   })
 

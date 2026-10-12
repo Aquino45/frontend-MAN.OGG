@@ -53,11 +53,20 @@
   --sombra-elevada: 0 10px 22px var(--color-sombra);
   /* Lado de una celda del árbol de la portada, en px enteros (la rejilla es de 40 x 40) */
   --arbol-celda: 7px;
+  /* Alto del logo: 32 px en el celular y 40 px desde 48rem (cabecera); 56 px en la co-marca completa */
+  --marca-cabecera-alto: 2rem;
+  --marca-completa-alto: 3.5rem;
 }
 
 @media (min-width: 40rem) {
   :root {
     --arbol-celda: 9px;
+  }
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --marca-cabecera-alto: 2.5rem;
   }
 }
 

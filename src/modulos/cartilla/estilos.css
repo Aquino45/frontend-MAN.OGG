@@ -91,7 +91,7 @@
   gap: var(--espacio-2);
 }
 
-.foto-arbol__pendiente .glifo-pixel {
+.foto-arbol__pendiente .sprite-arbol {
   inline-size: var(--foto-glifo-pendiente);
 }
 

@@ -147,7 +147,7 @@
   background: var(--color-superficie);
 }
 
-.explorar-fila__miniatura .glifo-pixel {
+.explorar-fila__miniatura .sprite-arbol {
   inline-size: var(--glifo-marca);
 }
 

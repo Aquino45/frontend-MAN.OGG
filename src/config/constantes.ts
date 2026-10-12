@@ -94,6 +94,24 @@ export const TEXTOS_ESTADOS = {
 // NOMBRE PÚBLICO DEL PRODUCTO (título de la página y de la cabecera)
 export const NOMBRE_PRODUCTO = 'Censo arbóreo UPeU Lima'
 
+// MARCA: LOS TEXTOS DEL LOGO (EL WORDMARK ES «CENSO» EN MAYÚSCULAS ESPACIADAS Y «ARBÓREO» GRANDE)
+export const TEXTOS_MARCA = {
+  censo: 'Censo',
+  arboreo: 'Arbóreo',
+  upeu: 'Universidad Peruana Unión',
+} as const
+
+// SPRITE PIXEL DE CADA ESPECIE: SE ELIGE POR EL GÉNERO DEL NOMBRE CIENTÍFICO O POR UN ALIAS DEL
+// NOMBRE COMÚN (SIN TILDES NI MAYÚSCULAS). SI NO HAY COINCIDENCIA SE USA EL GENÉRICO.
+export const SPRITES_POR_ESPECIE = {
+  palma: { generos: ['roystonea'], alias: ['palma real', 'palmera real'] },
+  huarango: { generos: ['prosopis'], alias: ['huarango', 'algarrobo'] },
+  molle: { generos: ['schinus'], alias: ['molle', 'molle serrano', 'pimentero'] },
+  ficus: { generos: ['ficus'], alias: ['ficus', 'higuera', 'matapalo'] },
+} as const
+export const SPRITE_GENERICO = 'generico'
+export type ClaveSprite = keyof typeof SPRITES_POR_ESPECIE | typeof SPRITE_GENERICO
+
 // NOMBRE DEL CAMPUS DONDE SE HACE EL CENSO
 export const NOMBRE_CAMPUS = 'UPeU Ñaña'
 

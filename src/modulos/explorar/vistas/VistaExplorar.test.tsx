@@ -106,6 +106,6 @@ describe('VistaExplorar', () => {
     // Los de campo sin destacar no llevan ninguna de las dos marcas
     expect(within(filas()[0]).queryByText(TEXTOS_DESTACADO.etiqueta)).not.toBeInTheDocument()
     expect(within(filas()[0]).queryByText(TEXTOS_CARTILLA.selloDemo)).not.toBeInTheDocument()
-    expect(filas()[0].querySelector('.glifo-pixel')).not.toBeNull()
+    expect(filas()[0].querySelector('.sprite-arbol')).not.toBeNull()
   })
 })
