@@ -126,9 +126,6 @@ export function DonaEspecies({ filas, especieElegida, onElegir, clave }: PropsDo
                       type="button"
                       className="tablero-leyenda__fila tablero-leyenda__fila--boton"
                       aria-pressed={fila.clave === especieElegida}
-                      aria-label={textos.etiquetaTrozo
-                        .replace('{especie}', fila.etiqueta)
-                        .replace('{n}', String(fila.cantidad))}
                       onClick={() => alElegir(fila)}
                     >
                       {contenido}

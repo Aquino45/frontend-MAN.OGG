@@ -113,8 +113,7 @@
   }
 }
 
-.tablero-mapa__nombre,
-.tablero-mapa__valor {
+.tablero-mapa__texto {
   fill: var(--color-texto);
   text-anchor: middle;
   font-weight: 700;

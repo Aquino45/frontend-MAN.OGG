@@ -15,10 +15,14 @@
   grid-template-columns: 5.5rem minmax(0, 1fr);
   align-items: center;
   gap: var(--espacio-2);
+}
+
+/* Los sectores que el filtro deja fuera se apagan en su barra; su nombre conserva el contraste */
+.tablero-estados__barra {
   transition: opacity var(--duracion-filtro) var(--curva-salida);
 }
 
-.tablero-estados__fila[data-apagada='si'] {
+.tablero-estados__fila[data-apagada='si'] .tablero-estados__barra {
   opacity: 0.45;
 }
 

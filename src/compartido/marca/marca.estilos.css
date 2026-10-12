@@ -78,9 +78,10 @@
   color: var(--color-texto);
 }
 
+/* En negrita y desde 14 pt (18,67 px) es texto grande: el carmín llega a 3:1 sobre los dos fondos */
 .wordmark__arboreo {
   font-weight: 800;
-  font-size: calc(var(--marca-alto) * 0.45);
+  font-size: max(calc(var(--marca-alto) * 0.45), 1.1667rem);
   letter-spacing: -0.02em;
   line-height: 1.05;
   color: var(--color-acento);

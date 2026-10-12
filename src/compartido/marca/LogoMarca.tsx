@@ -7,7 +7,7 @@ import { SimboloLogo } from './SimboloLogo'
 export function Wordmark() {
   return (
     <span className="wordmark">
-      <span className="wordmark__censo">{TEXTOS_MARCA.censo}</span>
+      <span className="wordmark__censo">{TEXTOS_MARCA.censo}</span>{' '}
       <span className="wordmark__arboreo">{TEXTOS_MARCA.arboreo}</span>
     </span>
   )

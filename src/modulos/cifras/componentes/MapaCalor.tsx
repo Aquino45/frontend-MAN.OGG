@@ -160,20 +160,23 @@ export function MapaCalor({
                     data-sin-dato={sector.valor === null ? 'si' : undefined}
                   />
                   <text
-                    x={proyectado.etiqueta.x}
-                    y={proyectado.etiqueta.y - tamanoTexto * SUBIDA_NOMBRE_MAPA_ALTURAS}
-                    className={`tablero-mapa__nombre${clara ? ' tablero-mapa__texto--claro' : ''}`}
+                    className={`tablero-mapa__texto${clara ? ' tablero-mapa__texto--claro' : ''}`}
                     style={{ fontSize: tamanoTexto }}
                   >
-                    {sector.nombre}
-                  </text>
-                  <text
-                    x={proyectado.etiqueta.x}
-                    y={proyectado.etiqueta.y + tamanoTexto * BAJADA_VALOR_MAPA_ALTURAS}
-                    className={`tablero-mapa__valor${clara ? ' tablero-mapa__texto--claro' : ''}`}
-                    style={{ fontSize: tamanoTexto }}
-                  >
-                    {valorTexto}
+                    <tspan
+                      className="tablero-mapa__nombre"
+                      x={proyectado.etiqueta.x}
+                      y={proyectado.etiqueta.y - tamanoTexto * SUBIDA_NOMBRE_MAPA_ALTURAS}
+                    >
+                      {sector.nombre}
+                    </tspan>{' '}
+                    <tspan
+                      className="tablero-mapa__valor"
+                      x={proyectado.etiqueta.x}
+                      y={proyectado.etiqueta.y + tamanoTexto * BAJADA_VALOR_MAPA_ALTURAS}
+                    >
+                      {valorTexto}
+                    </tspan>
                   </text>
                 </g>
               )
