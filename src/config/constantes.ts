@@ -5,11 +5,71 @@ export const PESOS_ENTRADA = { estandar: 998, alterna: 1 } as const
 
 export type VarianteEntrada = keyof typeof PESOS_ENTRADA
 
-// CUÁNTO SE VE LA ILUSTRACIÓN DE LA ENTRADA ALTERNA, EN ms (aprox. una vuelta: 21 cuadros de 120 ms)
-export const DURACION_ENTRADA_ALTERNA_MS = 3000
+// ENTRADA ALTERNA: LA SECUENCIA. Todo en ms y desde que empieza. Es una pieza que se ve muy pocas veces,
+// así que puede pasar de los 300 ms de la interfaz de todos los días.
+// Hasta cuándo se ve entera, antes de que empiece a desvanecerse y deje ver la vista pedida
+export const DURACION_ENTRADA_ALTERNA_MS = 8_300
+// Cuánto tarda en desvanecerse al final (y al salir antes con Esc o un clic, bastante menos)
+export const DURACION_SALIDA_ENTRADA_MS = 700
+export const DURACION_SALIDA_ANTICIPADA_MS = 200
+// Con «reducir movimiento»: todo quieto y completo este rato, sin sonido, y se sigue
+export const DURACION_ENTRADA_ALTERNA_REDUCIDA_MS = 2_000
 
-// CUÁNTO TARDA EN DESVANECERSE LA ILUSTRACIÓN DE LA ENTRADA ALTERNA, EN ms
-export const DURACION_SALIDA_ENTRADA_MS = 200
+export const ENTRADA_ALTERNA = {
+  // Después de la cortina de hojas (que dura CORTINA_HOJAS.cubrirMs) aparece el fondo con la ilustración
+  ilustracionDesdeMs: 1_000,
+  ilustracionDuracionMs: 600,
+  // Hojas grandes en diagonal: la primera y luego una cada tanto, hasta que empieza el final
+  hojaGrandeDesdeMs: 1_600,
+  hojaGrandeCadaMs: 1_500,
+  hojaGrandeCaidaMs: 2_600,
+  // Tamaño de la hoja grande: fracción del lado menor de la pantalla; cada una cambia un paso de la
+  // anterior y nunca se pasa del tope respecto de la base
+  hojaGrandeBase: 0.14,
+  hojaGrandePaso: 0.1,
+  hojaGrandeTope: 0.3,
+  // Qué parte del alto se corre hacia la derecha mientras cae (la diagonal)
+  hojaGrandeDiagonal: 0.4,
+  // La caja de diálogo entra de forma dramática, tras una pausa con la ilustración sola
+  cajaDesdeMs: 2_400,
+  cajaDuracionMs: 600,
+  cajaDesplazamientoPx: 24,
+  // Las frases se escriben letra por letra y se quedan un rato para leerlas
+  frase1DesdeMs: 3_000,
+  frase2DesdeMs: 5_500,
+  msPorLetra: 35,
+  // Hasta cuándo se puede forzar con el gesto previo (el navegador solo deja sonar tras un gesto)
+  gestoValidoMs: 1_500,
+} as const
+
+export const TEXTOS_ENTRADA_ALTERNA = {
+  frases: ['* Bueno, aquí hay un hombre.', '* Quizás se alegre de verte.'],
+} as const
+
+// SONIDO DE LA ENTRADA ALTERNA (sintetizado con Web Audio; volumen bajo y fijo)
+export const SONIDO_ENTRADA_ALTERNA = {
+  // Cada letra suena con un blip corto, agudo y dulce (onda cuadrada); alternan dos notas para que no cansen
+  blipFrecuenciasHz: [1_318.5, 1_568],
+  blipDuracionMs: 45,
+  blipVolumen: 0.04,
+  // La pista de fondo entra y sale con fundidos
+  pistaVolumen: 0.18,
+  pistaFundidoEntradaMs: 600,
+  pistaFundidoSalidaMs: 700,
+} as const
+
+// FORZAR LA VARIANTE A MANO: un clic simple en el árbol de Inicio abre una ventana; si en ese lapso se
+// escribe la clave, sale. La clave nunca va escrita: se compara su huella SHA-256 (hex, de la clave en
+// minúsculas y sin espacios).
+export const FORZAR_ENTRADA = {
+  ventanaMs: 8_000,
+  largoClave: 6,
+  // Un clic es simple si se suelta antes de esto (más largo ya es mantener presionado)
+  clicMaximoMs: 400,
+  // Mientras no se defina la clave real, la huella no coincide con nada que se pueda teclear
+  huella: '91b4d142823f7d20c5f08df69122de43f35f057a988d9619f6d3138485c9a203',
+} as const
+
 // Lo que dura el fundido de la entrada estándar (lo que Inicio espera antes de animar su árbol)
 export const DURACION_APARICION_ENTRADA_MS = 200
 

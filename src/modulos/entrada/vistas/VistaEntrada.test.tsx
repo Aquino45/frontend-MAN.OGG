@@ -94,7 +94,11 @@ describe('VistaEntrada', () => {
   })
 
   it('con movimiento reducido la ilustración se quita sin desvanecerse', async () => {
-    vi.stubGlobal('matchMedia', () => ({ matches: true }))
+    vi.stubGlobal('matchMedia', () => ({
+      matches: true,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    }))
     const { container } = render(
       <VistaEntrada aleatorio={SIEMPRE_ALTERNA}>
         <p>{VISTA_PEDIDA}</p>

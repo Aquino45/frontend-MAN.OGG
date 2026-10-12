@@ -4,6 +4,7 @@ import {
   ACCESO_PANEL_RETENCION_MS,
   ACCESO_PANEL_SENAL_DESDE_MS,
   ARBOL_ANIMADO as G,
+  FORZAR_ENTRADA,
 } from '@/config/constantes'
 import { ArbolAnimado } from './ArbolAnimado'
 
@@ -15,7 +16,11 @@ vi.mock('./CortinaDesbloqueo', () => ({
     </p>
   ),
 }))
-vi.mock('@/modulos/entrada', () => ({ useEntradaTerminada: () => true }))
+const clicEnArbol = vi.hoisted(() => vi.fn())
+vi.mock('@/modulos/entrada', () => ({
+  useEntradaTerminada: () => true,
+  useForzarEntrada: () => ({ clicEnArbol }),
+}))
 
 const URL_PANEL = 'https://panel.prueba.invalid/admin/'
 const animaciones: { fotogramas: Keyframe[] }[] = []
@@ -35,6 +40,7 @@ function presionarArbol(contenedor: HTMLElement) {
 describe('ArbolAnimado: acceso con cortina', () => {
   beforeEach(() => {
     vi.useFakeTimers()
+    clicEnArbol.mockClear()
     animaciones.length = 0
     vi.stubGlobal('matchMedia', () => ({
       matches: false,
@@ -117,5 +123,20 @@ describe('ArbolAnimado: acceso con cortina', () => {
     const llamadas = aleatorio.mock.calls.length
     await avanzar(G.hojaIntervaloMaxMs * 3)
     expect(aleatorio.mock.calls.length).toBe(llamadas)
+  })
+
+  it('un clic simple avisa a la entrada y mantener presionado no', async () => {
+    const { container } = render(<ArbolAnimado urlPanel={URL_PANEL} />)
+    await avanzar(G.retrasoInicioMs + 10)
+    const arbol = presionarArbol(container)
+    fireEvent.pointerUp(arbol, { pointerId: 1, pointerType: 'touch' })
+    fireEvent.click(arbol)
+    expect(clicEnArbol).toHaveBeenCalledOnce()
+
+    clicEnArbol.mockClear()
+    presionarArbol(container)
+    await avanzar(FORZAR_ENTRADA.clicMaximoMs + 1)
+    fireEvent.click(arbol)
+    expect(clicEnArbol).not.toHaveBeenCalled()
   })
 })

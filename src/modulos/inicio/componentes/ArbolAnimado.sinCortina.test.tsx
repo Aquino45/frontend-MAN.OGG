@@ -7,7 +7,10 @@ import { ArbolAnimado } from './ArbolAnimado'
 vi.mock('./CortinaDesbloqueo', () => {
   throw new Error('chunk caído')
 })
-vi.mock('@/modulos/entrada', () => ({ useEntradaTerminada: () => true }))
+vi.mock('@/modulos/entrada', () => ({
+  useEntradaTerminada: () => true,
+  useForzarEntrada: () => ({ clicEnArbol: () => {} }),
+}))
 
 const URL_PANEL = 'https://panel.prueba.invalid/admin/'
 

@@ -5,7 +5,10 @@ import { CUADROS_REPOSO } from '../lib/dibujoArbol'
 import { ArbolAnimado } from './ArbolAnimado'
 
 let entradaTerminada = true
-vi.mock('@/modulos/entrada', () => ({ useEntradaTerminada: () => entradaTerminada }))
+vi.mock('@/modulos/entrada', () => ({
+  useEntradaTerminada: () => entradaTerminada,
+  useForzarEntrada: () => ({ clicEnArbol: () => {} }),
+}))
 
 interface AnimacionFalsa {
   finished: Promise<AnimacionFalsa>
