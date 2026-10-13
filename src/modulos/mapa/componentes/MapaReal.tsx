@@ -21,12 +21,14 @@ import {
   ENLACE_ATRIBUCION_OSM,
   ENLACE_ATRIBUCION_POR_BASE,
   SATELITE_CAPA_ARBOLES,
+  SATELITE_CAPA_ESTRELLAS,
   SATELITE_CAPA_RELLENO,
   SATELITE_DURACION_VUELO_MS,
   SATELITE_FUENTE_ARBOLES,
   SATELITE_FUENTE_SECTORES,
   SATELITE_MARGEN_CAMPUS_PX,
   SATELITE_MARGEN_SECTOR_PX,
+  SATELITE_TOLERANCIA_CLIC_PX,
   SATELITE_ZOOM_MAXIMO,
   TEXTOS_SATELITE,
   type BaseMapaReal,
@@ -52,6 +54,17 @@ interface PropsMapaReal {
 }
 
 const SIN_ARBOLES: readonly ArbolFeature[] = []
+// Los árboles comunes y los destacados (estrellas) abren su cartilla igual
+const CAPAS_ARBOLES = [SATELITE_CAPA_ARBOLES, SATELITE_CAPA_ESTRELLAS]
+
+// Un cuadrado alrededor del puntero: así un punto chico se acierta también con el dedo
+function alrededorDe(punto: { x: number; y: number }): [[number, number], [number, number]] {
+  const t = SATELITE_TOLERANCIA_CLIC_PX
+  return [
+    [punto.x - t, punto.y - t],
+    [punto.x + t, punto.y + t],
+  ]
+}
 
 export default function MapaReal({
   sectores,
@@ -109,7 +122,9 @@ export default function MapaReal({
       if (!cargado) setFallo(true)
     })
     mapa.on('click', (evento) => {
-      const puntos = mapa.queryRenderedFeatures(evento.point, { layers: [SATELITE_CAPA_ARBOLES] })
+      const puntos = mapa.queryRenderedFeatures(alrededorDe(evento.point), {
+        layers: CAPAS_ARBOLES,
+      })
       const codigo = puntos[0]?.properties?.codigo
       if (typeof codigo === 'string') return alAbrirArbol.current(codigo)
       const zonas = mapa.queryRenderedFeatures(evento.point, { layers: [SATELITE_CAPA_RELLENO] })
@@ -117,9 +132,10 @@ export default function MapaReal({
       if (typeof sectorId === 'number') alSeleccionar.current(sectorId)
     })
     mapa.on('mousemove', (evento) => {
-      const encima = mapa.queryRenderedFeatures(evento.point, {
-        layers: [SATELITE_CAPA_ARBOLES, SATELITE_CAPA_RELLENO],
-      })
+      const encima = [
+        ...mapa.queryRenderedFeatures(alrededorDe(evento.point), { layers: CAPAS_ARBOLES }),
+        ...mapa.queryRenderedFeatures(evento.point, { layers: [SATELITE_CAPA_RELLENO] }),
+      ]
       mapa.getCanvas().style.cursor = encima.length > 0 ? 'pointer' : ''
     })
     // Los colores salen de los tokens: si cambia el tema, se vuelven a leer.
