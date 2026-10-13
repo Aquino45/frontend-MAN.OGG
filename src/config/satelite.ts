@@ -58,6 +58,8 @@ export const SATELITE_GROSOR_BORDE_ESTRELLA_PX = 1.5
 export const SATELITE_DESPLAZAMIENTO_ESTRELLA = 0.06
 // Sin lienzo, el destacado se dibuja como un punto de este tamaño relativo al de los demás
 export const SATELITE_ESCALA_PUNTO_DESTACADO = 1.5
+// Margen alrededor del puntero para acertar a un árbol con el mouse o el dedo, en px de pantalla
+export const SATELITE_TOLERANCIA_CLIC_PX = 8
 
 // Nombres internos de las fuentes, capas e imágenes de MapLibre
 export const SATELITE_FUENTE_IMAGEN = 'imagen'
